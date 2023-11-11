@@ -11,7 +11,7 @@ def run(board, testing=False):
     return evaluate_board(board)
 
 
-def evaluate_board(board):
+def evaluate_board(board, horizon_risk=0):
     """ Simplistic but most important: Material Balance + White - Black"""
     piece_values = {chess.PAWN: 1, chess.KNIGHT: 3, chess.BISHOP: 3,
                     chess.ROOK: 5, chess.QUEEN: 9}
@@ -31,26 +31,17 @@ def evaluate_board(board):
         else:
             """great for white"""
             final_val[0] = float("inf")
-    check = 0
-    if board.is_check():
-        if board.turn == chess.WHITE:  # is turn dependent
-            check = - 0.5  # white in check = great for black
-        else:
-            check = 0.5  # black in check = great for white
     """ adding extra values to simple material balance """
     pos = get_position_score(board)
     mob = get_mobility_score(board)
-    threat = 0  # evaluate_threats_plus_means_good_for_white(board)
+    # possibly I could evaluate the threat of the piece that did the last capture
     final_val[0] += pos
     final_val[0] += mob  # is turn dependent
-    final_val[0] += check
-    final_val[0] += threat  # is indirectly turn dependent
-    final_val[0] += 0
+    final_val[0] -= horizon_risk
     """ append details to list """
     final_val.append(pos)
     final_val.append(mob)
-    final_val.append(check)
-    final_val.append(threat)
+    final_val.append(horizon_risk)
     return final_val
 
 
