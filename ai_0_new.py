@@ -34,7 +34,7 @@ killer_moves = [[None, None] for _ in range(INIT_DEPTH + CAPTURE_EXTENSION + CHE
 history_table = [[0 for _ in range(64)] for _ in range(64)]
 
 
-def my_ai_0(board=None, time_limit=0) -> object:
+def my_ai_0_new(board=None, time_limit=0) -> object:
     global n_extensions  # for stats
     n_extensions = 0  # reset
     """ This is the function that will be called to use this module with board as argument"""
@@ -347,7 +347,7 @@ if __name__ == "__main__":
         return board
 
     start_time = time.time()
-    my_ai_0(test_board_moves())
+    my_ai_0_new(test_board_moves())
     end_time = time.time()
     execution_time = round((end_time - start_time) * 1000)
     print(f"Execution time: {execution_time} milliseconds")
