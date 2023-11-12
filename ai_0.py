@@ -17,7 +17,7 @@ https://www.chessprogramming.org/Main_Page
 
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
-DEPTH_EXTENSION = 2  # depth extension for Quiescence Search (integrated into minimax for simplicity)
+CAPTURE_EXTENSION = 2  # depth extension for Quiescence Search (integrated into minimax for simplicity)
 CHECK_EXTENSION = 3
 # DELTA = 50 not implemented
 
@@ -28,7 +28,7 @@ n_evaluated_leaf_nodes: int = 0
 """ Lists for improved move ordering"""
 # Initialize the killer moves table with None. Each depth has two slots for killer moves.
 # The length is depth + max depth extension + estimate for check extension
-killer_moves = [[None, None] for _ in range(INIT_DEPTH + DEPTH_EXTENSION + 4)]
+killer_moves = [[None, None] for _ in range(INIT_DEPTH + CAPTURE_EXTENSION + CHECK_EXTENSION)]
 
 # Initialize the history table or previously successful moves (64x64 from to)
 history_table = [[0 for _ in range(64)] for _ in range(64)]
@@ -226,8 +226,8 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
             # we are reaching final node and are not yet performing quiescence search
             if board.is_capture(move) or move.promotion:
                 # we are in a critical situation and should do a quiescence extension
-                n_extensions += DEPTH_EXTENSION  # just for stats
-                return (depth + DEPTH_EXTENSION), True, 0  # quiet_search=True
+                n_extensions += CAPTURE_EXTENSION  # just for stats
+                return (depth + CAPTURE_EXTENSION), True, 0  # quiet_search=True
 
     if end_quiescence_checks:
         # check if we should end quiescence search

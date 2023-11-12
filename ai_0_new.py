@@ -17,7 +17,8 @@ https://www.chessprogramming.org/Main_Page
 
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
-DEPTH_EXTENSION = 2  # depth extension for Quiescence Search (integrated into minimax for simplicity)
+CAPTURE_EXTENSION = 2  # depth extension for Quiescence Search (integrated into minimax for simplicity)
+CHECK_EXTENSION = 3
 # DELTA = 50 not implemented
 
 """ Counters for stats """
@@ -27,13 +28,13 @@ n_evaluated_leaf_nodes: int = 0
 """ Lists for improved move ordering"""
 # Initialize the killer moves table with None. Each depth has two slots for killer moves.
 # The length is depth + max depth extension + estimate for check extension
-killer_moves = [[None, None] for _ in range(INIT_DEPTH + DEPTH_EXTENSION + 4)]
+killer_moves = [[None, None] for _ in range(INIT_DEPTH + CAPTURE_EXTENSION + CHECK_EXTENSION)]
 
 # Initialize the history table or previously successful moves (64x64 from to)
 history_table = [[0 for _ in range(64)] for _ in range(64)]
 
 
-def my_ai_0_new(board=None, time_limit=0.001) -> object:
+def my_ai_0(board=None, time_limit=0) -> object:
     global n_extensions  # for stats
     n_extensions = 0  # reset
     """ This is the function that will be called to use this module with board as argument"""
@@ -61,21 +62,6 @@ def my_ai_0_new(board=None, time_limit=0.001) -> object:
         if random_move:
             return random_move
         return False
-
-
-"""For effective iterative deepening we would probably need to hash previous searches
-def iterative_deepening(board, max_depth, max_player, time_limit=240):
-    best_move_at_last_index = None
-    start_time = time.time()
-
-    for depth in range(2, max_depth + 1):  # Start at depth 3
-        best_move_at_last_index = minimax(board, INIT_DEPTH, True)
-
-        # Check if the time limit has been reached
-        if time.time() - start_time > time_limit:
-            break
-
-    return best_move_at_last_index"""
 
 
 def order_moves(board, moves, depth) -> list:
@@ -122,10 +108,10 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
     global n_extensions
     """ checking board for depth extension"""
     if depth == 0 and board.is_check():
-        depth = 3
-        n_extensions += 3
+        depth = CHECK_EXTENSION
+        n_extensions += CHECK_EXTENSION
         horizon_risk = 0
-        quiet_search = True # experimental
+        quiet_search = True
     if depth == 0 or board.is_game_over():
         """ Final Node reached. Do the Evaluation of the board"""
         final_val_list = evaluate_board(board, horizon_risk)
@@ -204,7 +190,7 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
     # taking into account depth extension, quiescence and a horizon risk
     global n_extensions
     end_quiescence_checks = True
-    start_quiescence_checks = False
+    start_quiescence_checks = True  # means it only starts on checks
     use_horizon_risk = True
 
     def calculate_horizon_risk() -> float:
@@ -240,8 +226,8 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
             # we are reaching final node and are not yet performing quiescence search
             if board.is_capture(move) or move.promotion:
                 # we are in a critical situation and should do a quiescence extension
-                n_extensions += DEPTH_EXTENSION  # just for stats
-                return (depth + DEPTH_EXTENSION), True, 0  # quiet_search=True
+                n_extensions += CAPTURE_EXTENSION  # just for stats
+                return (depth + CAPTURE_EXTENSION), True, 0  # quiet_search=True
 
     if end_quiescence_checks:
         # check if we should end quiescence search
@@ -264,26 +250,6 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
 
     # quiescence default
     return depth-1, True, 0 # quiet_search=True
-
-
-
-"""def has_critical_attacks(board):
-    piece_values = {chess.PAWN: 1, chess.KNIGHT: 3, chess.BISHOP: 3,
-                    chess.ROOK: 5, chess.QUEEN: 9}
-
-    for square in chess.SQUARES:
-        victim = board.piece_at(square)
-        if victim is not None:
-            attackers = board.attackers(not victim.color, square)
-            if not attackers:
-                continue
-
-            victim_value = piece_values.get(victim.piece_type, 0)
-
-            if victim_value > 3:
-                return True
-
-    return False"""
 
 
 """ Move Ordering Helper Functions """
@@ -321,7 +287,7 @@ def print_results_and_stats(board, best_move_at_index_depth):
         print("first move last:", rounded_list)
         readable_time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         move_id = len(board.move_stack) + 1
-        print(f"Move # {move_id}: {best_move_at_index_depth[-1]}. [Sum, Pos., Mobil., horizon_risk, Path... ]"
+        print(f"Move # {move_id}: {best_move_at_index_depth[-1]}. [Sum, Pos., ..., ..., Path... ]"
               f" - {readable_time}")
         move_object = chess.Move.from_uci(best_move_at_index_depth[-1])
         if board.is_capture(move_object):
@@ -381,7 +347,7 @@ if __name__ == "__main__":
         return board
 
     start_time = time.time()
-    my_ai_0_new(test_board_moves())
+    my_ai_0(test_board_moves())
     end_time = time.time()
     execution_time = round((end_time - start_time) * 1000)
     print(f"Execution time: {execution_time} milliseconds")
