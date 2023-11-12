@@ -39,7 +39,7 @@ def evaluate_board(board, horizon_risk=0) -> list:
     # everything I add makes it slower and I can evaluate less deep
     final_val[0] += pos
     final_val[0] += mob  # is turn dependent
-    final_val[0] -= horizon_risk * 100  # centi-pawns is convention
+    final_val[0] -= horizon_risk * 100 # centi-pawns is convention
     # final_val[0] += pins  # pins
     """ append details to list """
     final_val.append(pos)

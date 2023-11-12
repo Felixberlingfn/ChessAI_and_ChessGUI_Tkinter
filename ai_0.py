@@ -18,7 +18,7 @@ https://www.chessprogramming.org/Main_Page
 
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
-CAPTURE_EXTENSION = 3  # depth extension for captures and promotions aka quiescence search
+CAPTURE_EXTENSION = 2  # depth extension for captures and promotions aka quiescence search
 CHECK_EXTENSION = 3  # depth extension for checks aka quiescence search
 
 """ Counters for stats """
@@ -202,7 +202,7 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_typ
             horizon_risk: float = get_piece_value(attacker_piece) * 0.5  # bad for white when subst. later
         else:
             horizon_risk: float = - get_piece_value(attacker_piece) * 0.5  # bad for black when subst. later
-        return horizon_risk
+        return horizon_risk  # in centi-pawns
 
     def has_threats() -> bool:
         # Get the position of high value pieces

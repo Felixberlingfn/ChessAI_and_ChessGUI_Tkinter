@@ -38,11 +38,12 @@ def main():
                 app.display_message(random.choice(comments), "label1")
                 app.update_board(cboard, True)
 
-            if i != 0 and i % 100 == 0:
-                response = input("Do you want to continue with ai vs ai? (y/n): ")
+            if i != 0 and i % 10 == 0:
+                time.sleep(5)
+                """response = input("Do you want to continue with ai vs ai? (y/n): ")
                 if response.lower() != 'y':
                     print("Stopping ai vs ai")
-                    break
+                    break"""
         return
 
     def play_human_vs_ai(cboard, ai_function=ai_0.my_ai_0, time_limit=0.001):

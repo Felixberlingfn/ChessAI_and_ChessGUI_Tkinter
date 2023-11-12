@@ -6,6 +6,7 @@ import time
 import inspect
 # import timeit
 from typing import Tuple
+from typing import List
 import evaluate_board
 from evaluate_board import evaluate_board
 
@@ -17,9 +18,8 @@ https://www.chessprogramming.org/Main_Page
 
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
-CAPTURE_EXTENSION = 2  # depth extension for Quiescence Search (integrated into minimax for simplicity)
-CHECK_EXTENSION = 3
-# DELTA = 50 not implemented
+CAPTURE_EXTENSION = 2  # depth extension for captures and promotions aka quiescence search
+CHECK_EXTENSION = 3  # depth extension for checks aka quiescence search
 
 """ Counters for stats """
 n_extensions: int = 0
@@ -64,54 +64,55 @@ def my_ai_0_new(board=None, time_limit=0) -> object:
         return False
 
 
-def order_moves(board, moves, depth) -> list:
+def order_moves(board, depth) -> List[tuple]:
     """in contrast to the evaluate board this is BEFORE the move was made"""
-    """Helper functions only needed for move ordering"""
-    def mvv_lva_score(board, move):
+    def mvv_lva_score(m):
         """ Most Valuable Victim - Least Valuable Attacker"""
-        victim_value = get_piece_value(board.piece_at(move.to_square))
-        aggressor_value = get_piece_value(board.piece_at(move.from_square))
+        victim_value = get_piece_value(board.piece_at(m.to_square))
+        aggressor_value = get_piece_value(board.piece_at(m.from_square))
         return victim_value - aggressor_value
 
-    """Main Move Ordering"""
-    try:
-        killers = killer_moves[depth] if depth <= len(killer_moves) else []
-        non_killer_moves = []
-        confirmed_killer_moves = []
-        """higher priority to killer moves"""
-        for move in moves:
-            if move in killers:
-                confirmed_killer_moves.insert(0, move)  # Insert killer moves to the front
-            else:
-                non_killer_moves.append(move)
-        """higher priority to capture moves"""
-        captures_and_checks = [move for move in non_killer_moves if board.is_capture(move) or board.gives_check(move) or move.promotion]  # or board.gives_check(move) or move.promotion
-        """ order captures_and_checks by most valuable victim """
-        if len(captures_and_checks) > 1:
-            captures_and_checks.sort(key=lambda m: mvv_lva_score(board, m), reverse=True)
-        """ order quiet_moves by n in history table """
-        quiet_moves = [move for move in non_killer_moves if not board.is_capture(move)]
-        quiet_moves.sort(key=lambda m: history_table[m.from_square][m.to_square], reverse=True)
-        """Now put everything together to make the final list"""
-        ordered_moves = captures_and_checks + confirmed_killer_moves + quiet_moves
-        return ordered_moves
-    except Exception as error:
-        print(f"{error} in order_moves.")
-        return moves  # return unordered moves
+    moves = board.legal_moves
+
+    killers: list = killer_moves[depth] if depth <= len(killer_moves) else []
+    non_killer_moves: list = []
+    confirmed_killer_moves: List[tuple] = []
+
+    for move in moves:
+        if move in killers:
+            confirmed_killer_moves.insert(0, (move, "killer"))
+        else:
+            non_killer_moves.append(move)
+
+    captures_and_checks: List[tuple] = []
+    quiet_moves: List[tuple] = []
+    for move in non_killer_moves:
+        if board.is_capture(move):
+            captures_and_checks.append((move, 1))  # 1=capture, 2=promo, 3=check
+        elif move.promotion:
+            captures_and_checks.append((move, 2))  # 1=capture, 2=promo, 3=check
+        elif board.gives_check(move):
+            captures_and_checks.append((move, 3))  # 1=capture, 2=promo, 3=check
+        else:
+            quiet_moves.append((move, 0))  # 0=calm
+
+    captures_and_checks.sort(key=lambda m: mvv_lva_score(m[0]), reverse=True)
+    quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
+
+    return captures_and_checks + confirmed_killer_moves + quiet_moves
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
-            quiet_search=False, horizon_risk=0) -> list:
+            quiet_search=False, horizon_risk=0.0) -> list:
 
     """Minimax returns optimal value for current player """
     global n_evaluated_leaf_nodes
     global n_extensions
-    """ checking board for depth extension"""
-    if depth == 0 and board.is_check():
+    """if depth == 0 and board.is_check():
         depth = CHECK_EXTENSION
         n_extensions += CHECK_EXTENSION
         horizon_risk = 0
-        quiet_search = True
+        quiet_search = True"""
     if depth == 0 or board.is_game_over():
         """ Final Node reached. Do the Evaluation of the board"""
         final_val_list = evaluate_board(board, horizon_risk)
@@ -119,14 +120,15 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         return final_val_list
 
     # here we could implement looking up a hash
+    ordered_moves: List[tuple] = order_moves(board, depth)
 
     """ MAXIMIZING """
     if max_player:
         best = float('-inf')
         best_list: list = [best]
         """ Loop through moves """
-        for move in order_moves(board, board.legal_moves, depth):
-            next_depth, quiet_search, horizon_risk = get_next_depth(board, move, depth, quiet_search)
+        for move, move_type in ordered_moves:
+            next_depth, quiet_search, horizon_risk = get_next_depth(board, move, depth, quiet_search, move_type)
             """ Chess  move"""
             board.push(move)
             """ Recursive Call and Value Updating """
@@ -157,8 +159,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         best = float('inf')
         best_list: list = [best]
         # loop through moves
-        for move in order_moves(board, board.legal_moves, depth):
-            next_depth, quiet_search, horizon_risk = get_next_depth(board, move, depth, quiet_search)
+        for move, move_type in ordered_moves:
+            next_depth, quiet_search, horizon_risk = get_next_depth(board, move, depth, quiet_search, move_type)
             # Chess  move"""
             board.push(move)
             # Recursive Call and Value Updating"""
@@ -185,7 +187,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         return best_list
 
 
-def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple[int, bool, float]:
+def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_type=0) -> Tuple[int, bool, float]:
     # gets the depth of the next minimax recursion
     # taking into account depth extension, quiescence and a horizon risk
     global n_extensions
@@ -200,7 +202,7 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
             horizon_risk: float = get_piece_value(attacker_piece) * 0.5  # bad for white when subst. later
         else:
             horizon_risk: float = - get_piece_value(attacker_piece) * 0.5  # bad for black when subst. later
-        return horizon_risk
+        return horizon_risk  # in centi-pawns
 
     def has_threats() -> bool:
         # Get the position of high value pieces
@@ -224,15 +226,17 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
         # we have reached the final move - check if we should start quiescence search
         if not quiet_search and depth == 1:
             # we are reaching final node and are not yet performing quiescence search
-            if board.is_capture(move) or move.promotion:
-                # we are in a critical situation and should do a quiescence extension
+            if move_type in [1, 2]:  # 1=capture, 2=promo, 3=check
                 n_extensions += CAPTURE_EXTENSION  # just for stats
                 return (depth + CAPTURE_EXTENSION), True, 0  # quiet_search=True
+            elif move_type == 3:    # 1=capture, 2=promo, 3=check
+                n_extensions += CHECK_EXTENSION  # just for stats
+                return (depth + CHECK_EXTENSION), True, 0  # quiet_search=True
 
     if end_quiescence_checks:
         # check if we should end quiescence search
         if quiet_search and depth != 1:
-            if board.is_capture(move) or move.promotion:
+            if move_type in [1, 2, 3]:    # 1=capture, 2=promo, 3=check
                 return depth - 1, True, 0  # continue quiet_search
             else:
                 return 0, True, 0  # quiet stage reach - end quiescence search early
@@ -240,7 +244,7 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
     if use_horizon_risk:
         if depth == 1 and quiet_search:
             # quiet search extension limit reached
-            if board.is_capture(move):
+            if move_type in [1, 2]:    # 1=capture, 2=promo, 3=check
                 risk = calculate_horizon_risk()
                 if risk > 8 or risk < -8:
                     n_extensions += 1  # just for stats
