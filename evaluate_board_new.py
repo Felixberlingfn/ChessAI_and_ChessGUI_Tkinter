@@ -198,21 +198,26 @@ def get_position_score(board) -> float:
 def get_mobility_score(board) -> float:
     """PLUS MEANS GOOD FOR WHITE"""
     MOBILITY_MULTIPLIER = 0.033  # was 0.003 but now it will be the difference between both players legal moves
-    mobility_white = 0
-    mobility_black = 0
-    if board.turn == chess.WHITE:
-        mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
-    if board.turn == chess.BLACK:
-        mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
+    try:
+        mobility_white = 0
+        mobility_black = 0
+        if board.turn == chess.WHITE:
+            mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
+        if board.turn == chess.BLACK:
+            mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
 
-    board.push(chess.Move.null())
-    if board.turn == chess.WHITE:
-        mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
-    if board.turn == chess.BLACK:
-        mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
-    board.pop()
-    mobility_score = mobility_white - mobility_black
-    return mobility_score
+        board.push(chess.Move.null())
+        if board.turn == chess.WHITE:
+            mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
+        if board.turn == chess.BLACK:
+            mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
+        board.pop()
+        mobility_score = mobility_white - mobility_black
+        return mobility_score
+
+    except Exception as error:
+        print(f"{error} in {inspect_function_name()}")
+        return 0
 
 
 def get_material_balance(board) -> float:

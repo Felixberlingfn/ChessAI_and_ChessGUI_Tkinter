@@ -8,7 +8,7 @@ import inspect
 from typing import Tuple
 from typing import List
 import evaluate_board
-from evaluate_board import evaluate_board
+from evaluate_board_new import evaluate_board
 
 """
 Sources:

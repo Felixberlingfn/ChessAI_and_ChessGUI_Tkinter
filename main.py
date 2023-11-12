@@ -1,10 +1,10 @@
-import chess  # for simpler game logic handling
-import sqlite3  # for storing the board after session
-import ai_0  # my ai
-import ai_0_new
-import chess_tk  # the graphical user interface
-import lc0  # lc0 ai with neural network
-import stockfish  # very strong ai without neural network
+import chess
+import sqlite3
+from ai_0 import my_ai_0
+from ai_0_new import my_ai_0_new
+import chess_tk
+from lc0 import lc0
+from  stockfish import stockfish
 import random
 import time
 import inspect
@@ -13,7 +13,7 @@ import inspect
 def main():
     """  ---------------------------   chess_tk gui --------------------------------------------------------"""
 
-    def version_vs_version(cboard, version_a=ai_0.my_ai_0, version_b=ai_0_new.my_ai_0_new, time_limit=0.001):
+    def version_vs_version(cboard, version_a, version_b, time_limit=0.001):
         for i in range(999999999):
             save_game_state(cboard)
 
@@ -39,14 +39,14 @@ def main():
                 app.update_board(cboard, True)
 
             if i != 0 and i % 10 == 0:
-                time.sleep(5)
+                time.sleep(3)
                 """response = input("Do you want to continue with ai vs ai? (y/n): ")
                 if response.lower() != 'y':
                     print("Stopping ai vs ai")
                     break"""
         return
 
-    def play_human_vs_ai(cboard, ai_function=ai_0.my_ai_0, time_limit=0.001):
+    def play_human_vs_ai(cboard, ai_function=my_ai_0, time_limit=0.001):
         app.display_message(f"{ai_function.__name__} is thinking ... 💭", "label2")
         best_move = ai_function(cboard, time_limit)  # ai_2.run(cboard, 5) # ai_2.run(cboard, 5) # lc0.get_best(cboard, 0.01) #
 
@@ -77,28 +77,28 @@ def main():
             return
 
         if passed_value == "make_stockfish_move":
-            play_human_vs_ai(cboard, stockfish.stockfish, 0.1)
+            play_human_vs_ai(cboard, stockfish, 0.1)
             return
 
         if passed_value == "play_stockfish" and cboard.turn == chess.BLACK:
-            play_human_vs_ai(cboard, stockfish.stockfish, 0.1)
+            play_human_vs_ai(cboard, stockfish, 0.1)
             return
 
         """ custom_ai """
         if passed_value == "custom_ai" and cboard.turn == chess.BLACK:
-            play_human_vs_ai(cboard, ai_0.my_ai_0, 0.1)
+            play_human_vs_ai(cboard, my_ai_0, 0.1)
             return
 
         if passed_value == "lc0_vs_stockfish":
-            version_vs_version(cboard, lc0.lc0, stockfish.stockfish, 0.001)
+            version_vs_version(cboard, stockfish, stockfish, 0.01)
             return
 
         if passed_value == "myai_vs_stockfish":
-            version_vs_version(cboard, ai_0.my_ai_0, stockfish.stockfish, 0.001)
+            version_vs_version(cboard, my_ai_0, stockfish, 0.01)
             return
 
         if passed_value == "version_vs_version":
-            version_vs_version(cboard)
+            version_vs_version(cboard, my_ai_0_new, my_ai_0)
             return
 
         return
