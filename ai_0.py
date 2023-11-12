@@ -64,21 +64,6 @@ def my_ai_0(board=None, time_limit=0) -> object:
         return False
 
 
-"""For effective iterative deepening we would probably need to hash previous searches
-def iterative_deepening(board, max_depth, max_player, time_limit=240):
-    best_move_at_last_index = None
-    start_time = time.time()
-
-    for depth in range(2, max_depth + 1):  # Start at depth 3
-        best_move_at_last_index = minimax(board, INIT_DEPTH, True)
-
-        # Check if the time limit has been reached
-        if time.time() - start_time > time_limit:
-            break
-
-    return best_move_at_last_index"""
-
-
 def order_moves(board, moves, depth) -> list:
     """in contrast to the evaluate board this is BEFORE the move was made"""
     """Helper functions only needed for move ordering"""
@@ -265,26 +250,6 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
 
     # quiescence default
     return depth-1, True, 0 # quiet_search=True
-
-
-
-"""def has_critical_attacks(board):
-    piece_values = {chess.PAWN: 1, chess.KNIGHT: 3, chess.BISHOP: 3,
-                    chess.ROOK: 5, chess.QUEEN: 9}
-
-    for square in chess.SQUARES:
-        victim = board.piece_at(square)
-        if victim is not None:
-            attackers = board.attackers(not victim.color, square)
-            if not attackers:
-                continue
-
-            victim_value = piece_values.get(victim.piece_type, 0)
-
-            if victim_value > 3:
-                return True
-
-    return False"""
 
 
 """ Move Ordering Helper Functions """
