@@ -4,6 +4,8 @@ import chess
 import datetime
 import time
 import inspect
+# import timeit
+from typing import Tuple
 import evaluate_board
 from evaluate_board import evaluate_board
 
@@ -16,7 +18,8 @@ https://www.chessprogramming.org/Main_Page
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
 DEPTH_EXTENSION = 2  # depth extension for Quiescence Search (integrated into minimax for simplicity)
-DELTA = 50
+CHECK_EXTENSION = 3
+# DELTA = 50 not implemented
 
 """ Counters for stats """
 n_extensions: int = 0
@@ -30,11 +33,8 @@ killer_moves = [[None, None] for _ in range(INIT_DEPTH + DEPTH_EXTENSION + 4)]
 # Initialize the history table or previously successful moves (64x64 from to)
 history_table = [[0 for _ in range(64)] for _ in range(64)]
 
-# Initialize the Transposition Table (hash)
-transposition_table = {}
 
-
-def run(board=False):
+def my_ai_0(board=None, time_limit=0) -> object:
     global n_extensions  # for stats
     n_extensions = 0  # reset
     """ This is the function that will be called to use this module with board as argument"""
@@ -79,13 +79,13 @@ def iterative_deepening(board, max_depth, max_player, time_limit=240):
     return best_move_at_last_index"""
 
 
-def order_moves(board, moves, depth):
+def order_moves(board, moves, depth) -> list:
     """in contrast to the evaluate board this is BEFORE the move was made"""
     """Helper functions only needed for move ordering"""
     def mvv_lva_score(board, move):
         """ Most Valuable Victim - Least Valuable Attacker"""
-        victim_value = piece_value(board.piece_at(move.to_square))
-        aggressor_value = piece_value(board.piece_at(move.from_square))
+        victim_value = get_piece_value(board.piece_at(move.to_square))
+        aggressor_value = get_piece_value(board.piece_at(move.from_square))
         return victim_value - aggressor_value
 
     """Main Move Ordering"""
@@ -115,15 +115,18 @@ def order_moves(board, moves, depth):
         return moves  # return unordered moves
 
 
-def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), quiet_search=False, horizon_risk=0):
-    """Minimax returns optimal value for current player (and the move in my case)"""
+def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
+            quiet_search=False, horizon_risk=0) -> list:
+
+    """Minimax returns optimal value for current player """
     global n_evaluated_leaf_nodes
     global n_extensions
-    """depth extension in case of check"""
-    if board.is_check():
-        depth += 1
-        n_extensions += 1  # just for stats
-    """Terminating condition. i.e leaf node is reached"""
+    """ checking board for depth extension"""
+    if depth == 0 and board.is_check():
+        depth = CHECK_EXTENSION
+        n_extensions += CHECK_EXTENSION
+        horizon_risk = 0
+        quiet_search = True
     if depth == 0 or board.is_game_over():
         """ Final Node reached. Do the Evaluation of the board"""
         final_val_list = evaluate_board(board, horizon_risk)
@@ -144,8 +147,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
             """ Recursive Call and Value Updating """
             val_list: list = minimax(board, next_depth, False, alpha, beta, quiet_search, horizon_risk)
             if val_list[0] >= best_list[0]:
-                best_list = val_list
-                best_list.append(board.uci(move))
+                best_list = val_list  # use the evaluation list as the new best list
+                best_list.append(board.uci(move))   # append the move history
             alpha = max(alpha, best_list[0])
             """ Undo Chess  move """
             board.pop()
@@ -177,7 +180,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
             val_list: list = minimax(board, next_depth, True, alpha, beta, quiet_search, horizon_risk)
             if val_list[0] <= best_list[0]:
                 best_list = val_list
-                best_list.append(board.uci(move))
+                best_list.append(board.uci(move))  # append the move history
             beta = min(beta, best_list[0])
             # Undo Chess  move"""
             board.pop()
@@ -197,12 +200,24 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
         return best_list
 
 
-""" Criticality Functions """
-
-def get_next_depth(board, move, depth, quiet_search=False):
+def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple[int, bool, float]:
+    # gets the depth of the next minimax recursion
+    # taking into account depth extension, quiescence and a horizon risk
     global n_extensions
+    end_quiescence_checks = True
+    start_quiescence_checks = True  # means it only starts on checks
+    use_horizon_risk = True
 
-    def has_threats():
+    def calculate_horizon_risk() -> float:
+        # because of horizon uncertainty let's not overvalue the capture/loss
+        attacker_piece = board.piece_at(move.from_square)  # victim already in material balance
+        if attacker_piece.color == chess.WHITE:
+            horizon_risk: float = get_piece_value(attacker_piece) * 0.5  # bad for white when subst. later
+        else:
+            horizon_risk: float = - get_piece_value(attacker_piece) * 0.5  # bad for black when subst. later
+        return horizon_risk
+
+    def has_threats() -> bool:
         # Get the position of high value pieces
         critical_sqs_white: set = board.pieces(chess.QUEEN, chess.WHITE) | board.pieces(chess.ROOK, chess.WHITE)
         critical_sqs_black: set = board.pieces(chess.QUEEN, chess.BLACK) | board.pieces(chess.ROOK, chess.BLACK)
@@ -215,39 +230,40 @@ def get_next_depth(board, move, depth, quiet_search=False):
                 return True
         return False
 
-    # return depth - 1 as next_depth by default
+    # default
     if not quiet_search and depth != 1:
         # we are not doing quiescence search yet and have not yet reached final move
         return depth - 1, False, 0  # quiet_search=False
 
-    # we have reached the final move - check if we should start quiescence search
-    if not quiet_search and depth == 1:
-        # we are reaching final node and are not yet performing quiescence search
-        if board.is_capture(move) or board.gives_check(move) or move.promotion or board.is_check() or has_threats():
-            # we are in a critical situation and should do a quiescence extension
-            n_extensions += 1  # just for stats
-            return (depth + DEPTH_EXTENSION), True, 0  # quiet_search=True
+    if start_quiescence_checks:
+        # we have reached the final move - check if we should start quiescence search
+        if not quiet_search and depth == 1:
+            # we are reaching final node and are not yet performing quiescence search
+            if board.is_capture(move) or move.promotion:
+                # we are in a critical situation and should do a quiescence extension
+                n_extensions += DEPTH_EXTENSION  # just for stats
+                return (depth + DEPTH_EXTENSION), True, 0  # quiet_search=True
 
-    # check if we should end quiescence search
-    if quiet_search and depth != 1:
-        if board.is_capture(move) or board.gives_check(move) or move.promotion or board.is_check() or has_threats():
-            return depth - 1, True, 0  # continue quiet_search
-        else:
-            return 0, True, 0  # quiet stage reach - end quiescence search early
-
-    if depth == 1 and quiet_search:
-        # quiet search extension limit reached
-        if board.is_capture(move):
-            # because of horizon uncertainty let's not overvalue the capture/loss
-            attacker_piece = board.piece_at(move.from_square)  # victim already in material balance
-            if attacker_piece.color == chess.WHITE:
-                horizon_risk = piece_value(attacker_piece)  # bad for white when subst. later
+    if end_quiescence_checks:
+        # check if we should end quiescence search
+        if quiet_search and depth != 1:
+            if board.is_capture(move) or move.promotion:
+                return depth - 1, True, 0  # continue quiet_search
             else:
-                horizon_risk = - piece_value(attacker_piece)  # bad for black when subst. later
-            return 0, True, horizon_risk
-        return 0, True, 0
+                return 0, True, 0  # quiet stage reach - end quiescence search early
 
-    # if quiet_search=True and depth !=1 and quiet search doesn't end early:
+    if use_horizon_risk:
+        if depth == 1 and quiet_search:
+            # quiet search extension limit reached
+            if board.is_capture(move):
+                risk = calculate_horizon_risk()
+                if risk > 8 or risk < -8:
+                    n_extensions += 1  # just for stats
+                    return 1, True, 0  # queen risk extension
+                return 0, True, risk
+            return 0, True, 0
+
+    # quiescence default
     return depth-1, True, 0 # quiet_search=True
 
 
@@ -280,7 +296,7 @@ def update_history_table(move, depth):
     history_table[from_square][to_square] += depth ** 2  # Weight by depth squared
 
 
-def piece_value(piece):  # expects piece object not piece type
+def get_piece_value(piece) -> int:  # expects piece object not piece type
     piece_values = {
         chess.PAWN: 1,
         chess.KNIGHT: 3,
@@ -306,7 +322,7 @@ def print_results_and_stats(board, best_move_at_index_depth):
         print("first move last:", rounded_list)
         readable_time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         move_id = len(board.move_stack) + 1
-        print(f"Move # {move_id}: {best_move_at_index_depth[-1]}. [Sum, Pos., Mobil., horizon_risk, Path... ]"
+        print(f"Move # {move_id}: {best_move_at_index_depth[-1]}. [Sum, Pos., ..., ..., Path... ]"
               f" - {readable_time}")
         move_object = chess.Move.from_uci(best_move_at_index_depth[-1])
         if board.is_capture(move_object):
@@ -350,9 +366,23 @@ def show_potential_last_capture(board):
     except Exception as error:
         print(f"{error} in {inspect_function_name()}")
 
-def inspect_function_name():
+def inspect_function_name() -> str:
     return inspect.currentframe().f_code.co_name
 
 
 if __name__ == "__main__":
-    run()
+    def test_board_moves():
+        board = chess.Board()
+        moves = ["e2e4", "d7d5", "f1c4", "g8f6", "g1f3", "e7e6", "b1c3", "f8e7", "d1e2", "c8g4"]
+
+        for uci in moves:
+            move = chess.Move.from_uci(uci)
+            board.push(move)
+
+        return board
+
+    start_time = time.time()
+    my_ai_0(test_board_moves())
+    end_time = time.time()
+    execution_time = round((end_time - start_time) * 1000)
+    print(f"Execution time: {execution_time} milliseconds")

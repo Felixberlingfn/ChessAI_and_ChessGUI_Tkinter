@@ -15,8 +15,6 @@ https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-4-alpha-beta-
 https://www.chessprogramming.org/Main_Page
 """
 
-end_quiescence_checks = True
-
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
 DEPTH_EXTENSION = 2  # depth extension for Quiescence Search (integrated into minimax for simplicity)
@@ -35,7 +33,7 @@ killer_moves = [[None, None] for _ in range(INIT_DEPTH + DEPTH_EXTENSION + 4)]
 history_table = [[0 for _ in range(64)] for _ in range(64)]
 
 
-def run(board=None) -> object:
+def my_ai_0_new(board=None, time_limit=0.001) -> object:
     global n_extensions  # for stats
     n_extensions = 0  # reset
     """ This is the function that will be called to use this module with board as argument"""
@@ -123,7 +121,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
     global n_evaluated_leaf_nodes
     global n_extensions
     """ checking board for depth extension"""
-    if depth == 0 and not quiet_search and board.is_check():
+    if depth == 0 and board.is_check():
         depth = 3
         n_extensions += 3
         horizon_risk = 0
@@ -201,22 +199,21 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         return best_list
 
 
-""" Criticality Functions """
-
-
-
-def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple[int, bool, int]:
+def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple[int, bool, float]:
     # gets the depth of the next minimax recursion
     # taking into account depth extension, quiescence and a horizon risk
     global n_extensions
+    end_quiescence_checks = True
+    start_quiescence_checks = False
+    use_horizon_risk = True
 
-    def calculate_horizon_risk() -> int:
+    def calculate_horizon_risk() -> float:
         # because of horizon uncertainty let's not overvalue the capture/loss
         attacker_piece = board.piece_at(move.from_square)  # victim already in material balance
         if attacker_piece.color == chess.WHITE:
-            horizon_risk = get_piece_value(attacker_piece)  # bad for white when subst. later
+            horizon_risk: float = get_piece_value(attacker_piece) * 0.5  # bad for white when subst. later
         else:
-            horizon_risk = - get_piece_value(attacker_piece)  # bad for black when subst. later
+            horizon_risk: float = - get_piece_value(attacker_piece) * 0.5  # bad for black when subst. later
         return horizon_risk
 
     def has_threats() -> bool:
@@ -232,22 +229,19 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
                 return True
         return False
 
-    """check always warrants an extension as it could be critical and lead to checkmate"""
-    # unfortunately board.gives_check(move) internally does a board.push() and board.pop()
-    # gives_check() slower than is_check
-
-    # return depth - 1 as next_depth by default
+    # default
     if not quiet_search and depth != 1:
         # we are not doing quiescence search yet and have not yet reached final move
         return depth - 1, False, 0  # quiet_search=False
 
-    # we have reached the final move - check if we should start quiescence search
-    if not quiet_search and depth == 1:
-        # we are reaching final node and are not yet performing quiescence search
-        if board.is_capture(move) or move.promotion:
-            # we are in a critical situation and should do a quiescence extension
-            n_extensions += DEPTH_EXTENSION  # just for stats
-            return (depth + DEPTH_EXTENSION), True, 0  # quiet_search=True
+    if start_quiescence_checks:
+        # we have reached the final move - check if we should start quiescence search
+        if not quiet_search and depth == 1:
+            # we are reaching final node and are not yet performing quiescence search
+            if board.is_capture(move) or move.promotion:
+                # we are in a critical situation and should do a quiescence extension
+                n_extensions += DEPTH_EXTENSION  # just for stats
+                return (depth + DEPTH_EXTENSION), True, 0  # quiet_search=True
 
     if end_quiescence_checks:
         # check if we should end quiescence search
@@ -257,17 +251,18 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False) -> Tuple
             else:
                 return 0, True, 0  # quiet stage reach - end quiescence search early
 
-    if depth == 1 and quiet_search:
-        # quiet search extension limit reached
-        if board.is_capture(move):
-            risk = calculate_horizon_risk()
-            if risk > 8 or risk < -8:
-                n_extensions += 1  # just for stats
-                return 1, True, 0  # queen risk extension
-            return 0, True, risk
-        return 0, True, 0
+    if use_horizon_risk:
+        if depth == 1 and quiet_search:
+            # quiet search extension limit reached
+            if board.is_capture(move):
+                risk = calculate_horizon_risk()
+                if risk > 8 or risk < -8:
+                    n_extensions += 1  # just for stats
+                    return 1, True, 0  # queen risk extension
+                return 0, True, risk
+            return 0, True, 0
 
-    # if quiet_search=True and depth !=1 and quiet search doesn't end early:
+    # quiescence default
     return depth-1, True, 0 # quiet_search=True
 
 
@@ -386,7 +381,7 @@ if __name__ == "__main__":
         return board
 
     start_time = time.time()
-    run(test_board_moves())
+    my_ai_0_new(test_board_moves())
     end_time = time.time()
     execution_time = round((end_time - start_time) * 1000)
     print(f"Execution time: {execution_time} milliseconds")

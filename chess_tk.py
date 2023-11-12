@@ -104,6 +104,9 @@ class ChessBoard(tk.Tk):
         self.error_label2 = tk.Label(self, text="", fg="red")
         self.error_label2.pack()
 
+        self.move_nr_label = tk.Label(self, text="", fg="black")
+        self.move_nr_label.pack()
+
         self.message_ai_label = tk.Label(self, text="", fg="black")
         self.message_ai_label.pack()
 
@@ -125,11 +128,17 @@ class ChessBoard(tk.Tk):
         self.make_stockfish_move_button = ttk.Button(self, text="🐠 Make a Stockfish move", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "make_stockfish_move"))
         self.make_stockfish_move_button.place(x=10, y=260)
 
+        self.make_stockfish_move_button = ttk.Button(self, text="STOP AI VS AI", command=lambda: self.stop_ai_vs_ai())
+        self.make_stockfish_move_button.place(x=10, y=500)
+
         self.lc0_vs_stockfish_button = ttk.Button(self, text="0 lc0 vs stockfish", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "lc0_vs_stockfish"))
         self.lc0_vs_stockfish_button.place(x=10, y=220)
 
         self.ai_vs_stockfish_button = ttk.Button(self, text="🤖 My ai vs. stockfish (slow)", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "myai_vs_stockfish"))
-        self.ai_vs_stockfish_button.place(x=10, y=180)
+        self.ai_vs_stockfish_button.place(x=10, y=500)
+
+        self.version_vs_version_button = ttk.Button(self, text="My ai vs. my ai (Next Version)", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "version_vs_version"))
+        self.version_vs_version_button.place(x=10, y=180)
 
         self.restart_button = ttk.Button(self, text="🤖 Play My AI (slow)", command=lambda: self.start_game("white", "custom_ai"))
         self.restart_button.place(x=10, y=100)
@@ -152,6 +161,7 @@ class ChessBoard(tk.Tk):
 
 
     def update_zoom(self, zoom = 1.5):
+        # has issues
         self.zoom = zoom
         self.int_15 = int(15 * zoom)
         self.int_30 = int(30 * zoom)
@@ -164,6 +174,13 @@ class ChessBoard(tk.Tk):
         #self.add_labels()
         #self.add_pieces()
 
+    def stop_ai_vs_ai(self):
+        # set a stop ai vs ai variable or remove the ai vs ai variable
+        # the problem is currently the ai vs ai runs in a loop und I don't think the gui is responsive during that
+        # probably best to let the ai make a move, wait for a new event and make the next move by the other ai
+        # then I have to decide though who is black and who is white
+        pass
+
 
     def handle_move_by_ai(self):
         try:
@@ -174,8 +191,11 @@ class ChessBoard(tk.Tk):
             print("No move made yet")
 
 
-    def handle_last_move(self):
-        pass
+    def handle_move_nr(self):
+        if self.chess_board_object:
+            move_id = len(self.chess_board_object.move_stack)
+            self.move_nr_label.config(text=f"#{move_id}", fg="black")
+            #print(f"#{move_id}")
 
 
 
@@ -189,6 +209,7 @@ class ChessBoard(tk.Tk):
     def on_canvas_click(self, event):
         #self.error_label.config(text="")
         self.error_label2.config(text="")
+        #self.handle_move_nr()
 
         x, y = event.x, event.y
         now_clicked_square = self.get_clicked_square_from_x_y(x, y)
@@ -347,6 +368,8 @@ class ChessBoard(tk.Tk):
         self.update()
 
     def update_board(self, chess_board_object = False, ai = False):
+        self.handle_move_nr()
+
         uci_piece_map = False
         if chess_board_object:
             piece_map = chess_board_object.piece_map()
@@ -354,11 +377,12 @@ class ChessBoard(tk.Tk):
             self.chess_board_object = chess_board_object
 
         if uci_piece_map != False:
-            for key in self.schachbrett:
-                self.schachbrett[key] = "-"
-            for key, value in uci_piece_map.items():
-                if len(key) > 1:
-                    self.schachbrett[key] = value
+            if self.schachbrett:
+                for key in self.schachbrett:
+                    self.schachbrett[key] = "-"
+                for key, value in uci_piece_map.items():
+                    if len(key) > 1:
+                        self.schachbrett[key] = value
 
         if self.chess_board_object.turn == chess.WHITE:
             self.turn = "white"
@@ -569,7 +593,7 @@ class ChessBoard(tk.Tk):
 
     def undo_move(self, chess_board_object = None):
         print("undo move")
-        if chess_board_object:
+        if chess_board_object: # use chess board from parameter
             try:
                 chess_board_object.pop()
             except:
@@ -577,7 +601,7 @@ class ChessBoard(tk.Tk):
             self.remove_all_outlining()
             self.handle_red_outlining()
             self.update_board(chess_board_object)
-        else:
+        else: # chess board stored
             try:
                 self.chess_board_object.pop()
             except:
