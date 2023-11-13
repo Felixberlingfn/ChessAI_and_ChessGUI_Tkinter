@@ -167,11 +167,11 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         best_list: list = [best]
         """ Loop through moves """
         for move, move_type, material_balance, _ in ordered_moves:
-            next_depth, quiet_search, horizon_risk = get_next_depth(board, move, depth, quiet_search, move_type)
+            next_depth, new_quiet_search, next_horizon_risk = get_next_depth(board, move, depth, quiet_search, move_type)
             """ Chess  move"""
             board.push(move)
             """ Recursive Call and Value Updating """
-            val_list: list = minimax(board, next_depth, False, alpha, beta, quiet_search, horizon_risk,
+            val_list: list = minimax(board, next_depth, False, alpha, beta, new_quiet_search, next_horizon_risk,
                                      number_of_moves, material_balance)
             if val_list[0] >= best_list[0]:
                 best_list = val_list  # use the evaluation list as the new best list
@@ -199,11 +199,11 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         best_list: list = [best]
         # loop through moves
         for move, move_type, material_balance, _ in ordered_moves:
-            next_depth, quiet_search, horizon_risk = get_next_depth(board, move, depth, quiet_search, move_type)
+            next_depth, new_quiet_search, next_horizon_risk = get_next_depth(board, move, depth, quiet_search, move_type)
             # Chess  move"""
             board.push(move)
             # Recursive Call and Value Updating"""
-            val_list: list = minimax(board, next_depth, True, alpha, beta, quiet_search, horizon_risk,
+            val_list: list = minimax(board, next_depth, True, alpha, beta, new_quiet_search, next_horizon_risk,
                                      number_of_moves, material_balance)
             if val_list[0] <= best_list[0]:
                 best_list = val_list
@@ -226,13 +226,10 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         return best_list
 
 
-def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_type=0) -> Tuple[int, bool, float]:
+def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_type: int = 0) -> Tuple[int, bool, float]:
     # gets the depth of the next minimax recursion
     # taking into account depth extension, quiescence and a horizon risk
     global n_extensions
-    end_quiescence_checks = True
-    start_quiescence_checks = True  # means it only starts on checks
-    use_horizon_risk = True
 
     def calculate_horizon_risk() -> float:
         # because of horizon uncertainty let's not overvalue the capture/loss
@@ -261,38 +258,40 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_typ
         # we are not doing quiescence search yet and have not yet reached final move
         return depth - 1, False, 0  # quiet_search=False
 
-    if start_quiescence_checks:
-        # we have reached the final move - check if we should start quiescence search
-        if not quiet_search and depth == 1:
-            # we are reaching final node and are not yet performing quiescence search
-            if move_type in [1, 2]:  # 1=capture, 2=promo, 3=check
-                n_extensions += CAPTURE_EXTENSION  # just for stats
-                return (depth + CAPTURE_EXTENSION), True, 0  # quiet_search=True
-            elif move_type == 3:    # 1=capture, 2=promo, 3=check
-                n_extensions += CHECK_EXTENSION  # just for stats
-                return (depth + CHECK_EXTENSION), True, 0  # quiet_search=True
+    """ start quiescence search """
+    # we have reached the final move - check if we should start quiescence search
+    if not quiet_search and depth == 1:
+        # we are reaching final node and are not yet performing quiescence search
+        if move_type in [1, 2]:  # 1=capture, 2=promo, 3=check
+            n_extensions += CAPTURE_EXTENSION  # just for stats
+            return (depth + CAPTURE_EXTENSION), True, 0  # quiet_search=True
+        elif move_type == 3:    # 1=capture, 2=promo, 3=check
+            n_extensions += CHECK_EXTENSION  # just for stats
+            return (depth + CHECK_EXTENSION), True, 0  # quiet_search=True
+        else:
+            return 0, False, 0
 
-    if end_quiescence_checks:
-        # check if we should end quiescence search
-        if quiet_search and depth != 1:
-            if move_type in [1, 2, 3]:    # 1=capture, 2=promo, 3=check
-                return depth - 1, True, 0  # continue quiet_search
-            else:
-                return 0, True, 0  # quiet stage reach - end quiescence search early
+    """ end quiescence search early """
+    # check if we should end quiescence search
+    if quiet_search and depth != 1:
+        if move_type in [1, 2, 3]:    # 1=capture, 2=promo, 3=check
+            return depth - 1, True, 0  # continue quiet_search
+        else:
+            return 0, True, 0  # quiet stage reach - end quiescence search early
 
-    if use_horizon_risk:
-        if depth == 1 and quiet_search:
-            # quiet search extension limit reached
-            if move_type == 1:    # 1=capture, 2=promo, 3=check
-                risk = calculate_horizon_risk()
-                if risk > 4 or risk < -4:
-                    n_extensions += 1  # just for stats
-                    return 1, True, 0  # queen risk extension
-                return 0, True, risk
-            return 0, True, 0
+    """ end quiescence search early """
+    if depth == 1 and quiet_search:
+        # quiet search extension limit reached
+        if move_type == 1:    # 1=capture, 2=promo, 3=check
+            risk = calculate_horizon_risk()
+            if risk > 4 or risk < -4:  # 4 means attacking with queen / loosing queen
+                n_extensions += 1  # just for stats
+                return 1, True, 0  # queen risk extension
+            return 0, True, risk
+        return 0, True, 0
 
     # quiescence default
-    return depth-1, True, 0  # quiet_search=True
+    return depth-1, quiet_search, 0  # quiet_search=True
 
 
 """ Move Ordering Helper Functions """
