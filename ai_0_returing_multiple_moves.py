@@ -15,7 +15,7 @@ https://www.chessprogramming.org/Main_Page
 
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
-CAPTURE_EXTENSION = 5  # depth extension for captures and promotions aka quiescence search
+CAPTURE_EXTENSION = 4  # depth extension for captures and promotions aka quiescence search
 CHECK_EXTENSION = 5  # depth extension for checks aka quiescence search
 
 """ Counters for stats """
@@ -50,13 +50,23 @@ def my_ai_0(board=None, time_limit=0) -> object:
         else:
             material_balance -= value
 
+    best_move_at_last_index_multi: List[list]
     best_move_at_last_index: list
     if board.turn == chess.WHITE:
-        best_move_at_last_index = minimax(board, INIT_DEPTH, True, float('-inf'), float('inf'),
-            False, 0.0, 0, material_balance)
+        start_moves_list = minimax(board, INIT_DEPTH, True, float('-inf'), float('inf'),
+            False, 0.0, 0, material_balance, True)
+
+        best_move_at_last_index = minimax(board, INIT_DEPTH + 1, True, float('-inf'), float('inf'),
+            False, 0.0, 0, material_balance, False, start_moves_list)
     else:
-        best_move_at_last_index = minimax(board, INIT_DEPTH, False, float('-inf'), float('inf'),
-            False, 0.0, 0, material_balance)
+        start_moves_list = minimax(board, INIT_DEPTH, False, float('-inf'), float('inf'),
+            False, 0.0, 0, material_balance, True)
+
+        best_move_at_last_index = minimax(board, INIT_DEPTH + 1, False, float('-inf'), float('inf'),
+                                          False, 0.0, 0, material_balance,
+                                          False, start_moves_list)
+
+    print(start_moves_list)
 
     """ Check if finding best move was successful """
     if best_move_at_last_index:
@@ -96,14 +106,12 @@ def order_moves(board, depth, material=0) -> List[tuple]:
     """ First: Separate captures and checks from quiet moves"""
     for move in moves:
         if board.is_capture(move):
-            """ We can already calculate material balance change, save time later"""
             victim = board.piece_at(move.to_square)
             if victim:
                 victim_value = get_piece_value(victim)
                 aggressor_value = get_piece_value(board.piece_at(move.from_square))
                 difference = victim_value if victim.color == chess.BLACK else - victim_value
                 new_material_balance = material + difference
-                """ for mvv - lva score sorting """
                 vv_minus_av = victim_value - aggressor_value
             else:
                 # no victim on destination square but capture? Must be a pawn (en passant)!
@@ -134,7 +142,6 @@ def order_moves(board, depth, material=0) -> List[tuple]:
 
     """ Third: Sort Captures by MVV-LVA """
     captures.sort(key=lambda a: a[3], reverse=True)
-
     """ Fourth: Sort Quiet Moves by History Table """
     non_killer_quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
 
@@ -142,7 +149,7 @@ def order_moves(board, depth, material=0) -> List[tuple]:
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
-            quiet_search=False, horizon_risk=0.0, number_of_moves=0, material=0) -> list:
+            quiet_search=False, horizon_risk=0.0, number_of_moves=0, material=0, toplevel=False, start_moves_list=None) -> list:
 
     """Minimax returns optimal value for current player """
     global n_evaluated_leaf_nodes
@@ -154,8 +161,10 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         return final_val_list
 
     # here we could implement looking up a hash
-    ordered_moves: List[tuple] = order_moves(board, depth, material)
+    ordered_moves: List[tuple] = order_moves(board, depth, material) if not start_moves_list else start_moves_list
     number_of_moves = len(ordered_moves)  # cheaper than doing it at eval_board
+
+    toplevel_list: List[tuple] = []
 
     """ MAXIMIZING """
     if max_player:
@@ -172,6 +181,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
             if val_list[0] >= best_list[0]:
                 best_list = val_list  # use the evaluation list as the new best list
                 best_list.append(board.uci(move))   # append the move history
+                if toplevel:
+                    toplevel_list.append((move, move_type, material_balance, _))
             alpha = max(alpha, best_list[0])
             """ Undo Chess  move """
             board.pop()
@@ -187,6 +198,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
                 """ Update history table """
                 update_history_table(move, depth)
                 break
+        if toplevel:
+            return toplevel_list
         return best_list
 
     # minimizing
@@ -204,6 +217,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
             if val_list[0] <= best_list[0]:
                 best_list = val_list
                 best_list.append(board.uci(move))  # append the move history
+                if toplevel:
+                    toplevel_list.append((move, move_type, material_balance, _))
             beta = min(beta, best_list[0])
             # Undo Chess  move"""
             board.pop()
@@ -219,6 +234,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
                 # Update history table
                 update_history_table(move, depth)
                 break
+        if toplevel:
+            return toplevel_list
         return best_list
 
 
