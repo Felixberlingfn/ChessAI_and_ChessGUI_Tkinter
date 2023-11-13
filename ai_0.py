@@ -15,8 +15,8 @@ https://www.chessprogramming.org/Main_Page
 
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
-CAPTURE_EXTENSION = 5  # depth extension for captures and promotions aka quiescence search
-CHECK_EXTENSION = 5  # depth extension for checks aka quiescence search
+CAPTURE_EXTENSION = 6  # depth extension for captures and promotions aka quiescence search
+CHECK_EXTENSION = 6  # depth extension for checks aka quiescence search
 
 """ Counters for stats """
 n_extensions: int = 0
@@ -42,21 +42,21 @@ def my_ai_0(board=None, time_limit=0) -> object:
 
     """ Find the Best Move with minimax """
     # get initial material balance - we can calculate relative material balance as it is faster
-    material_balance = 0
+    init_material_balance = 0
     for piece in board.piece_map().values():
         value = get_piece_value(piece)  # piece_values.get(piece.piece_type, 0)
         if piece.color == chess.WHITE:
-            material_balance += value
+            init_material_balance += value
         else:
-            material_balance -= value
+            init_material_balance -= value
 
     best_move_at_last_index: list
     if board.turn == chess.WHITE:
         best_move_at_last_index = minimax(board, INIT_DEPTH, True, float('-inf'), float('inf'),
-            False, 0.0, 0, material_balance)
+                                          False, 0.0, 0, init_material_balance)
     else:
         best_move_at_last_index = minimax(board, INIT_DEPTH, False, float('-inf'), float('inf'),
-            False, 0.0, 0, material_balance)
+                                          False, 0.0, 0, init_material_balance)
 
     """ Check if finding best move was successful """
     if best_move_at_last_index:
@@ -116,29 +116,33 @@ def order_moves(board, depth, material=0) -> List[tuple]:
                 vv_minus_av = victim_value - aggressor_value
 
             captures.append((move, 1, new_material_balance, vv_minus_av))  # 1=capture, 2=promo, 3=check
+
         elif move.promotion:
             promoting_color = board.piece_at(move.from_square).color
             new_material_balance = material + 8 if promoting_color == chess.WHITE else material - 8
             promotions.append((move, 2, new_material_balance, 0))  # 1=capture, 2=promo, 3=check
+
         elif board.gives_check(move):
             checks.append((move, 3, material, 0))  # 1=capture, 2=promo, 3=check
+        elif move in killers:
+            quiet_killer_moves.insert(0, (move, 0, material, 0))
         else:
             quiet_moves.append((move, 0, material, 0))  # 0=calm
 
     """ Second: Separate killer moves from other quiet moves"""
-    for move_tuple in quiet_moves:
+    """for move_tuple in quiet_moves:
         if move_tuple[0] in killers:
             quiet_killer_moves.insert(0, move_tuple)
         else:
-            non_killer_quiet_moves.append(move_tuple)
+            non_killer_quiet_moves.append(move_tuple)"""
 
     """ Third: Sort Captures by MVV-LVA """
     captures.sort(key=lambda a: a[3], reverse=True)
 
     """ Fourth: Sort Quiet Moves by History Table """
-    non_killer_quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
+    quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
 
-    return checks + promotions + captures + quiet_killer_moves + non_killer_quiet_moves
+    return checks + promotions + captures + quiet_killer_moves + quiet_moves
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
@@ -222,7 +226,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         return best_list
 
 
-def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_type="") -> Tuple[int, bool, float]:
+def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_type=0) -> Tuple[int, bool, float]:
     # gets the depth of the next minimax recursion
     # taking into account depth extension, quiescence and a horizon risk
     global n_extensions
@@ -281,14 +285,14 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_typ
             # quiet search extension limit reached
             if move_type == 1:    # 1=capture, 2=promo, 3=check
                 risk = calculate_horizon_risk()
-                if risk > 8 or risk < -8:
+                if risk > 4 or risk < -4:
                     n_extensions += 1  # just for stats
                     return 1, True, 0  # queen risk extension
                 return 0, True, risk
             return 0, True, 0
 
     # quiescence default
-    return depth-1, True, 0 # quiet_search=True
+    return depth-1, True, 0  # quiet_search=True
 
 
 """ Move Ordering Helper Functions """
@@ -377,7 +381,8 @@ def inspect_function_name() -> str:
 if __name__ == "__main__":
     def test_board_moves():
         board = chess.Board()
-        moves = ["e2e4", "d7d5", "f1c4", "g8f6", "g1f3", "e7e6", "b1c3", "f8e7", "d1e2", "c8g4"]
+        moves = ["e2e4", "c7c6", "f1c4", "d7d5", "e4d5", "c6d5", "c4b5", "c8d7", "d1e2", "e7e6",
+                 "g1f3", "d7b5", "e2b5", "d8d7", "b5d3", "b8c6", "f3g5", "c6b4"]
 
         for uci in moves:
             move = chess.Move.from_uci(uci)
