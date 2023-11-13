@@ -1,3 +1,414 @@
 Draw
 
 "e2e4", "a7a6", "d2d4", "e7e6", "b1c3", "d7d5", "f1d3", "c7c5", "e4d5", "c5d4", "d1f3", "d4c3", "c1g5", "d8g5", "d3h7", "c3b2", "f3g3", "a6a5", "g3g5", "b2a1q", "e1d2", "f8b4", "c2c3", "a1c3", "d2d1", "c3e1", "d1c2", "e1c3", "c2b1", "h8h7", "d5e6", "c3d3", "b1b2", "b4a3", "b2a1", "d3d1", "g5c1", "a5a4", "e6f7", "e8f7", "c1d1", "b7b6", "d1d5", "c8e6", "d5a8", "a3e7", "a8b8", "e7f6", "a1b1", "h7h5", "b8a7", "g8e7", "a7a4", "h5a5", "a4e4", "b6b5", "a2a3", "e6f5", "e4f5", "e7f5", "g2g4", "f5h4", "b1a2", "b5b4", "a2b1", "a5a3", "b1c2", "b4b3", "c2d3", "b3b2", "d3c2", "a3a1", "g1h3", "g7g6", "h1b1", "a1b1", "c2b1", "g6g5", "f2f4", "g5f4", "h3f4", "h4f3", "h2h4", "f3e1", "f4h3", "e1c2", "h3g5", "f6g5", "h4g5", "c2e1", "b1b2", "f7e7", "b2c1", "e1f3", "g5g6", "e7f8", "c1c2", "f3d2", "g4g5", "d2b1", "c2b1", "f8g7", "b1c2", "g7g6", "c2b1", "g6f5", "g5g6", "f5g6",
+
+
+No move made yet
+my_ai_0
+
+Leaf nodes evaluated: 1074 with 54 extensions
+first move last: [9.0, 9.0, 0.0, 0, 'f1d3', 'e7e5', 'e2e4']
+Move # 1: e2e4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:28
+Moved e2e4
+stockfish
+Moved a7a6
+my_ai_0
+Leaf nodes evaluated: 13110 with 633 extensions
+first move last: [31.0, 20.0, 11.0, 0, 'f1d3', 'd7d5', 'd2d4']
+Move # 3: d2d4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:30
+Moved d2d4
+stockfish
+Moved e7e6
+my_ai_0
+Leaf nodes evaluated: 22539 with 281 extensions
+first move last: [35.0, 30.0, 5.0, 0, 'f1d3', 'b8c6', 'b1c3']
+Move # 5: b1c3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:31
+Moved b1c3
+stockfish
+Moved d7d5
+my_ai_0
+Leaf nodes evaluated: 45322 with 636 extensions
+first move last: [32.0, 30.0, 2.0, 0, 'f8b4', 'd3e4', 'd5e4', 'f1d3']
+Move # 7: f1d3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:34
+Moved f1d3
+stockfish
+Moved c7c5
+my_ai_0
+Leaf nodes evaluated: 90953 with 1318 extensions
+first move last: [37.0, 30.0, 7.0, 0, 'c1f4', 'c5d4', 'e4d5']
+Move # 9: e4d5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:40
+Captured: p
+Moved e4d5
+stockfish
+Moved c5d4
+my_ai_0
+Lost: P
+Leaf nodes evaluated: 143652 with 2161 extensions
+first move last: [-76.0, -20.0, -6.0, 50.0, 'c3b2', 'f3a8', 'f7e6', 'd5e6', 'b7a6', 'd3a6', 'd4c3', 'd1f3']
+Move # 11: d1f3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:47
+Moved d1f3
+stockfish
+Moved d4c3
+my_ai_0
+Lost: N
+Leaf nodes evaluated: 179383 with 1670 extensions
+first move last: [-210.0, 10.0, 30.0, 50.0, 'e6d5', 'f3f7', 'e8d8', 'a1b1', 'b2b1b', 'g5d8', 'c3b2', 'c1g5']
+Move # 13: c1g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:55
+Moved c1g5
+stockfish
+Moved d8g5
+my_ai_0
+Lost: B
+Leaf nodes evaluated: 212014 with 1092 extensions
+first move last: [-539.0, 10.0, -49.0, 0, 'c2c3', 'f8b4', 'd5e6', 'c3b2', 'd3h7']
+Move # 15: d3h7. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:59
+Captured: p
+Moved d3h7
+stockfish
+Moved c3b2
+my_ai_0
+Lost: P
+Leaf nodes evaluated: 326686 with 1921 extensions
+first move last: [-856.0, 10.0, -16.0, -250.0, 'b1b4', 'f8b4', 'h2g3', 'g5g3', 'a1b1', 'b2b1r', 'f3g3']
+Move # 17: f3g3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:15
+Moved f3g3
+stockfish
+Moved a6a5
+my_ai_0
+Leaf nodes evaluated: 372225 with 958 extensions
+first move last: [-294.0, 0.0, 6.0, 0, 'g8h7', 'b1c2', 'h7g8', 'b2b1b', 'g3g5']
+Move # 19: g3g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:22
+Captured: q
+Moved g3g5
+stockfish
+Moved b2a1q
+my_ai_0
+Lost: R
+Leaf nodes evaluated: 397369 with 417 extensions
+first move last: [-1290.0, -21.0, 31.0, 0, 'b8c6', 'g5b5', 'c8e6', 'd5e6', 'h8h7', 'e1d2']
+Move # 21: e1d2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:25
+Moved e1d2
+stockfish
+Moved f8b4
+my_ai_0
+Leaf nodes evaluated: 422401 with 511 extensions
+first move last: [-1142.0, -10.0, -32.0, 0, 'd2d3', 'a1a2', 'c3b4', 'h8h7', 'c2c3']
+Move # 23: c2c3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:31
+Moved c2c3
+stockfish
+Moved a1c3
+my_ai_0
+Lost: P
+Leaf nodes evaluated: 446570 with 456 extensions
+first move last: [-1398.0, -20.0, 22.0, 0, 'b8c6', 'g5b5', 'c8e6', 'd5e6', 'h8h7', 'd2d1']
+Move # 25: d2d1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:35
+Moved d2d1
+stockfish
+Moved c3e1
+my_ai_0
+Leaf nodes evaluated: 469600 with 392 extensions
+first move last: [-1403.0, 10.0, -13.0, 0, 'g5e3', 'h8h7', 'd1c2']
+Move # 27: d1c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:38
+Moved d1c2
+stockfish
+Moved e1c3
+my_ai_0
+Leaf nodes evaluated: 493488 with 437 extensions
+first move last: [-1389.0, -10.0, 21.0, 0, 'b8c6', 'g5b5', 'c8e6', 'd5e6', 'h8h7', 'c2b1']
+Move # 29: c2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:41
+Moved c2b1
+stockfish
+Moved h8h7
+my_ai_0
+Lost: B
+Leaf nodes evaluated: 503457 with 477 extensions
+first move last: [-1389.0, -10.0, 21.0, 0, 'b8c6', 'g5b5', 'c8e6', 'd5e6']
+Move # 31: d5e6. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:43
+Captured: p
+Moved d5e6
+stockfish
+Moved c3d3
+my_ai_0
+Leaf nodes evaluated: 521702 with 707 extensions
+first move last: [-1421.0, 0.0, -21.0, 0, 'g5e3', 'c8e6', 'b1b2']
+Move # 33: b1b2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:48
+Moved b1b2
+stockfish
+Moved b4a3
+my_ai_0
+Leaf nodes evaluated: 531188 with 536 extensions
+first move last: [-1423.0, 0.0, -23.0, 0, 'g5e3', 'c8e6', 'b2a1']
+Move # 35: b2a1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:50
+Moved b2a1
+stockfish
+Moved d3d1
+my_ai_0
+Leaf nodes evaluated: 534571 with 157 extensions
+first move last: [-1000051.0, 0, -52.0, 0, 'd1c1', 'g5c1']
+Move # 37: g5c1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:50
+Moved g5c1
+stockfish
+Moved a5a4
+my_ai_0
+Leaf nodes evaluated: 540635 with 358 extensions
+first move last: [-410.0, 0.0, -10.0, 0, 'b8d7', 'c1d1', 'e8f7', 'e6f7']
+Move # 39: e6f7. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:51
+Captured: p
+Moved e6f7
+stockfish
+Moved e8f7
+my_ai_0
+Lost: P
+Leaf nodes evaluated: 543407 with 396 extensions
+first move last: [-403.0, 10.0, -13.0, 0, 'g1f3', 'g8f6', 'c1d1']
+Move # 41: c1d1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:52
+Captured: q
+Moved c1d1
+stockfish
+Moved b7b6
+my_ai_0
+Leaf nodes evaluated: 546831 with 419 extensions
+first move last: [64.0, -20.0, -16.0, 0, 'g8f6', 'd5a8', 'c8e6', 'd1d5']
+Move # 43: d1d5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:55
+Moved d1d5
+stockfish
+Moved c8e6
+my_ai_0
+Leaf nodes evaluated: 553144 with 564 extensions
+first move last: [102.0, -20.0, 22.0, 0, 'g8f6', 'a8f3', 'a3d6', 'd5a8']
+Move # 45: d5a8. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:56
+Captured: r
+Moved d5a8
+stockfish
+Moved a3e7
+my_ai_0
+Leaf nodes evaluated: 556483 with 405 extensions
+first move last: [370.0, 0.0, -30.0, 0, 'a1b1', 'e7f6', 'a8b8']
+Move # 47: a8b8. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:57
+Captured: n
+Moved a8b8
+stockfish
+Moved e7f6
+my_ai_0
+Leaf nodes evaluated: 558008 with 282 extensions
+first move last: [367.0, 0, -33.0, 0, 'b1c1', 'e6f5', 'a1b1']
+Move # 49: a1b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:57
+Moved a1b1
+stockfish
+Moved h7h5
+my_ai_0
+Leaf nodes evaluated: 560429 with 203 extensions
+first move last: [460.0, -30.0, -10.0, 0, 'f6b2', 'a7a4', 'g8e7', 'b8a7']
+Move # 51: b8a7. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:57
+Moved b8a7
+stockfish
+Moved g8e7
+my_ai_0
+Leaf nodes evaluated: 563935 with 395 extensions
+first move last: [469.0, -20.0, -11.0, 0, 'a4a3', 'g7g6', 'a7a4']
+Move # 53: a7a4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:01
+Captured: p
+Moved a7a4
+stockfish
+Moved h5a5
+my_ai_0
+Leaf nodes evaluated: 568070 with 496 extensions
+first move last: [346.0, -20.0, -34.0, 0, 'b1c2', 'e6a2', 'a4e4']
+Move # 55: a4e4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:02
+Moved a4e4
+stockfish
+Moved b6b5
+my_ai_0
+Leaf nodes evaluated: 574506 with 750 extensions
+first move last: [403.0, 10.0, -7.0, 0, 'g1f3', 'a5a3', 'a2a3']
+Move # 57: a2a3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:03
+Moved a2a3
+stockfish
+Moved e6f5
+my_ai_0
+Leaf nodes evaluated: 574877 with 84 extensions
+first move last: [-107.0, 10.0, -17.0, 0, 'g1f3', 'f7g6', 'f5g6', 'a5a8', 'e4f5']
+Move # 59: e4f5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:03
+Captured: b
+Moved e4f5
+stockfish
+Moved e7f5
+my_ai_0
+Lost: Q
+Leaf nodes evaluated: 577035 with 258 extensions
+first move last: [-114.0, 0.0, -14.0, 0, 'g1f3', 'f5e7', 'g2g4']
+Move # 61: g2g4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:03
+Moved g2g4
+stockfish
+Moved f5h4
+my_ai_0
+Leaf nodes evaluated: 577902 with 57 extensions
+first move last: [-130.0, -10.0, -20.0, 0, 'a2b1', 'f6e5', 'b1a2']
+Move # 63: b1a2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:07
+Moved b1a2
+stockfish
+Moved b5b4
+my_ai_0
+Leaf nodes evaluated: 584412 with 351 extensions
+first move last: [-212.0, 10.0, -22.0, 0, 'g1f3', 'b4a3', 'a2b1']
+Move # 65: a2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:07
+Moved a2b1
+stockfish
+Moved a5a3
+my_ai_0
+Lost: P
+Leaf nodes evaluated: 585581 with 150 extensions
+first move last: [-228.0, 0.0, -28.0, 0, 'c2b1', 'a3a2', 'b1c2']
+Move # 67: b1c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:08
+Moved b1c2
+stockfish
+Moved b4b3
+my_ai_0
+Leaf nodes evaluated: 586204 with 42 extensions
+first move last: [-231.0, 0.0, -31.0, 0, 'd3e4', 'b3b2', 'c2d3']
+Move # 69: c2d3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:08
+Moved c2d3
+stockfish
+Moved b3b2
+my_ai_0
+Leaf nodes evaluated: 588472 with 93 extensions
+first move last: [-731.0, 0, -31.0, 0, 'b1c2', 'a3a1', 'c2b1', 'b2b1n', 'd3c2']
+Move # 71: d3c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:08
+Moved d3c2
+stockfish
+Moved a3a1
+my_ai_0
+Leaf nodes evaluated: 594446 with 243 extensions
+first move last: [-733.0, -11.0, -22.0, 0, 'b1b2', 'a1a2', 'h1b1', 'b2b1b', 'g1h3']
+Move # 73: g1h3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:12
+Moved g1h3
+stockfish
+Moved g7g6
+my_ai_0
+Leaf nodes evaluated: 600776 with 381 extensions
+first move last: [-226.0, -11.0, -15.0, 0, 'b1e1', 'a1a5', 'h1b1']
+Move # 75: h1b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:13
+Moved h1b1
+stockfish
+Moved a1b1
+my_ai_0
+Lost: R
+Leaf nodes evaluated: 601409 with 81 extensions
+first move last: [-221.0, -10.0, -11.0, 0, 'h3f4', 'h4g2', 'c2b1']
+Move # 77: c2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:13
+Captured: r
+Moved c2b1
+stockfish
+Moved g6g5
+my_ai_0
+Leaf nodes evaluated: 601671 with 48 extensions
+first move last: [-215.0, -10.0, -5.0, 0, 'f6e5', 'h3f4', 'g5f4', 'f2f4']
+Move # 79: f2f4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:14
+Moved f2f4
+stockfish
+Moved g5f4
+my_ai_0
+Lost: P
+Leaf nodes evaluated: 602056 with 78 extensions
+first move last: [-209.0, 0.0, -9.0, 0, 'g4g5', 'f7g6', 'f4g6', 'h4g6', 'h3f4']
+Move # 81: h3f4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:14
+Captured: p
+Moved h3f4
+stockfish
+Moved h4f3
+my_ai_0
+Leaf nodes evaluated: 602671 with 105 extensions
+first move last: [-242.0, -20.0, -22.0, 0, 'b1a2', 'f3d2', 'h2h4']
+Move # 83: h2h4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:17
+Moved h2h4
+stockfish
+Moved f3e1
+my_ai_0
+Leaf nodes evaluated: 604007 with 150 extensions
+first move last: [-209.0, -1.0, -8.0, 0, 'h4g5', 'b1b2', 'f6h4', 'f4h3']
+Move # 85: f4h3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:17
+Moved f4h3
+stockfish
+Moved e1c2
+my_ai_0
+Leaf nodes evaluated: 604793 with 48 extensions
+first move last: [-229.0, -20.0, -9.0, 0, 'f7g8', 'h4g5', 'f6g5', 'h3g5']
+Move # 87: h3g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:18
+Moved h3g5
+stockfish
+Moved f6g5
+my_ai_0
+Lost: N
+Leaf nodes evaluated: 605911 with 150 extensions
+first move last: [-204.0, 0.0, -4.0, 0, 'b2b1', 'e3g4', 'b1b2', 'c2e3', 'h4g5']
+Move # 89: h4g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:18
+Captured: b
+Moved h4g5
+stockfish
+Moved c2e1
+my_ai_0
+Leaf nodes evaluated: 606130 with 45 extensions
+first move last: [-102.0, 0.0, -2.0, 0, 'b2b1', 'e1g2', 'b1b2']
+Move # 91: b1b2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:18
+Captured: p
+Moved b1b2
+stockfish
+Moved f7e7
+my_ai_0
+Leaf nodes evaluated: 606319 with 27 extensions
+first move last: [-101.0, 10.0, -11.0, 0, 'c1b1', 'e1d3', 'b2c1']
+Move # 93: b2c1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:21
+Moved b2c1
+stockfish
+Moved e1f3
+my_ai_0
+Leaf nodes evaluated: 606451 with 15 extensions
+first move last: [-109.0, 0.0, -9.0, 0, 'g6g7', 'f3d4', 'g5g6']
+Move # 95: g5g6. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:22
+Moved g5g6
+stockfish
+Moved e7f8
+my_ai_0
+Leaf nodes evaluated: 606792 with 93 extensions
+first move last: [-105.0, 0.0, -5.0, 0, 'c2b1', 'f3d4', 'c1c2']
+Move # 97: c1c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:22
+Moved c1c2
+stockfish
+Moved f3d2
+my_ai_0
+Leaf nodes evaluated: 606901 with 27 extensions
+first move last: [204.0, 0, 4.0, 0, 'f8g7', 'c2b3', 'd2b3', 'g4g5']
+Move # 99: g4g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:22
+Moved g4g5
+stockfish
+Moved d2b1
+my_ai_0
+Leaf nodes evaluated: 607002 with 27 extensions
+first move last: [201.0, 0, 1.0, 0, 'b1a2', 'f8g7', 'c2b1']
+Move # 101: c2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:22
+Captured: n
+Moved c2b1
+stockfish
+Moved f8g7
+my_ai_0
+Leaf nodes evaluated: 607049 with 12 extensions
+first move last: [112.0, 10.0, 2.0, 0, 'c2b1', 'g7g6', 'b1c2']
+Move # 103: b1c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:25
+Moved b1c2
+stockfish
+Moved g7g6
+my_ai_0
+Lost: P
+Leaf nodes evaluated: 607074 with 6 extensions
+first move last: [9.0, 10.0, -1.0, 0, 'g6g5', 'c2b1']
+Move # 105: c2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:26
+Moved c2b1
+stockfish
+Moved g6f5
+my_ai_0
+Leaf nodes evaluated: 607099 with 0 extensions
+first move last: [7.0, 10.0, -3.0, 0, 'f5g6', 'g5g6']
+Move # 107: g5g6. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:26
+Moved g5g6
+stockfish
+Moved f5g6
