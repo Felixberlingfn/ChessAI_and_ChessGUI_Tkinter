@@ -41,11 +41,22 @@ def my_ai_0(board=None, time_limit=0) -> object:
     show_potential_last_capture(board)
 
     """ Find the Best Move with minimax """
+    # get initial material balance - we can calculate relative material balance as it is faster
+    material_balance = 0
+    for piece in board.piece_map().values():
+        value = get_piece_value(piece)  # piece_values.get(piece.piece_type, 0)
+        if piece.color == chess.WHITE:
+            material_balance += value
+        else:
+            material_balance -= value
+
     best_move_at_last_index: list
     if board.turn == chess.WHITE:
-        best_move_at_last_index = minimax(board, INIT_DEPTH, True)
+        best_move_at_last_index = minimax(board, INIT_DEPTH, True, float('-inf'), float('inf'),
+            False, 0.0, 0, material_balance, True)
     else:
-        best_move_at_last_index = minimax(board, INIT_DEPTH, False)
+        best_move_at_last_index = minimax(board, INIT_DEPTH, False, float('-inf'), float('inf'),
+            False, 0.0, 0, material_balance, True)
 
     """ Check if finding best move was successful """
     if best_move_at_last_index:
@@ -63,11 +74,11 @@ def my_ai_0(board=None, time_limit=0) -> object:
 
 def order_moves(board, depth, material=0) -> List[tuple]:
     """in contrast to the evaluate board this is BEFORE the move was made"""
-    def mvv_lva_score(m):
-        """ Most Valuable Victim - Least Valuable Attacker"""
+    """def mvv_lva_score(m):
+        # Most Valuable Victim - Least Valuable Attacker
         victim_value = get_piece_value(board.piece_at(m.to_square))
         aggressor_value = get_piece_value(board.piece_at(m.from_square))
-        return victim_value - aggressor_value
+        return victim_value - aggressor_value"""
 
     """ Get the killer moves for this depth """
     killers: list = killer_moves[depth] if depth <= len(killer_moves) else []
@@ -93,7 +104,7 @@ def order_moves(board, depth, material=0) -> List[tuple]:
                 new_material_balance = material + difference
                 vv_minus_av = victim_value - aggressor_value
             else:
-                # print("no victim on square but capture? Must be a pawn (en passant)!")
+                # no victim on destination square but capture? Must be a pawn (en passant)!
                 victim_value = 1
                 aggressor = board.piece_at(move.from_square)
                 victim_color = not aggressor.color

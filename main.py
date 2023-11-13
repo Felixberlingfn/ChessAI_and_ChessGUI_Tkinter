@@ -2,6 +2,7 @@ import chess
 import sqlite3
 from ai_0 import my_ai_0
 from ai_0_new import my_ai_0_new
+from ai_0_oldmaterialcalc import my_ai_0_oldmaterialcalc
 import ai_0_somehow_slower
 import chess_tk
 from lc0 import lc0
@@ -95,11 +96,11 @@ def main():
             return
 
         if passed_value == "myai_vs_stockfish":
-            version_vs_version(cboard, my_ai_0, stockfish, 0.01)
+            version_vs_version(cboard, my_ai_0, stockfish, 0.001)
             return
 
         if passed_value == "version_vs_version":
-            version_vs_version(cboard, ai_0_somehow_slower.my_ai_0, my_ai_0)
+            version_vs_version(cboard, my_ai_0, my_ai_0_oldmaterialcalc)
             return
 
         return

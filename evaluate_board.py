@@ -2,6 +2,10 @@ import chess
 import inspect
 import timeit
 
+""" Constants """
+MOBILITY_MULTIPLIER = 0.010  # 0.002 achieved win against stockfish once at time limit 0.001 for stockfish
+GOOD_POS_BONUS = 0.1
+BAD_POS_PUNISH = 0.01
 
 def run(board, testing=False) -> list:
     """from evaluate_board import evaluate_board
@@ -77,8 +81,6 @@ def get_position_score(board) -> float:
     """PLUS MEANS GOOD FOR WHITE"""
     """# List of common good pawn positions for white in chess"""
     score = 0
-    GOOD_POS_BONUS = 0.1
-    BAD_POS_PUNISH = 0.01
 
     """WHITE"""
     """good_pawn_positions_white"""
@@ -197,7 +199,6 @@ def get_position_score(board) -> float:
 
 def get_mobility_score(board, number_of_moves) -> float:
     """PLUS MEANS GOOD FOR WHITE"""
-    MOBILITY_MULTIPLIER = 0.020  # was 0.003 but now it will be the difference between both players legal moves
     mobility_white = 0
     mobility_black = 0
     if board.turn == chess.WHITE:
@@ -207,17 +208,16 @@ def get_mobility_score(board, number_of_moves) -> float:
         mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
         mobility_white = number_of_moves * MOBILITY_MULTIPLIER
 
-    # testing using an approximation (using last turn number of moves)
-    # anyway we can't know how many moves the opposing side had, it's not their turn
-    # so a null move would be just as much an approximation
-    # lest test how it performs: result is faster but somehow only wins as black, draw as white
+    # approximating this from previous move saves time
     """board.push(chess.Move.null())
     if board.turn == chess.WHITE:
         mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
     if board.turn == chess.BLACK:
         mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
     board.pop()"""
+
     mobility_score = mobility_white - mobility_black
+
     return mobility_score
 
 

@@ -31,7 +31,7 @@ killer_moves = [[None, None] for _ in range(INIT_DEPTH + CAPTURE_EXTENSION + CHE
 history_table = [[0 for _ in range(64)] for _ in range(64)]
 
 
-def my_ai_0(board=None, time_limit=0) -> object:
+def my_ai_0_oldmaterialcalc(board=None, time_limit=0) -> object:
     global n_extensions  # for stats
     n_extensions = 0  # reset
     """ This is the function that will be called to use this module with board as argument"""
@@ -85,9 +85,6 @@ def order_moves(board, depth, material=1000) -> List[tuple]:
     """ First: Separate captures and checks from quiet moves"""
     for move in moves:
         if board.is_capture(move):
-            victim =
-            victim_value = get_piece_value(board.piece_at(move.to_square))
-            aggressor_value = get_piece_value(board.piece_at(move.from_square))
             captures.append((move, 1))  # 1=capture, 2=promo, 3=check
         elif move.promotion:
             promotions.append((move, 2))  # 1=capture, 2=promo, 3=check
@@ -354,7 +351,7 @@ if __name__ == "__main__":
         return board
 
     start_time = time.time()
-    my_ai_0(test_board_moves())
+    my_ai_0_oldmaterialcalc(test_board_moves())
     end_time = time.time()
     execution_time = round((end_time - start_time) * 1000)
     print(f"Execution time: {execution_time} milliseconds")
