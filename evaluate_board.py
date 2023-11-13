@@ -12,15 +12,15 @@ def run(board, testing=False) -> list:
     return evaluate_board(board)
 
 
-def evaluate_board(board, horizon_risk=0.0, number_of_moves=0) -> list:
+def evaluate_board(board, horizon_risk=0.0, number_of_moves=0, material=0) -> list:
     """ Simplistic but most important: Material Balance + White - Black"""
-    material_balance = 0
-    for piece in board.piece_map().values():
+    material_balance = material
+    """for piece in board.piece_map().values():
         value = get_piece_value(piece)  # piece_values.get(piece.piece_type, 0)
         if piece.color == chess.WHITE:
             material_balance += value
         else:
-            material_balance -= value
+            material_balance -= value"""
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
     """ Everything that is turn dependent """
     if board.is_checkmate():
@@ -197,7 +197,7 @@ def get_position_score(board) -> float:
 
 def get_mobility_score(board, number_of_moves) -> float:
     """PLUS MEANS GOOD FOR WHITE"""
-    MOBILITY_MULTIPLIER = 0.022  # was 0.003 but now it will be the difference between both players legal moves
+    MOBILITY_MULTIPLIER = 0.020  # was 0.003 but now it will be the difference between both players legal moves
     mobility_white = 0
     mobility_black = 0
     if board.turn == chess.WHITE:
@@ -274,6 +274,7 @@ run(test_board, True)
 
     """ regular test """
     test_board = chess.Board()
+
     print_evaluation = run(test_board, True)
     move_id = len(test_board.move_stack) + 1
     print(f"Move # {move_id}: {print_evaluation}.")

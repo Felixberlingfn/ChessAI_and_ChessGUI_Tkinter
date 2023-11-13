@@ -15,8 +15,8 @@ https://www.chessprogramming.org/Main_Page
 
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
-CAPTURE_EXTENSION = 5  # depth extension for captures and promotions aka quiescence search
-CHECK_EXTENSION = 5  # depth extension for checks aka quiescence search
+CAPTURE_EXTENSION = 3  # depth extension for captures and promotions aka quiescence search
+CHECK_EXTENSION = 3  # depth extension for checks aka quiescence search
 
 """ Counters for stats """
 n_extensions: int = 0
@@ -61,7 +61,7 @@ def my_ai_0(board=None, time_limit=0) -> object:
         return False
 
 
-def order_moves(board, depth, material=0) -> List[tuple]:
+def order_moves(board, depth, material=1000) -> List[tuple]:
     """in contrast to the evaluate board this is BEFORE the move was made"""
     def mvv_lva_score(m):
         """ Most Valuable Victim - Least Valuable Attacker"""
@@ -85,32 +85,16 @@ def order_moves(board, depth, material=0) -> List[tuple]:
     """ First: Separate captures and checks from quiet moves"""
     for move in moves:
         if board.is_capture(move):
-            victim = board.piece_at(move.to_square)
-            if victim:
-                victim_value = get_piece_value(victim)
-                aggressor_value = get_piece_value(board.piece_at(move.from_square))
-                difference = victim_value if victim.color == chess.BLACK else - victim_value
-                new_material_balance = material + difference
-                vv_minus_av = victim_value - aggressor_value
-            else:
-                # print("no victim on square but capture? Must be a pawn (en passant)!")
-                victim_value = 1
-                aggressor = board.piece_at(move.from_square)
-                victim_color = not aggressor.color
-                aggressor_value = get_piece_value(aggressor)
-                difference = victim_value if victim_color == chess.BLACK else - victim_value
-                new_material_balance = material + difference
-                vv_minus_av = victim_value - aggressor_value
-
-            captures.append((move, 1, new_material_balance, vv_minus_av))  # 1=capture, 2=promo, 3=check
+            victim =
+            victim_value = get_piece_value(board.piece_at(move.to_square))
+            aggressor_value = get_piece_value(board.piece_at(move.from_square))
+            captures.append((move, 1))  # 1=capture, 2=promo, 3=check
         elif move.promotion:
-            promoting_color = board.piece_at(move.from_square).color
-            new_material_balance = material + 8 if promoting_color == chess.WHITE else material - 8
-            promotions.append((move, 2, new_material_balance, 0))  # 1=capture, 2=promo, 3=check
+            promotions.append((move, 2))  # 1=capture, 2=promo, 3=check
         elif board.gives_check(move):
-            checks.append((move, 3, material, 0))  # 1=capture, 2=promo, 3=check
+            checks.append((move, 3))  # 1=capture, 2=promo, 3=check
         else:
-            quiet_moves.append((move, 0, material, 0))  # 0=calm
+            quiet_moves.append((move, 0))  # 0=calm
 
     """ Second: Separate killer moves from other quiet moves"""
     for move_tuple in quiet_moves:
@@ -120,7 +104,7 @@ def order_moves(board, depth, material=0) -> List[tuple]:
             non_killer_quiet_moves.append(move_tuple)
 
     """ Third: Sort Captures by MVV-LVA """
-    captures.sort(key=lambda a: a[3], reverse=True)
+    captures.sort(key=lambda m: mvv_lva_score(m[0]), reverse=True)
     """ Fourth: Sort Quiet Moves by History Table """
     non_killer_quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
 
@@ -128,19 +112,19 @@ def order_moves(board, depth, material=0) -> List[tuple]:
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
-            quiet_search=False, horizon_risk=0.0, number_of_moves=0, material=0, toplevel=False) -> list:
+            quiet_search=False, horizon_risk=0.0, number_of_moves=0, toplevel=False) -> list:
 
     """Minimax returns optimal value for current player """
     global n_evaluated_leaf_nodes
     global n_extensions
     if depth == 0 or board.is_game_over():
         """ Final Node reached. Do the Evaluation of the board"""
-        final_val_list = evaluate_board(board, horizon_risk, number_of_moves, material)
+        final_val_list = evaluate_board(board, horizon_risk, number_of_moves)
         n_evaluated_leaf_nodes += 1
         return final_val_list
 
     # here we could implement looking up a hash
-    ordered_moves: List[tuple] = order_moves(board, depth, material)
+    ordered_moves: List[tuple] = order_moves(board, depth)
     number_of_moves = len(ordered_moves)  # cheaper than doing it at eval_board
 
     """ MAXIMIZING """
@@ -148,13 +132,12 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         best = float('-inf')
         best_list: list = [best]
         """ Loop through moves """
-        for move, move_type, material_balance, _ in ordered_moves:
+        for move, move_type in ordered_moves:
             next_depth, quiet_search, horizon_risk = get_next_depth(board, move, depth, quiet_search, move_type)
             """ Chess  move"""
             board.push(move)
             """ Recursive Call and Value Updating """
-            val_list: list = minimax(board, next_depth, False, alpha, beta, quiet_search, horizon_risk,
-                                     number_of_moves, material_balance)
+            val_list: list = minimax(board, next_depth, False, alpha, beta, quiet_search, horizon_risk, number_of_moves)
             if val_list[0] >= best_list[0]:
                 best_list = val_list  # use the evaluation list as the new best list
                 best_list.append(board.uci(move))   # append the move history
@@ -180,13 +163,12 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
         best = float('inf')
         best_list: list = [best]
         # loop through moves
-        for move, move_type, material_balance, _ in ordered_moves:
+        for move, move_type in ordered_moves:
             next_depth, quiet_search, horizon_risk = get_next_depth(board, move, depth, quiet_search, move_type)
             # Chess  move"""
             board.push(move)
             # Recursive Call and Value Updating"""
-            val_list: list = minimax(board, next_depth, True, alpha, beta, quiet_search, horizon_risk,
-                                     number_of_moves, material_balance)
+            val_list: list = minimax(board, next_depth, True, alpha, beta, quiet_search, horizon_risk, number_of_moves)
             if val_list[0] <= best_list[0]:
                 best_list = val_list
                 best_list.append(board.uci(move))  # append the move history
