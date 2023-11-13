@@ -3,11 +3,9 @@ import inspect
 import timeit
 
 """ Constants """
-MOBILITY_MULTIPLIER = 0.010  # 0.002 achieved win against stockfish once at time limit 0.001 for stockfish
-# also won against stockfish with 0.001 time limit at 0.003 multiplier and the old mobility calculation
-# that is slower though
-GOOD_POS_BONUS = 0.1
-BAD_POS_PUNISH = 0.01
+MOBILITY_MULTIPLIER = 0.010  # it is really difficult to find the right value
+GOOD_POS_BONUS = 0.1  # this has been working alright
+BAD_POS_PUNISH = 0.01  # keep this low
 
 def run(board, testing=False) -> list:
     """ wrapper for evaluate_board() - runs when not imported as module """
@@ -17,70 +15,71 @@ def run(board, testing=False) -> list:
     return evaluate_board(board)
 
 
-def evaluate_board(board, horizon_risk=0.0, number_of_moves=0, material=0) -> list:
+def evaluate_board(board, horizon_risk=0.0, number_of_moves=0, material=None) -> list:
     """ Simplistic but most important: Material Balance + White - Black"""
-    material_balance = material
-    """for piece in board.piece_map().values():
-        value = get_piece_value(piece)  # piece_values.get(piece.piece_type, 0)
-        if piece.color == chess.WHITE:
-            material_balance += value
-        else:
-            material_balance -= value"""
+    material_balance = material if material else get_material_balance(board)
+
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
-    """ Everything that is turn dependent """
+    """ endgame check """
     if board.is_checkmate():
         if board.turn == chess.WHITE:  # is turn dependent
             """great for black"""
-            final_val[0] = -999999
+            final_val[0] = -99999999
         else:
             """great for white"""
-            final_val[0] = 999999
+            final_val[0] = 99999999
+
     """ adding extra values to simple material balance """
     pos = get_position_score(board) * 100  # centi-pawns is convention
     mob = get_mobility_score(board, number_of_moves) * 100  # centi-pawns is convention
-    # pins = get_pins_score(board)
 
-    """ adding extra values to simple material balance """
-    # everything I add makes it slower and I can evaluate less deep
     final_val[0] += pos
     final_val[0] += mob  # is turn dependent
-    final_val[0] -= horizon_risk * 100 # centi-pawns is convention
-    # final_val[0] += pins  # pins
-    """ append details to list """
+    final_val[0] -= horizon_risk * 100  # centi-pawns is convention
+
+    """ append details to list for stats """
     final_val.append(pos)
     final_val.append(mob)
     final_val.append(-horizon_risk * 100)
-    # final_val.append(pins)
+
     return final_val
 
 
+def get_material_balance(board) -> int:
+    material_balance = 0
+    for piece in board.piece_map().values():
+        value = get_piece_value(piece)
+        if piece.color == chess.WHITE:
+            material_balance += value
+        else:
+            material_balance -= value
+    return material_balance
+
+
 def get_pins_score(board):
-    def count_pins(board, color):
-        """
-        Counts the number of pinned pieces of a given color on a chess board.
+    """
+    TAKES TOO MUCH COMPUTE - MAYBE NOT WORTH IT
+    :param board: chess.Board object
+    :return: score representing pinned pieces
+    """
+    pin_value = 0
+    for square in chess.SQUARES:
+        piece = board.piece_at(square)
+        if piece:
+            if piece.color == chess.WHITE:
+                if board.is_pinned(chess.WHITE, square):
+                    pin_value -= get_piece_value(piece) * 0.2
+            if piece.color == chess.BLACK:
+                if board.is_pinned(chess.BLACK, square):
+                    pin_value += get_piece_value(piece) * 0.2
 
-        :param board: chess.Board object representing the game state.
-        :param color: chess.WHITE or chess.BLACK to specify the color to check for pins.
-        :return: Number of pinned pieces of the specified color.
-        """
-        pin_count = 0
-        for square in chess.SQUARES:
-            piece = board.piece_at(square)
-            if piece and piece.color == color:
-                if board.is_pinned(color, square):
-                    pin_count += 1
-        return pin_count
-
-    num_white_pins = count_pins(board, chess.WHITE)
-    num_black_pins = count_pins(board, chess.BLACK)
-
-    return num_white_pins - num_black_pins
+    return pin_value * 100
 
 
 
 def get_position_score(board) -> float:
     """PLUS MEANS GOOD FOR WHITE"""
-    """# List of common good pawn positions for white in chess"""
+    """ List of common good pawn positions for white """
     score = 0
 
     """WHITE"""
@@ -99,7 +98,7 @@ def get_position_score(board) -> float:
         piece = board.piece_at(square)
         if piece:
             if piece.color == chess.WHITE:
-                score -= BAD_POS_PUNISH  # bad must be small or might want to lose piece
+                score -= BAD_POS_PUNISH
     """good_knight_positions_white"""
     good_knight_positions_white = [chess.F3, chess.C3, chess.G5, chess.F5, chess.D5, chess.E5]
     for square in good_knight_positions_white:
@@ -210,6 +209,7 @@ def get_mobility_score(board, number_of_moves) -> float:
         mobility_white = number_of_moves * MOBILITY_MULTIPLIER
 
     # approximating this from previous move saves time
+    # null move would also just be an approximation
     """board.push(chess.Move.null())
     if board.turn == chess.WHITE:
         mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
@@ -220,25 +220,6 @@ def get_mobility_score(board, number_of_moves) -> float:
     mobility_score = mobility_white - mobility_black
 
     return mobility_score
-
-
-def get_material_balance(board) -> float:
-    """PLUS MEANS GOOD FOR WHITE"""
-    piece_values = {
-        chess.PAWN: 1,
-        chess.KNIGHT: 3,
-        chess.BISHOP: 3,
-        chess.ROOK: 5,
-        chess.QUEEN: 9,
-    }
-    material_balance = 0
-    for piece in board.piece_map().values():
-        value = piece_values.get(piece.piece_type, 0)
-        if piece.color == chess.WHITE:
-            material_balance += value
-        else:
-            material_balance -= value
-    return material_balance
 
 
 def get_piece_value(piece) -> int:
