@@ -1,10 +1,13 @@
 import random
 import chess
+# import chess.polyglot
 import datetime
 import time
 import inspect
+# import timeit
 from typing import Tuple
 from typing import List
+import evaluate_board
 from evaluate_board import evaluate_board
 
 """
@@ -69,20 +72,21 @@ def order_moves(board, depth) -> List[tuple]:
         aggressor_value = get_piece_value(board.piece_at(m.from_square))
         return victim_value - aggressor_value
 
-    """ Get the killer moves for this depth """
+    # moves = board.legal_moves
+
     killers: list = killer_moves[depth] if depth <= len(killer_moves) else []
 
-    """ Initiate the lists """
+    #captures: List[tuple] = []
+    #checks: List[tuple] = []
+
     capt_checks: List[tuple] = []
     promotions: List[tuple] = []
-    quiet_moves: List[tuple] = []
+    quiet_moves: List[tuple] = []  # only intermediate
     quiet_killer_moves: List[tuple] = []
     non_killer_quiet_moves: List[tuple] = []
 
-    moves = board.legal_moves
-
     """ First: Separate captures and checks from quiet moves"""
-    for move in moves:
+    for move in board.legal_moves:
         if board.is_capture(move):
             capt_checks.append((move, 1))  # 1=capture, 2=promo, 3=check
         elif move.promotion:
@@ -108,11 +112,16 @@ def order_moves(board, depth) -> List[tuple]:
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
-            quiet_search=False, horizon_risk=0.0, number_of_moves=0, toplevel=False) -> list:
+            quiet_search=False, horizon_risk=0.0, number_of_moves=0) -> list:
 
     """Minimax returns optimal value for current player """
     global n_evaluated_leaf_nodes
     global n_extensions
+    """if depth == 0 and board.is_check():
+        depth = CHECK_EXTENSION
+        n_extensions += CHECK_EXTENSION
+        horizon_risk = 0
+        quiet_search = True"""
     if depth == 0 or board.is_game_over():
         """ Final Node reached. Do the Evaluation of the board"""
         final_val_list = evaluate_board(board, horizon_risk, number_of_moves)
@@ -354,5 +363,3 @@ if __name__ == "__main__":
     end_time = time.time()
     execution_time = round((end_time - start_time) * 1000)
     print(f"Execution time: {execution_time} milliseconds")
-
-    print(f"Killer moves: {killer_moves}")

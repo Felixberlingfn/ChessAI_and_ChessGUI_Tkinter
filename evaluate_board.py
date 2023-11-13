@@ -12,7 +12,7 @@ def run(board, testing=False) -> list:
     return evaluate_board(board)
 
 
-def evaluate_board(board, horizon_risk=0) -> list:
+def evaluate_board(board, horizon_risk=0.0, number_of_moves=0) -> list:
     """ Simplistic but most important: Material Balance + White - Black"""
     material_balance = 0
     for piece in board.piece_map().values():
@@ -32,7 +32,7 @@ def evaluate_board(board, horizon_risk=0) -> list:
             final_val[0] = 999999
     """ adding extra values to simple material balance """
     pos = get_position_score(board) * 100  # centi-pawns is convention
-    mob = get_mobility_score(board) * 100  # centi-pawns is convention
+    mob = get_mobility_score(board, number_of_moves) * 100  # centi-pawns is convention
     # pins = get_pins_score(board)
 
     """ adding extra values to simple material balance """
@@ -195,22 +195,28 @@ def get_position_score(board) -> float:
     return score
 
 
-def get_mobility_score(board) -> float:
+def get_mobility_score(board, number_of_moves) -> float:
     """PLUS MEANS GOOD FOR WHITE"""
-    MOBILITY_MULTIPLIER = 0.033  # was 0.003 but now it will be the difference between both players legal moves
+    MOBILITY_MULTIPLIER = 0.022  # was 0.003 but now it will be the difference between both players legal moves
     mobility_white = 0
     mobility_black = 0
     if board.turn == chess.WHITE:
         mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
+        mobility_black = number_of_moves * MOBILITY_MULTIPLIER
     if board.turn == chess.BLACK:
         mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
+        mobility_white = number_of_moves * MOBILITY_MULTIPLIER
 
-    board.push(chess.Move.null())
+    # testing using an approximation (using last turn number of moves)
+    # anyway we can't know how many moves the opposing side had, it's not their turn
+    # so a null move would be just as much an approximation
+    # lest test how it performs: result is faster but somehow only wins as black, draw as white
+    """board.push(chess.Move.null())
     if board.turn == chess.WHITE:
         mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
     if board.turn == chess.BLACK:
         mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
-    board.pop()
+    board.pop()"""
     mobility_score = mobility_white - mobility_black
     return mobility_score
 
