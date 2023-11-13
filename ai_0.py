@@ -73,7 +73,8 @@ def order_moves(board, depth) -> List[tuple]:
     killers: list = killer_moves[depth] if depth <= len(killer_moves) else []
 
     """ Initiate the lists """
-    capt_checks: List[tuple] = []
+    captures: List[tuple] = []
+    checks: List[tuple] = []
     promotions: List[tuple] = []
     quiet_moves: List[tuple] = []
     quiet_killer_moves: List[tuple] = []
@@ -84,11 +85,11 @@ def order_moves(board, depth) -> List[tuple]:
     """ First: Separate captures and checks from quiet moves"""
     for move in moves:
         if board.is_capture(move):
-            capt_checks.append((move, 1))  # 1=capture, 2=promo, 3=check
+            captures.append((move, 1))  # 1=capture, 2=promo, 3=check
         elif move.promotion:
             promotions.append((move, 2))  # 1=capture, 2=promo, 3=check
         elif board.gives_check(move):
-            capt_checks.append((move, 3))  # 1=capture, 2=promo, 3=check
+            checks.append((move, 3))  # 1=capture, 2=promo, 3=check
         else:
             quiet_moves.append((move, 0))  # 0=calm
 
@@ -100,11 +101,11 @@ def order_moves(board, depth) -> List[tuple]:
             non_killer_quiet_moves.append(move_tuple)
 
     """ Third: Sort Captures by MVV-LVA """
-    capt_checks.sort(key=lambda m: mvv_lva_score(m[0]), reverse=True)
+    captures.sort(key=lambda m: mvv_lva_score(m[0]), reverse=True)
     """ Fourth: Sort Quiet Moves by History Table """
     non_killer_quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
 
-    return capt_checks + promotions + quiet_killer_moves + non_killer_quiet_moves
+    return checks + promotions + captures + quiet_killer_moves + non_killer_quiet_moves
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
@@ -243,7 +244,7 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_typ
     if use_horizon_risk:
         if depth == 1 and quiet_search:
             # quiet search extension limit reached
-            if move_type in [1, 2]:    # 1=capture, 2=promo, 3=check
+            if move_type == 1:    # 1=capture, 2=promo, 3=check
                 risk = calculate_horizon_risk()
                 if risk > 8 or risk < -8:
                     n_extensions += 1  # just for stats
