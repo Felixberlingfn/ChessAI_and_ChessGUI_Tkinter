@@ -46,6 +46,8 @@ def main():
                 if response.lower() != 'y':
                     print("Stopping ai vs ai")
                     break"""
+        for move in cboard.move_stack:
+            print(f'"{move.uci()}", ', end="")
         return
 
     def play_human_vs_ai(cboard, ai_function=my_ai_0, time_limit=0.001):
@@ -100,7 +102,7 @@ def main():
             return
 
         if passed_value == "version_vs_version":
-            version_vs_version(cboard, my_ai_0, my_ai_0_oldmaterialcalc)
+            version_vs_version(cboard, my_ai_0, my_ai_0)
             return
 
         return

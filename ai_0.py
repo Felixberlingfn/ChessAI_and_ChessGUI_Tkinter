@@ -15,8 +15,8 @@ https://www.chessprogramming.org/Main_Page
 
 """ Constants """
 INIT_DEPTH = 3  # initial depth for minimax
-CAPTURE_EXTENSION = 6  # depth extension for captures and promotions aka quiescence search
-CHECK_EXTENSION = 6  # depth extension for checks aka quiescence search
+CAPTURE_EXTENSION = 3  # depth extension for captures and promotions aka quiescence search
+CHECK_EXTENSION = 3  # depth extension for checks aka quiescence search
 
 """ Counters for stats """
 n_extensions: int = 0
