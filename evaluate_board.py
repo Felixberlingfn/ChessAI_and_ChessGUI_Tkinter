@@ -4,12 +4,13 @@ import timeit
 
 """ Constants """
 MOBILITY_MULTIPLIER = 0.010  # 0.002 achieved win against stockfish once at time limit 0.001 for stockfish
+# also won against stockfish with 0.001 time limit at 0.003 multiplier and the old mobility calculation
+# that is slower though
 GOOD_POS_BONUS = 0.1
 BAD_POS_PUNISH = 0.01
 
 def run(board, testing=False) -> list:
-    """from evaluate_board import evaluate_board
-    or import evaluate_board and then evaluate_board.run()"""
+    """ wrapper for evaluate_board() - runs when not imported as module """
     if testing:
         move = chess.Move.from_uci("e2e4")
         board.push(move)
