@@ -62,6 +62,13 @@ def my_ai_0(board=None, time_limit=0) -> object:
     if best_move_at_last_index:
         print_results_and_stats(board, best_move_at_last_index)
         move_object = chess.Move.from_uci(best_move_at_last_index[-1])
+
+        if move_object.promotion:
+            """ otherwise it will promote to random """
+            from_square = move_object.from_square
+            to_square = move_object.to_square
+            generated_queen_promotion = chess.Move(from_square, to_square, chess.QUEEN)
+            return generated_queen_promotion
         return move_object
     else:
         print("minimax search failed. Last resort: Use random move to avoid error")
@@ -72,7 +79,7 @@ def my_ai_0(board=None, time_limit=0) -> object:
         return False
 
 
-def order_moves(board, depth, material=0) -> List[tuple]:
+def order_moves(board, depth, material=0) -> Tuple[List[tuple], int]:
     """in contrast to the evaluate board this is BEFORE the move was made"""
     """def mvv_lva_score(m):
         # Most Valuable Victim - Least Valuable Attacker
@@ -80,20 +87,18 @@ def order_moves(board, depth, material=0) -> List[tuple]:
         aggressor_value = get_piece_value(board.piece_at(m.from_square))
         return victim_value - aggressor_value"""
 
-    """ Get the killer moves for this depth """
-    killers: list = killer_moves[depth] if depth <= len(killer_moves) else []
+    moves = board.legal_moves
 
-    """ Initiate the lists """
+    """ First: Initiate the lists """
+    killers: list = killer_moves[depth] if depth <= len(killer_moves) else []
     captures: List[tuple] = []
     checks: List[tuple] = []
     promotions: List[tuple] = []
     quiet_moves: List[tuple] = []
     quiet_killer_moves: List[tuple] = []
-    non_killer_quiet_moves: List[tuple] = []
+    opportunity_score = 0
 
-    moves = board.legal_moves
-
-    """ First: Separate captures and checks from quiet moves"""
+    """ Second: Separate captures, checks, killer moves and quiet moves"""
     for move in moves:
         if board.is_capture(move):
             """ We can already calculate material balance change, save time later"""
@@ -114,27 +119,26 @@ def order_moves(board, depth, material=0) -> List[tuple]:
                 difference = victim_value if victim_color == chess.BLACK else - victim_value
                 new_material_balance = material + difference
                 vv_minus_av = victim_value - aggressor_value
-
+            opportunity_score += 1
             captures.append((move, 1, new_material_balance, vv_minus_av))  # 1=capture, 2=promo, 3=check
 
         elif move.promotion:
             promoting_color = board.piece_at(move.from_square).color
             new_material_balance = material + 8 if promoting_color == chess.WHITE else material - 8
             promotions.append((move, 2, new_material_balance, 0))  # 1=capture, 2=promo, 3=check
+            opportunity_score += 1
 
         elif board.gives_check(move):
             checks.append((move, 3, material, 0))  # 1=capture, 2=promo, 3=check
+            opportunity_score += 1
+
         elif move in killers:
-            quiet_killer_moves.insert(0, (move, 0, material, 0))
+            quiet_killer_moves.append((move, 0, material, 0))
+            opportunity_score += 1
+
         else:
             quiet_moves.append((move, 0, material, 0))  # 0=calm
-
-    """ Second: Separate killer moves from other quiet moves"""
-    """for move_tuple in quiet_moves:
-        if move_tuple[0] in killers:
-            quiet_killer_moves.insert(0, move_tuple)
-        else:
-            non_killer_quiet_moves.append(move_tuple)"""
+            opportunity_score += 1
 
     """ Third: Sort Captures by MVV-LVA """
     captures.sort(key=lambda a: a[3], reverse=True)
@@ -142,24 +146,23 @@ def order_moves(board, depth, material=0) -> List[tuple]:
     """ Fourth: Sort Quiet Moves by History Table """
     quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
 
-    return checks + promotions + captures + quiet_killer_moves + quiet_moves
+    return (checks + promotions + captures + quiet_killer_moves + quiet_moves), opportunity_score
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
             quiet_search=False, horizon_risk=0.0, number_of_moves=0, material=0) -> list:
-
     """Minimax returns optimal value for current player """
     global n_evaluated_leaf_nodes
     global n_extensions
+
     if depth == 0 or board.is_game_over():
         """ Final Node reached. Do the Evaluation of the board"""
         final_val_list = evaluate_board(board, horizon_risk, number_of_moves, material)
         n_evaluated_leaf_nodes += 1
         return final_val_list
 
-    # here we could implement looking up a hash
-    ordered_moves: List[tuple] = order_moves(board, depth, material)
-    number_of_moves = len(ordered_moves)  # cheaper than doing it at eval_board
+    ordered_moves, number_of_moves = order_moves(board, depth, material)
+    # number_of_moves = len(ordered_moves)  # cheaper than doing it at eval_board
 
     """ MAXIMIZING """
     if max_player:
@@ -284,7 +287,7 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_typ
         # quiet search extension limit reached
         if move_type == 1:    # 1=capture, 2=promo, 3=check
             risk = calculate_horizon_risk()
-            if risk > 4 or risk < -4:  # 4 means attacking with queen / loosing queen
+            if risk > 2 or risk < -2:  # 4 = queen, 2 = rook
                 n_extensions += 1  # just for stats
                 return 1, True, 0  # queen risk extension
             return 0, True, risk
