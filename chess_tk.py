@@ -5,18 +5,18 @@ import chess
 import random
 
 
-def run(info = "This only runs if not imported as a module"):
+def run(info="This only runs if not imported as a module"):
     def on_chess_move(event):
         # Retrieve the move data from the ChessBoard instance
         start_pos, end_pos, chess_board_object, playing_against_ai = event.widget.move_data
 
         print(start_pos, end_pos, chess_board_object, playing_against_ai)
 
-        if playing_against_ai == False:
+        if not playing_against_ai:
             print("human vs human, nothing to do here")
             return
 
-        if playing_against_ai == True:
+        if playing_against_ai:
             if not chess_board_object.is_game_over():
                 print("test")
                 legal_moves = list(chess_board_object.legal_moves)
@@ -28,8 +28,6 @@ def run(info = "This only runs if not imported as a module"):
                 """app hass to be created in scope"""
             else:
                 print("game is over")
-
-
 
     print(info)
     app = ChessBoard()
@@ -50,11 +48,11 @@ def run(info = "This only runs if not imported as a module"):
 
     app.mainloop()
 
+
 def help():
     print("""
     Usage:
     """)
-
 
 
 def push_human_move(chess_board_object, prev_clicked_square, now_clicked_square):
@@ -68,6 +66,7 @@ def push_human_move(chess_board_object, prev_clicked_square, now_clicked_square)
         return False
     chess_board_object.push(move)
     return chess_board_object
+
 
 class ChessBoard(tk.Tk):
     def __init__(self, chess_board_object = None, dead = None, schachbrett = False, *args, **kwargs):
@@ -94,10 +93,6 @@ class ChessBoard(tk.Tk):
         self.dead = dead
         self.canvas = tk.Canvas(self, width=770, height=850)
         self.canvas.pack()
-
-        #self.create_chessboard()
-        #self.add_labels()
-        #self.add_pieces()
 
         self.error_label = tk.Label(self, text="White begins", fg="dimgray")
         self.error_label.pack()
@@ -134,13 +129,13 @@ class ChessBoard(tk.Tk):
         self.lc0_vs_stockfish_button = ttk.Button(self, text="0 lc0 vs stockfish", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "lc0_vs_stockfish"))
         self.lc0_vs_stockfish_button.place(x=10, y=220)
 
-        self.ai_vs_stockfish_button = ttk.Button(self, text="🤖 My ai vs. stockfish (slow)", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "myai_vs_stockfish"))
+        self.ai_vs_stockfish_button = ttk.Button(self, text="🤖 My ai vs. stockfish", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "myai_vs_stockfish"))
         self.ai_vs_stockfish_button.place(x=10, y=500)
 
         self.version_vs_version_button = ttk.Button(self, text="My ai vs. my ai (Next Version)", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "version_vs_version"))
         self.version_vs_version_button.place(x=10, y=180)
 
-        self.restart_button = ttk.Button(self, text="🤖 Play My AI (slow)", command=lambda: self.start_game("white", "custom_ai"))
+        self.restart_button = ttk.Button(self, text="🤖 Play My AI", command=lambda: self.start_game("white", "custom_ai"))
         self.restart_button.place(x=10, y=100)
 
         self.restart_button2 = ttk.Button(self, text="♛ Play Human", command=lambda: self.start_game("white", False))
@@ -159,8 +154,7 @@ class ChessBoard(tk.Tk):
             self.start_game()
             self.update_board(chess_board_object)
 
-
-    def update_zoom(self, zoom = 1.5):
+    def update_zoom(self, zoom=1.5):
         # has issues
         self.zoom = zoom
         self.int_15 = int(15 * zoom)
@@ -170,17 +164,12 @@ class ChessBoard(tk.Tk):
         self.int_525 = int(525 * zoom)
         self.int_510 = int(510 * zoom)
 
-        #self.create_chessboard()
-        #self.add_labels()
-        #self.add_pieces()
-
     def stop_ai_vs_ai(self):
         # set a stop ai vs ai variable or remove the ai vs ai variable
         # the problem is currently the ai vs ai runs in a loop und I don't think the gui is responsive during that
         # probably best to let the ai make a move, wait for a new event and make the next move by the other ai
         # then I have to decide though who is black and who is white
         pass
-
 
     def handle_move_by_ai(self):
         try:
@@ -190,14 +179,11 @@ class ChessBoard(tk.Tk):
         except:
             print("No move made yet")
 
-
     def handle_move_nr(self):
         if self.chess_board_object:
             move_id = len(self.chess_board_object.move_stack)
             self.move_nr_label.config(text=f"#{move_id}", fg="black")
-            #print(f"#{move_id}")
-
-
+            # print(f"#{move_id}")
 
     def trigger_moved_event(self, start_pos, end_pos, chess_board_object, playing_against_ai = False):
         # Instead of directly handling the move, we generate an event
@@ -205,11 +191,10 @@ class ChessBoard(tk.Tk):
         #self.event_generate("<<ChessMove>>", data=(start_pos, end_pos))
         self.event_generate("<<ChessMove>>")
 
-
     def on_canvas_click(self, event):
-        #self.error_label.config(text="")
+        # self.error_label.config(text="")
         self.error_label2.config(text="")
-        #self.handle_move_nr()
+        # self.handle_move_nr()
 
         x, y = event.x, event.y
         now_clicked_square = self.get_clicked_square_from_x_y(x, y)
@@ -225,7 +210,6 @@ class ChessBoard(tk.Tk):
                 return
 
         self.handle_potential_selection(x, y, prev_clicked_square, now_clicked_square)
-
 
     def handle_potential_move(self, prev_clicked_square, now_clicked_square):
         prev_abbr = self.schachbrett[prev_clicked_square]
@@ -244,7 +228,6 @@ class ChessBoard(tk.Tk):
 
             return True
         return False
-
 
     def handle_potential_selection(self, x, y, prev_clicked_square, now_clicked_square):
         selection_error = self.check_if_valid_selection(now_clicked_square)
@@ -299,7 +282,6 @@ class ChessBoard(tk.Tk):
         # force mainloop update
         self.update()
 
-
     def remove_all_outlining(self):
         # remove any red outlines
         for key in self.schachbrett:
@@ -326,7 +308,6 @@ class ChessBoard(tk.Tk):
         # force mainloop update
         self.update()
 
-
     def get_clicked_square_from_x_y(self, x, y):
         col = (x - self.int_30) // self.int_60
         row = (y - self.int_30) // self.int_60
@@ -345,8 +326,6 @@ class ChessBoard(tk.Tk):
 
         return now_clicked_square
 
-
-
     def configure_styles(self):
         # Configure the ttk styles you want to use
         self.style.configure('TButton', font=('Helvetica', 12), borderwidth=0,
@@ -355,7 +334,6 @@ class ChessBoard(tk.Tk):
                        foreground=[('pressed', 'MidnightBlue'), ('active', 'MidnightBlue')],
                        background=[('!pressed', 'MidnightBlue'), ('active', 'MidnightBlue')],
                        relief=[('pressed', 'flat'), ('!pressed', 'flat')])
-
 
     def display_message(self, message = "The computer is thinking", label = "label1", color = "green", size = 12):
         if label == "label1":
@@ -367,7 +345,7 @@ class ChessBoard(tk.Tk):
         # force mainloop update
         self.update()
 
-    def update_board(self, chess_board_object = False, ai = False):
+    def update_board(self, chess_board_object = None, ai = False):
         self.handle_move_nr()
 
         uci_piece_map = False
@@ -376,7 +354,7 @@ class ChessBoard(tk.Tk):
             uci_piece_map = {chess.square_name(square): piece.symbol() for square, piece in piece_map.items()}
             self.chess_board_object = chess_board_object
 
-        if uci_piece_map != False:
+        if uci_piece_map:
             if self.schachbrett:
                 for key in self.schachbrett:
                     self.schachbrett[key] = "-"
@@ -388,7 +366,6 @@ class ChessBoard(tk.Tk):
             self.turn = "white"
         else:
             self.turn = "black"
-
 
         if self.flip == "black_bottom":
             flipped = {}
@@ -413,14 +390,13 @@ class ChessBoard(tk.Tk):
             if self.clicked_square:
                 self.clicked_square = None
 
-        if ai == True:
+        if ai:
             self.handle_move_by_ai()
         self.update() # this is a tkinter function
 
-
     def create_chessboard(self):
         files = 'abcdefgh'  # Files labeled from a to h
-        #ranks = '87654321'  # Ranks labeled from 8 to 1
+        # ranks = '87654321'  # Ranks labeled from 8 to 1
         color = "white"
         for i in range(8):
             for j in range(8):
@@ -484,14 +460,12 @@ class ChessBoard(tk.Tk):
                                 tags="pieces",
                                 font=self.chess_font, fill=style_color("P"))
 
-
     def check_if_valid_selection(self, now_sq):
         if self.schachbrett[now_sq] == "-":
             return "no piece to select here"
         if get_color(self.schachbrett[now_sq]) != self.turn:
             return f"It's {self.turn}'s turn"
         return False
-
 
     def toggle_turn(self):
         self.error_label2.config(text="The computer is thinking ... 💭", fg="black")
@@ -537,14 +511,12 @@ class ChessBoard(tk.Tk):
         self.error_label.config(text="Game Started. White begins", fg="dimgray")
         self.error_label2.config(text="", fg="red")
 
-
     def prettyprint_chessboard(self, the_board):
         for row in range(8, 0, -1):
             for col in 'abcdefgh':
                 print(the_board[col + str(row)], end=' ')
             print("")  # New line after each row
         print("-------------")
-
 
     def chess_position_to_rectangle_coords(self, chess_position):
         # Mapping the file (column) to its index
@@ -615,7 +587,6 @@ class ChessBoard(tk.Tk):
         self.canvas.create_rectangle(self.int_30, self.int_30, self.int_510, self.int_510, width=2)  # Adding border to the board
 
 
-
 def get_emoji(abbr):
     abbr_to_emoji = {
         "K": "♚", "Q": "♛", "R": "♜", "B": "♝", "N": "♞", "P": "♟",
@@ -623,11 +594,13 @@ def get_emoji(abbr):
     }
     return abbr_to_emoji.get(abbr, "")
 
+
 def get_name(abbr):
     abbr_to_name = {
         "K": "King", "Q": "Queen", "R": "Rook", "B": "Bishop", "N": "Knight", "P": "Pawn",
     }
     return abbr_to_name.get(abbr.upper(), "")
+
 
 def get_color(abbr):
     if abbr.islower():
@@ -635,11 +608,13 @@ def get_color(abbr):
     else:
         return "white"
 
+
 def get_chess_COLOR(abbr):
     if abbr.islower():
         return chess.BLACK
     else:
         return chess.WHITE
+
 
 def style_color(abbr):
     if abbr.islower():
