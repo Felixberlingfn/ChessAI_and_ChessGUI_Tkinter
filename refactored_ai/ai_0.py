@@ -84,7 +84,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
 
     """ We do Check Extension Check here (is_check is cheaper than gives_check) """
     if depth == 0 and quiescence_x < 6 and board.is_check():
-        depth = 1  # extend the search
+        depth = CHECK_EXTENSION  # extend the search
         quiescence_x += 1  # False becomes 1, then 2 etc. = number of extensions
 
     if depth == 0 or board.is_game_over() or time.time() > end_time:

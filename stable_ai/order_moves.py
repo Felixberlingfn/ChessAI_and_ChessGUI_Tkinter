@@ -3,7 +3,7 @@ from typing import Tuple
 from typing import List
 
 from stable_ai import history
-from stable_ai.CONSTANTS import MAXIMUM_REAL_DEPTH
+from stable_ai.CONSTANTS import MAXIMUM_REAL_DEPTH, CALM, CAPTURE, PROMOTION
 
 
 """ Lists for improved move ordering"""
@@ -52,21 +52,21 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
                 new_material_balance = material + difference
                 vv_minus_av = victim_value - aggressor_value
             opportunities += victim_value
-            captures.append((move, 1, new_material_balance, vv_minus_av))  # 1=capture, 2=promo, 3=check
+            captures.append((move, CAPTURE, new_material_balance, vv_minus_av))  # 1=capture, 2=promo, 3=check
 
         elif move.promotion:
             promoting_color = board.piece_at(move.from_square).color
             new_material_balance = material + 8 if promoting_color == WHITE else material - 8
             opportunities += 9
-            promotions.append((move, 2, new_material_balance, 0))  # 1=capture, 2=promo, 3=check
+            promotions.append((move, PROMOTION, new_material_balance, 0))  # 1=capture, 2=promo, 3=check
 
         elif move in killers:
             opportunities += 1
-            quiet_killer_moves.append((move, 0, material, 0))
+            quiet_killer_moves.append((move, CALM, material, 0))
 
         else:
             opportunities += 1
-            quiet_moves.append((move, 0, material, 0))  # 0=calm
+            quiet_moves.append((move, CALM, material, 0))  # 0=calm
 
     """elif board.gives_check(move):  # is expensive. not sure if worth - when I remove it I need to do is_check later
         opportunities += 1  # just 1 because gives_check is too expensive to calculate later for opponent

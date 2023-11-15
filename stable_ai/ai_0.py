@@ -7,9 +7,10 @@ import inspect
 from stable_ai import history, stats
 from stable_ai.evaluate_board import evaluate_board
 from stable_ai.order_moves import order_moves
-from stable_ai.next_depth import get_next_depth, debugging_list
+from stable_ai.next_depth import get_next_depth
 from stable_ai.CONSTANTS import INIT_DEPTH, CHECK_EXTENSION
 from stable_ai.order_moves import killer_moves
+
 
 """
 Sources:
@@ -83,9 +84,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
 
     """ We do Check Extension Check here (is_check is cheaper than gives_check) """
     if depth == 0 and quiescence_x < 6 and board.is_check():
-        stats.n_extensions += CHECK_EXTENSION  # just for stats
-        debugging_list[8] += 1
-        depth = 1  # extend the search
+        depth = CHECK_EXTENSION  # extend the search
         quiescence_x += 1  # False becomes 1, then 2 etc. = number of extensions
 
     if depth == 0 or board.is_game_over() or time.time() > end_time:
@@ -95,7 +94,6 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
         return final_val_list
 
     ordered_moves, opportunities = order_moves(board, real_depth, material)
-    # number_of_moves = len(ordered_moves)  # now using opportunities
 
     """ MAXIMIZING """
     if max_player:
@@ -234,5 +232,3 @@ if __name__ == "__main__":
     end_time = time.time()
     execution_time = round((end_time - start_time) * 1000)
     print(f"Execution time: {execution_time} milliseconds")
-
-    print(debugging_list)
