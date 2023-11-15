@@ -21,10 +21,10 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> l
     if board.is_checkmate():
         if board.turn == chess.WHITE:  # is turn dependent
             """great for black"""
-            final_val[0] = -99999999
+            final_val[0] = -9999999999
         else:
             """great for white"""
-            final_val[0] = 99999999
+            final_val[0] = 9999999999
 
     """ adding extra values to simple material balance """
     pos = get_position_score(board) * 100  # centi-pawns is convention
@@ -37,7 +37,7 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> l
     """ append details to list for stats """
     final_val.append(pos)
     final_val.append(mob)
-    final_val.append(-horizon_risk * 100)
+    final_val.append(- horizon_risk * 100)
 
     return final_val
 
