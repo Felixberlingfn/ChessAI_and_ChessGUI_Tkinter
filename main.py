@@ -1,6 +1,7 @@
 import chess
 import sqlite3
 from ai_0 import my_ai_0
+from ai_0_copy import my_ai_0_copy
 from ai_0_new import my_ai_0_new
 from ai_0_oldmaterialcalc import my_ai_0_oldmaterialcalc
 import ai_0_somehow_slower
@@ -102,7 +103,7 @@ def main():
             return
 
         if passed_value == "version_vs_version":
-            version_vs_version(cboard, my_ai_0, my_ai_0)
+            version_vs_version(cboard, my_ai_0, my_ai_0_copy)
             return
 
         return

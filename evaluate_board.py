@@ -15,7 +15,7 @@ def run(board, testing=False) -> list:
     return evaluate_board(board)
 
 
-def evaluate_board(board, horizon_risk=0.0, number_of_moves=0, material=None) -> list:
+def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> list:
     """ Simplistic but most important: Material Balance + White - Black"""
     material_balance = material if material else get_material_balance(board)
 
@@ -31,7 +31,7 @@ def evaluate_board(board, horizon_risk=0.0, number_of_moves=0, material=None) ->
 
     """ adding extra values to simple material balance """
     pos = get_position_score(board) * 100  # centi-pawns is convention
-    mob = get_mobility_score(board, number_of_moves) * 100  # centi-pawns is convention
+    mob = get_opportunity_score(board, opportunities) * 100  # centi-pawns is convention
 
     final_val[0] += pos
     final_val[0] += mob  # is turn dependent
@@ -197,16 +197,36 @@ def get_position_score(board) -> float:
     return score
 
 
-def get_mobility_score(board, number_of_moves) -> float:
+def get_opportunity_score(board, opportunity_score) -> float:
+    def get_opportunities() -> int:
+        moves = board.legal_moves
+        opportunities = 0
+
+        for move in moves:
+            if board.is_capture(move):
+                """ We can already calculate material balance change, save time later"""
+                victim = board.piece_at(move.to_square)
+                if victim:
+                    victim_value = get_piece_value(victim)
+                    opportunities += 1 + victim_value
+                else:
+                    opportunities += 2  # en passant
+            elif move.promotion:
+                opportunities += 9
+            else:
+                opportunities += 1
+        return opportunities
+
     """PLUS MEANS GOOD FOR WHITE"""
-    mobility_white = 0
-    mobility_black = 0
+    opportunity_score_white = 0
+    opportunity_score_black = 0
+
     if board.turn == chess.WHITE:
-        mobility_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
-        mobility_black = number_of_moves * MOBILITY_MULTIPLIER
+        opportunity_score_white = get_opportunities() * MOBILITY_MULTIPLIER
+        opportunity_score_black = opportunity_score * MOBILITY_MULTIPLIER
     if board.turn == chess.BLACK:
-        mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
-        mobility_white = number_of_moves * MOBILITY_MULTIPLIER
+        opportunity_score_black = get_opportunities() * MOBILITY_MULTIPLIER
+        opportunity_score_white = opportunity_score * MOBILITY_MULTIPLIER
 
     # approximating this from previous move saves time
     # null move would also just be an approximation
@@ -217,9 +237,7 @@ def get_mobility_score(board, number_of_moves) -> float:
         mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
     board.pop()"""
 
-    mobility_score = mobility_white - mobility_black
-
-    return mobility_score
+    return opportunity_score_white - opportunity_score_black
 
 
 def get_piece_value(piece) -> int:
@@ -244,7 +262,7 @@ if __name__ == "__main__":
 
     """ test with timeit """
     setup = '''
-from __main__ import run, chess, evaluate_board, get_piece_value, inspect_function_name, get_mobility_score, get_position_score
+from __main__ import run, chess, evaluate_board, get_piece_value, inspect_function_name, get_opportunity_score, get_position_score
 '''
     statement = '''
 test_board = chess.Board()
