@@ -1,8 +1,8 @@
 from chess import WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 
-from .CONSTANTS import CAPTURE_EXTENSION
-from . import stats
+from stable_ai.CONSTANTS import CAPTURE_EXTENSION
+from stable_ai import stats
 
 
 def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type: int = 0) -> Tuple[int, any, float]:

@@ -4,12 +4,12 @@ import datetime
 import time
 import inspect
 
-from . import history, stats
-from .evaluate_board import evaluate_board
-from .order_moves import order_moves
-from .horizon import get_next_depth
-from .CONSTANTS import INIT_DEPTH, CHECK_EXTENSION
-from .order_moves import killer_moves
+from stable_ai import history, stats
+from stable_ai.evaluate_board import evaluate_board
+from stable_ai.order_moves import order_moves
+from stable_ai.horizon import get_next_depth
+from stable_ai.CONSTANTS import INIT_DEPTH, CHECK_EXTENSION
+from stable_ai.order_moves import killer_moves
 
 """
 Sources:
@@ -19,9 +19,9 @@ https://www.chessprogramming.org/Main_Page
 
 end_time = 0
 
+
 def ai_0(board=None, time_limit=30) -> object:
     global end_time
-
     end_time = time.time() + time_limit
 
     """ The main function of the AI """
