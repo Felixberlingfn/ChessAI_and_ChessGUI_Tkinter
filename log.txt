@@ -1,414 +1,214 @@
-Draw
-
-"e2e4", "a7a6", "d2d4", "e7e6", "b1c3", "d7d5", "f1d3", "c7c5", "e4d5", "c5d4", "d1f3", "d4c3", "c1g5", "d8g5", "d3h7", "c3b2", "f3g3", "a6a5", "g3g5", "b2a1q", "e1d2", "f8b4", "c2c3", "a1c3", "d2d1", "c3e1", "d1c2", "e1c3", "c2b1", "h8h7", "d5e6", "c3d3", "b1b2", "b4a3", "b2a1", "d3d1", "g5c1", "a5a4", "e6f7", "e8f7", "c1d1", "b7b6", "d1d5", "c8e6", "d5a8", "a3e7", "a8b8", "e7f6", "a1b1", "h7h5", "b8a7", "g8e7", "a7a4", "h5a5", "a4e4", "b6b5", "a2a3", "e6f5", "e4f5", "e7f5", "g2g4", "f5h4", "b1a2", "b5b4", "a2b1", "a5a3", "b1c2", "b4b3", "c2d3", "b3b2", "d3c2", "a3a1", "g1h3", "g7g6", "h1b1", "a1b1", "c2b1", "g6g5", "f2f4", "g5f4", "h3f4", "h4f3", "h2h4", "f3e1", "f4h3", "e1c2", "h3g5", "f6g5", "h4g5", "c2e1", "b1b2", "f7e7", "b2c1", "e1f3", "g5g6", "e7f8", "c1c2", "f3d2", "g4g5", "d2b1", "c2b1", "f8g7", "b1c2", "g7g6", "c2b1", "g6f5", "g5g6", "f5g6",
+"e2e4", "a7a6", "d2d4", "e7e6", "b1c3", "d7d5", "e4d5", "e6d5", "c1e3", "g8f6", "f1d3", "b8c6", "g1h3", "c8h3", "g2h3", "d8d7", "d1f3", "a6a5", "a2a3", "h7h5", "d3b5", "e8c8", "h3h4", "a5a4", "e1g1", "d7g4", "f3g4", "h5g4", "b5c6", "b7c6", "e3g5", "d8e8", "g1h1", "f6e4", "c3a4", "f7f6", "g5f4", "h8h4", "b2b3", "g7g5", "f4e3", "f8d6", "f1g1", "h4h2",
 
 
+C:\Users\Student\PycharmProjects\PythonSchachWithLibraryAndAI\venv\Scripts\python.exe C:\Users\Student\PycharmProjects\PythonSchachWithLibraryAndAI\main.py
 No move made yet
-my_ai_0
+ai_0
 
-Leaf nodes evaluated: 1074 with 54 extensions
+e7e5 has 48 Beta cutoffs
+Leaf nodes: 1119 extensions: 52 maximum depth:7
+[1, 20, 110, 783, 224, 112, 1, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 first move last: [9.0, 9.0, 0.0, 0, 'f1d3', 'e7e5', 'e2e4']
-Move # 1: e2e4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:28
+Move # 1: e2e4. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:45:27
 Moved e2e4
 stockfish
 Moved a7a6
-my_ai_0
-Leaf nodes evaluated: 13110 with 633 extensions
-first move last: [31.0, 20.0, 11.0, 0, 'f1d3', 'd7d5', 'd2d4']
-Move # 3: d2d4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:30
+ai_0
+b7a6 has 964 Beta cutoffs
+Leaf nodes: 9780 extensions: 807 maximum depth:14
+[2, 50, 220, 2153, 1429, 3992, 718, 1561, 855, 488, 251, 56, 176, 11, 4, 0, 0, 0, 0, 0]
+first move last: [30.0, 20.0, 10.0, 0, 'f1d3', 'd7d5', 'd2d4']
+Move # 3: d2d4. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:45:29
 Moved d2d4
 stockfish
 Moved e7e6
-my_ai_0
-Leaf nodes evaluated: 22539 with 281 extensions
-first move last: [35.0, 30.0, 5.0, 0, 'f1d3', 'b8c6', 'b1c3']
-Move # 5: b1c3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:31
+ai_0
+b7a6 has 2556 Beta cutoffs
+Leaf nodes: 20571 extensions: 2072 maximum depth:14
+[3, 88, 448, 4024, 4223, 10088, 2711, 5335, 3389, 1678, 1327, 375, 744, 53, 8, 0, 0, 0, 0, 0]
+first move last: [34.0, 30.0, 4.0, 0, 'f1d3', 'b8c6', 'b1c3']
+Move # 5: b1c3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:45:31
 Moved b1c3
 stockfish
 Moved d7d5
-my_ai_0
-Leaf nodes evaluated: 45322 with 636 extensions
-first move last: [32.0, 30.0, 2.0, 0, 'f8b4', 'd3e4', 'd5e4', 'f1d3']
-Move # 7: f1d3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:34
-Moved f1d3
-stockfish
-Moved c7c5
-my_ai_0
-Leaf nodes evaluated: 90953 with 1318 extensions
-first move last: [37.0, 30.0, 7.0, 0, 'c1f4', 'c5d4', 'e4d5']
-Move # 9: e4d5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:40
+ai_0
+b7a6 has 3295 Beta cutoffs
+Leaf nodes: 40921 extensions: 4225 maximum depth:13
+[4, 127, 522, 5625, 5569, 13606, 6929, 13870, 10273, 5495, 8647, 4726, 3212, 567, 8, 0, 0, 0, 0, 0]
+first move last: [37.0, -2.0, 39.0, 0, 'c8e6', 'd1e2', 'e6d5', 'e4d5']
+Move # 7: e4d5. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:45:37
 Captured: p
 Moved e4d5
 stockfish
-Moved c5d4
-my_ai_0
+Moved e6d5
+ai_0
 Lost: P
-Leaf nodes evaluated: 143652 with 2161 extensions
-first move last: [-76.0, -20.0, -6.0, 50.0, 'c3b2', 'f3a8', 'f7e6', 'd5e6', 'b7a6', 'd3a6', 'd4c3', 'd1f3']
-Move # 11: d1f3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:47
-Moved d1f3
+b7a6 has 5185 Beta cutoffs
+Leaf nodes: 65541 extensions: 11413 maximum depth:14
+[5, 165, 794, 7979, 10225, 22241, 14876, 27111, 21013, 14318, 17557, 8570, 5898, 1658, 27, 0, 0, 0, 0, 0]
+first move last: [21.0, 20.0, 1.0, 0, 'f1d3', 'b8c6', 'c1e3']
+Move # 9: c1e3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:45:46
+Moved c1e3
 stockfish
-Moved d4c3
-my_ai_0
-Lost: N
-Leaf nodes evaluated: 179383 with 1670 extensions
-first move last: [-210.0, 10.0, 30.0, 50.0, 'e6d5', 'f3f7', 'e8d8', 'a1b1', 'b2b1b', 'g5d8', 'c3b2', 'c1g5']
-Move # 13: c1g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:55
-Moved c1g5
+Moved g8f6
+ai_0
+b7a6 has 7429 Beta cutoffs
+Leaf nodes: 65763 extensions: 8303 maximum depth:14
+[6, 206, 1042, 10417, 13349, 33178, 20649, 43091, 29270, 25714, 23205, 13460, 8029, 3351, 80, 0, 0, 0, 0, 0]
+first move last: [25.0, 20.0, 5.0, 0, 'd3e4', 'b7b6', 'f1d3']
+Move # 11: f1d3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:45:55
+Moved f1d3
 stockfish
-Moved d8g5
-my_ai_0
-Lost: B
-Leaf nodes evaluated: 212014 with 1092 extensions
-first move last: [-539.0, 10.0, -49.0, 0, 'c2c3', 'f8b4', 'd5e6', 'c3b2', 'd3h7']
-Move # 15: d3h7. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:41:59
-Captured: p
-Moved d3h7
-stockfish
-Moved c3b2
-my_ai_0
-Lost: P
-Leaf nodes evaluated: 326686 with 1921 extensions
-first move last: [-856.0, 10.0, -16.0, -250.0, 'b1b4', 'f8b4', 'h2g3', 'g5g3', 'a1b1', 'b2b1r', 'f3g3']
-Move # 17: f3g3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:15
-Moved f3g3
-stockfish
-Moved a6a5
-my_ai_0
-Leaf nodes evaluated: 372225 with 958 extensions
-first move last: [-294.0, 0.0, 6.0, 0, 'g8h7', 'b1c2', 'h7g8', 'b2b1b', 'g3g5']
-Move # 19: g3g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:22
-Captured: q
-Moved g3g5
-stockfish
-Moved b2a1q
-my_ai_0
-Lost: R
-Leaf nodes evaluated: 397369 with 417 extensions
-first move last: [-1290.0, -21.0, 31.0, 0, 'b8c6', 'g5b5', 'c8e6', 'd5e6', 'h8h7', 'e1d2']
-Move # 21: e1d2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:25
-Moved e1d2
-stockfish
-Moved f8b4
-my_ai_0
-Leaf nodes evaluated: 422401 with 511 extensions
-first move last: [-1142.0, -10.0, -32.0, 0, 'd2d3', 'a1a2', 'c3b4', 'h8h7', 'c2c3']
-Move # 23: c2c3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:31
-Moved c2c3
-stockfish
-Moved a1c3
-my_ai_0
-Lost: P
-Leaf nodes evaluated: 446570 with 456 extensions
-first move last: [-1398.0, -20.0, 22.0, 0, 'b8c6', 'g5b5', 'c8e6', 'd5e6', 'h8h7', 'd2d1']
-Move # 25: d2d1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:35
-Moved d2d1
-stockfish
-Moved c3e1
-my_ai_0
-Leaf nodes evaluated: 469600 with 392 extensions
-first move last: [-1403.0, 10.0, -13.0, 0, 'g5e3', 'h8h7', 'd1c2']
-Move # 27: d1c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:38
-Moved d1c2
-stockfish
-Moved e1c3
-my_ai_0
-Leaf nodes evaluated: 493488 with 437 extensions
-first move last: [-1389.0, -10.0, 21.0, 0, 'b8c6', 'g5b5', 'c8e6', 'd5e6', 'h8h7', 'c2b1']
-Move # 29: c2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:41
-Moved c2b1
-stockfish
-Moved h8h7
-my_ai_0
-Lost: B
-Leaf nodes evaluated: 503457 with 477 extensions
-first move last: [-1389.0, -10.0, 21.0, 0, 'b8c6', 'g5b5', 'c8e6', 'd5e6']
-Move # 31: d5e6. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:43
-Captured: p
-Moved d5e6
-stockfish
-Moved c3d3
-my_ai_0
-Leaf nodes evaluated: 521702 with 707 extensions
-first move last: [-1421.0, 0.0, -21.0, 0, 'g5e3', 'c8e6', 'b1b2']
-Move # 33: b1b2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:48
-Moved b1b2
-stockfish
-Moved b4a3
-my_ai_0
-Leaf nodes evaluated: 531188 with 536 extensions
-first move last: [-1423.0, 0.0, -23.0, 0, 'g5e3', 'c8e6', 'b2a1']
-Move # 35: b2a1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:50
-Moved b2a1
-stockfish
-Moved d3d1
-my_ai_0
-Leaf nodes evaluated: 534571 with 157 extensions
-first move last: [-1000051.0, 0, -52.0, 0, 'd1c1', 'g5c1']
-Move # 37: g5c1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:50
-Moved g5c1
-stockfish
-Moved a5a4
-my_ai_0
-Leaf nodes evaluated: 540635 with 358 extensions
-first move last: [-410.0, 0.0, -10.0, 0, 'b8d7', 'c1d1', 'e8f7', 'e6f7']
-Move # 39: e6f7. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:51
-Captured: p
-Moved e6f7
-stockfish
-Moved e8f7
-my_ai_0
-Lost: P
-Leaf nodes evaluated: 543407 with 396 extensions
-first move last: [-403.0, 10.0, -13.0, 0, 'g1f3', 'g8f6', 'c1d1']
-Move # 41: c1d1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:52
-Captured: q
-Moved c1d1
-stockfish
-Moved b7b6
-my_ai_0
-Leaf nodes evaluated: 546831 with 419 extensions
-first move last: [64.0, -20.0, -16.0, 0, 'g8f6', 'd5a8', 'c8e6', 'd1d5']
-Move # 43: d1d5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:55
-Moved d1d5
-stockfish
-Moved c8e6
-my_ai_0
-Leaf nodes evaluated: 553144 with 564 extensions
-first move last: [102.0, -20.0, 22.0, 0, 'g8f6', 'a8f3', 'a3d6', 'd5a8']
-Move # 45: d5a8. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:56
-Captured: r
-Moved d5a8
-stockfish
-Moved a3e7
-my_ai_0
-Leaf nodes evaluated: 556483 with 405 extensions
-first move last: [370.0, 0.0, -30.0, 0, 'a1b1', 'e7f6', 'a8b8']
-Move # 47: a8b8. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:57
-Captured: n
-Moved a8b8
-stockfish
-Moved e7f6
-my_ai_0
-Leaf nodes evaluated: 558008 with 282 extensions
-first move last: [367.0, 0, -33.0, 0, 'b1c1', 'e6f5', 'a1b1']
-Move # 49: a1b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:57
-Moved a1b1
-stockfish
-Moved h7h5
-my_ai_0
-Leaf nodes evaluated: 560429 with 203 extensions
-first move last: [460.0, -30.0, -10.0, 0, 'f6b2', 'a7a4', 'g8e7', 'b8a7']
-Move # 51: b8a7. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:42:57
-Moved b8a7
-stockfish
-Moved g8e7
-my_ai_0
-Leaf nodes evaluated: 563935 with 395 extensions
-first move last: [469.0, -20.0, -11.0, 0, 'a4a3', 'g7g6', 'a7a4']
-Move # 53: a7a4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:01
-Captured: p
-Moved a7a4
-stockfish
-Moved h5a5
-my_ai_0
-Leaf nodes evaluated: 568070 with 496 extensions
-first move last: [346.0, -20.0, -34.0, 0, 'b1c2', 'e6a2', 'a4e4']
-Move # 55: a4e4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:02
-Moved a4e4
-stockfish
-Moved b6b5
-my_ai_0
-Leaf nodes evaluated: 574506 with 750 extensions
-first move last: [403.0, 10.0, -7.0, 0, 'g1f3', 'a5a3', 'a2a3']
-Move # 57: a2a3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:03
-Moved a2a3
-stockfish
-Moved e6f5
-my_ai_0
-Leaf nodes evaluated: 574877 with 84 extensions
-first move last: [-107.0, 10.0, -17.0, 0, 'g1f3', 'f7g6', 'f5g6', 'a5a8', 'e4f5']
-Move # 59: e4f5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:03
-Captured: b
-Moved e4f5
-stockfish
-Moved e7f5
-my_ai_0
-Lost: Q
-Leaf nodes evaluated: 577035 with 258 extensions
-first move last: [-114.0, 0.0, -14.0, 0, 'g1f3', 'f5e7', 'g2g4']
-Move # 61: g2g4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:03
-Moved g2g4
-stockfish
-Moved f5h4
-my_ai_0
-Leaf nodes evaluated: 577902 with 57 extensions
-first move last: [-130.0, -10.0, -20.0, 0, 'a2b1', 'f6e5', 'b1a2']
-Move # 63: b1a2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:07
-Moved b1a2
-stockfish
-Moved b5b4
-my_ai_0
-Leaf nodes evaluated: 584412 with 351 extensions
-first move last: [-212.0, 10.0, -22.0, 0, 'g1f3', 'b4a3', 'a2b1']
-Move # 65: a2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:07
-Moved a2b1
-stockfish
-Moved a5a3
-my_ai_0
-Lost: P
-Leaf nodes evaluated: 585581 with 150 extensions
-first move last: [-228.0, 0.0, -28.0, 0, 'c2b1', 'a3a2', 'b1c2']
-Move # 67: b1c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:08
-Moved b1c2
-stockfish
-Moved b4b3
-my_ai_0
-Leaf nodes evaluated: 586204 with 42 extensions
-first move last: [-231.0, 0.0, -31.0, 0, 'd3e4', 'b3b2', 'c2d3']
-Move # 69: c2d3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:08
-Moved c2d3
-stockfish
-Moved b3b2
-my_ai_0
-Leaf nodes evaluated: 588472 with 93 extensions
-first move last: [-731.0, 0, -31.0, 0, 'b1c2', 'a3a1', 'c2b1', 'b2b1n', 'd3c2']
-Move # 71: d3c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:08
-Moved d3c2
-stockfish
-Moved a3a1
-my_ai_0
-Leaf nodes evaluated: 594446 with 243 extensions
-first move last: [-733.0, -11.0, -22.0, 0, 'b1b2', 'a1a2', 'h1b1', 'b2b1b', 'g1h3']
-Move # 73: g1h3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:12
+Moved b8c6
+ai_0
+b7a6 has 10621 Beta cutoffs
+Leaf nodes: 144506 extensions: 19819 maximum depth:14
+[7, 251, 1271, 14581, 18044, 54022, 28675, 76006, 45851, 54991, 34610, 31734, 12888, 11102, 380, 0, 0, 0, 0, 0]
+first move last: [30.0, 10.0, 20.0, 0, 'e8d7', 'd1d4', 'c6d4', 'g2h3', 'f6h7', 'd3h7', 'c8h3', 'g1h3']
+Move # 13: g1h3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:46:18
 Moved g1h3
 stockfish
-Moved g7g6
-my_ai_0
-Leaf nodes evaluated: 600776 with 381 extensions
-first move last: [-226.0, -11.0, -15.0, 0, 'b1e1', 'a1a5', 'h1b1']
-Move # 75: h1b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:13
-Moved h1b1
-stockfish
-Moved a1b1
-my_ai_0
-Lost: R
-Leaf nodes evaluated: 601409 with 81 extensions
-first move last: [-221.0, -10.0, -11.0, 0, 'h3f4', 'h4g2', 'c2b1']
-Move # 77: c2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:13
-Captured: r
-Moved c2b1
-stockfish
-Moved g6g5
-my_ai_0
-Leaf nodes evaluated: 601671 with 48 extensions
-first move last: [-215.0, -10.0, -5.0, 0, 'f6e5', 'h3f4', 'g5f4', 'f2f4']
-Move # 79: f2f4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:14
-Moved f2f4
-stockfish
-Moved g5f4
-my_ai_0
-Lost: P
-Leaf nodes evaluated: 602056 with 78 extensions
-first move last: [-209.0, 0.0, -9.0, 0, 'g4g5', 'f7g6', 'f4g6', 'h4g6', 'h3f4']
-Move # 81: h3f4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:14
-Captured: p
-Moved h3f4
-stockfish
-Moved h4f3
-my_ai_0
-Leaf nodes evaluated: 602671 with 105 extensions
-first move last: [-242.0, -20.0, -22.0, 0, 'b1a2', 'f3d2', 'h2h4']
-Move # 83: h2h4. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:17
-Moved h2h4
-stockfish
-Moved f3e1
-my_ai_0
-Leaf nodes evaluated: 604007 with 150 extensions
-first move last: [-209.0, -1.0, -8.0, 0, 'h4g5', 'b1b2', 'f6h4', 'f4h3']
-Move # 85: f4h3. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:17
-Moved f4h3
-stockfish
-Moved e1c2
-my_ai_0
-Leaf nodes evaluated: 604793 with 48 extensions
-first move last: [-229.0, -20.0, -9.0, 0, 'f7g8', 'h4g5', 'f6g5', 'h3g5']
-Move # 87: h3g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:18
-Moved h3g5
-stockfish
-Moved f6g5
-my_ai_0
+Moved c8h3
+ai_0
 Lost: N
-Leaf nodes evaluated: 605911 with 150 extensions
-first move last: [-204.0, 0.0, -4.0, 0, 'b2b1', 'e3g4', 'b1b2', 'c2e3', 'h4g5']
-Move # 89: h4g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:18
+b7a6 has 12025 Beta cutoffs
+Leaf nodes: 135904 extensions: 21580 maximum depth:14
+[8, 295, 1349, 16563, 20216, 65136, 35771, 102128, 59331, 90849, 45034, 58791, 18720, 20017, 834, 0, 0, 0, 0, 0]
+first move last: [19.0, 20.0, -1.0, 0, 'e1g1', 'f8d6', 'g2h3']
+Move # 15: g2h3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:46:36
 Captured: b
-Moved h4g5
+Moved g2h3
 stockfish
-Moved c2e1
-my_ai_0
-Leaf nodes evaluated: 606130 with 45 extensions
-first move last: [-102.0, 0.0, -2.0, 0, 'b2b1', 'e1g2', 'b1b2']
-Move # 91: b1b2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:18
-Captured: p
-Moved b1b2
+Moved d8d7
+ai_0
+b7a6 has 15401 Beta cutoffs
+Leaf nodes: 211811 extensions: 34827 maximum depth:14
+[9, 337, 1650, 19787, 26979, 85523, 52095, 146486, 97287, 137361, 71447, 80901, 26049, 25416, 1250, 0, 0, 0, 0, 0]
+first move last: [23.0, 10.0, 13.0, 0, 'e1f1', 'a8a7', 'd1f3']
+Move # 17: d1f3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:47:06
+Moved d1f3
 stockfish
-Moved f7e7
-my_ai_0
-Leaf nodes evaluated: 606319 with 27 extensions
-first move last: [-101.0, 10.0, -11.0, 0, 'c1b1', 'e1d3', 'b2c1']
-Move # 93: b2c1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:21
-Moved b2c1
+Moved a6a5
+ai_0
+f6d5 has 15454 Beta cutoffs
+Leaf nodes: 401946 extensions: 58124 maximum depth:14
+[10, 385, 2099, 25457, 37079, 121932, 79059, 231332, 160345, 246522, 109048, 133707, 35980, 34565, 1865, 0, 0, 0, 0, 0]
+first move last: [32.0, 20.0, 12.0, 0, 'e1g1', 'a8c8', 'a2a3']
+Move # 19: a2a3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:48:05
+Moved a2a3
 stockfish
-Moved e1f3
-my_ai_0
-Leaf nodes evaluated: 606451 with 15 extensions
-first move last: [-109.0, 0.0, -9.0, 0, 'g6g7', 'f3d4', 'g5g6']
-Move # 95: g5g6. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:22
-Moved g5g6
+Moved h7h5
+ai_0
+f6d5 has 22337 Beta cutoffs
+Leaf nodes: 465583 extensions: 62179 maximum depth:14
+[11, 434, 2564, 32971, 49349, 161983, 114191, 318528, 217140, 367425, 137711, 234369, 45294, 49634, 2603, 0, 0, 0, 0, 0]
+first move last: [31.0, 20.0, 11.0, 0, 'e1g1', 'b7c6', 'b5c6', 'a8c8', 'd3b5']
+Move # 21: d3b5. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:49:20
+Moved d3b5
 stockfish
-Moved e7f8
-my_ai_0
-Leaf nodes evaluated: 606792 with 93 extensions
-first move last: [-105.0, 0.0, -5.0, 0, 'c2b1', 'f3d4', 'c1c2']
-Move # 97: c1c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:22
-Moved c1c2
+Moved e8c8
+ai_0
+f6d5 has 26343 Beta cutoffs
+Leaf nodes: 394979 extensions: 53714 maximum depth:14
+[12, 480, 2764, 37236, 53369, 183090, 126957, 390485, 240296, 490597, 153500, 355083, 51852, 82541, 3996, 0, 0, 0, 0, 0]
+first move last: [32.0, 20.0, 12.0, 0, 'e1g1', 'b7c6', 'b5c6', 'f8e7', 'h3h4']
+Move # 23: h3h4. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:50:22
+Moved h3h4
 stockfish
-Moved f3d2
-my_ai_0
-Leaf nodes evaluated: 606901 with 27 extensions
-first move last: [204.0, 0, 4.0, 0, 'f8g7', 'c2b3', 'd2b3', 'g4g5']
-Move # 99: g4g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:22
-Moved g4g5
+Moved a5a4
+ai_0
+f6d5 has 31533 Beta cutoffs
+Leaf nodes: 619406 extensions: 96876 maximum depth:14
+[13, 526, 2946, 41271, 57692, 206874, 143077, 491271, 275210, 698814, 178346, 549527, 63209, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [120.0, 0.0, 20.0, 0, 'f8d6', 'b5a4', 'h8h7', 'e1g1']
+Move # 25: e1g1. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:51:57
+Moved e1g1
 stockfish
-Moved d2b1
-my_ai_0
-Leaf nodes evaluated: 607002 with 27 extensions
-first move last: [201.0, 0, 1.0, 0, 'b1a2', 'f8g7', 'c2b1']
-Move # 101: c2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:22
+Moved d7g4
+ai_0
+f6d5 has 31607 Beta cutoffs
+Leaf nodes: 8938 extensions: 1109 maximum depth:12
+[14, 530, 2954, 41315, 57824, 207276, 143916, 492916, 276803, 702016, 178591, 551204, 63275, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [32.0, 30.0, 2.0, 0, 'a1e1', 'b7c6', 'b5c6', 'h5g4', 'f3g4']
+Move # 27: f3g4. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:51:59
+Captured: q
+Moved f3g4
+stockfish
+Moved h5g4
+ai_0
+Lost: Q
+f6d5 has 33507 Beta cutoffs
+Leaf nodes: 146280 extensions: 19082 maximum depth:12
+[15, 565, 3057, 43726, 60577, 218609, 157486, 526050, 300523, 745946, 182934, 576080, 64254, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [32.0, 30.0, 2.0, 0, 'a1e1', 'b7c6', 'b5c6']
+Move # 29: b5c6. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:52:21
 Captured: n
-Moved c2b1
+Moved b5c6
 stockfish
-Moved f8g7
-my_ai_0
-Leaf nodes evaluated: 607049 with 12 extensions
-first move last: [112.0, 10.0, 2.0, 0, 'c2b1', 'g7g6', 'b1c2']
-Move # 103: b1c2. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:25
-Moved b1c2
+Moved b7c6
+ai_0
+Lost: B
+f6d5 has 33528 Beta cutoffs
+Leaf nodes: 25788 extensions: 2371 maximum depth:12
+[16, 595, 3183, 45339, 63190, 222752, 163518, 532032, 304653, 748586, 183385, 577055, 64294, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [73.0, -20.0, -7.0, 0, 'h8h5', 'c3a4', 'g7f6', 'g5f6', 'f8c5', 'd4c5', 'c6c5', 'e3g5']
+Move # 31: e3g5. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:52:25
+Moved e3g5
 stockfish
-Moved g7g6
-my_ai_0
+Moved d8e8
+ai_0
+f6d5 has 33530 Beta cutoffs
+Leaf nodes: 39810 extensions: 4064 maximum depth:12
+[17, 626, 3300, 46910, 65951, 227203, 170709, 541623, 310671, 755826, 184434, 580966, 64411, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [97.0, 0.0, -3.0, 0, 'f6h5', 'c3a4', 'c8d7', 'g1h1']
+Move # 33: g1h1. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:52:34
+Moved g1h1
+stockfish
+Moved f6e4
+ai_0
+f6d5 has 33530 Beta cutoffs
+Leaf nodes: 19561 extensions: 2308 maximum depth:12
+[18, 660, 3392, 48045, 66900, 229961, 174190, 546172, 313895, 758869, 185447, 582657, 64491, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [79.0, -10.0, -11.0, 0, 'g5f4', 'f8d6', 'c3a4']
+Move # 35: c3a4. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:52:37
+Captured: p
+Moved c3a4
+stockfish
+Moved f7f6
+ai_0
+f6d5 has 33530 Beta cutoffs
+Leaf nodes: 16657 extensions: 2339 maximum depth:12
+[19, 689, 3512, 48968, 68793, 231845, 178708, 548577, 318473, 759632, 187221, 582923, 64498, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [6.0, 10.0, -4.0, 0, 'h1g1', 'h8h4', 'g5f4']
+Move # 37: g5f4. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:52:39
+Moved g5f4
+stockfish
+Moved h8h4
+ai_0
 Lost: P
-Leaf nodes evaluated: 607074 with 6 extensions
-first move last: [9.0, 10.0, -1.0, 0, 'g6g5', 'c2b1']
-Move # 105: c2b1. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:26
-Moved c2b1
+f6d5 has 33530 Beta cutoffs
+Leaf nodes: 22130 extensions: 4075 maximum depth:12
+[20, 719, 3699, 50648, 71873, 234953, 185218, 550607, 324800, 760497, 188504, 583253, 64501, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [3.0, 10.0, -7.0, 0, 'h1g1', 'c8d7', 'b2b3']
+Move # 39: b2b3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:52:42
+Moved b2b3
 stockfish
-Moved g6f5
-my_ai_0
-Leaf nodes evaluated: 607099 with 0 extensions
-first move last: [7.0, 10.0, -3.0, 0, 'f5g6', 'g5g6']
-Move # 107: g5g6. [Sum, Pos., ..., ..., Path... ] - 2023-11-13 19:43:26
-Moved g5g6
+Moved g7g5
+ai_0
+f6d5 has 33530 Beta cutoffs
+Leaf nodes: 33360 extensions: 5833 maximum depth:12
+[21, 748, 3878, 51603, 75006, 236445, 194084, 552066, 337134, 762151, 195764, 584429, 64772, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [-12.0, 0.0, -12.0, 0, 'h1g1', 'f8d6', 'f4e3']
+Move # 41: f4e3. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:52:47
+Moved f4e3
 stockfish
-Moved f5g6
+Moved f8d6
+ai_0
+f6d5 has 33530 Beta cutoffs
+Leaf nodes: 42100 extensions: 8259 maximum depth:12
+[22, 774, 4087, 52867, 79355, 239143, 206153, 555953, 352330, 764403, 201487, 585389, 64790, 148037, 6701, 0, 0, 0, 0, 0]
+first move last: [-113.0, -10.0, -3.0, 0, 'g1d1', 'd6h2', 'f1g1']
+Move # 43: f1g1. [Sum, Pos., ..., ..., Path... ] - 2023-11-15 14:52:56
+Moved f1g1
+stockfish
+Moved h4h2

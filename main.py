@@ -1,16 +1,11 @@
 import chess
 import sqlite3
-from ai_0 import my_ai_0
-from ai_0_copy import my_ai_0_copy
-from ai_0_new import my_ai_0_new
-from ai_0_oldmaterialcalc import my_ai_0_oldmaterialcalc
-import ai_0_somehow_slower
+from ai_0 import ai_0
+from backup_ai.ai_0_copy import my_ai_0_copy
 import chess_tk
-from lc0 import lc0
 from  stockfish import stockfish
 import random
 import time
-import inspect
 
 
 def main():
@@ -51,7 +46,7 @@ def main():
             print(f'"{move.uci()}", ', end="")
         return
 
-    def play_human_vs_ai(cboard, ai_function=my_ai_0, time_limit=0.001):
+    def play_human_vs_ai(cboard, ai_function=ai_0, time_limit=0.001):
         app.display_message(f"{ai_function.__name__} is thinking ... 💭", "label2")
         best_move = ai_function(cboard, time_limit)  # ai_2.run(cboard, 5) # ai_2.run(cboard, 5) # lc0.get_best(cboard, 0.01) #
 
@@ -91,7 +86,7 @@ def main():
 
         """ custom_ai """
         if passed_value == "custom_ai" and cboard.turn == chess.BLACK:
-            play_human_vs_ai(cboard, my_ai_0, 0.1)
+            play_human_vs_ai(cboard, ai_0, 0.1)
             return
 
         if passed_value == "lc0_vs_stockfish":
@@ -99,11 +94,11 @@ def main():
             return
 
         if passed_value == "myai_vs_stockfish":
-            version_vs_version(cboard, my_ai_0, stockfish, 0.001)
+            version_vs_version(cboard, ai_0, stockfish, 0.001)
             return
 
         if passed_value == "version_vs_version":
-            version_vs_version(cboard, my_ai_0, my_ai_0_copy)
+            version_vs_version(cboard, ai_0, ai_0)
             return
 
         return
