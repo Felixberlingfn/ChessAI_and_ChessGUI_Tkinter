@@ -1,8 +1,9 @@
 from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
-import history
-from CONSTANTS import MAXIMUM_REAL_DEPTH
 from typing import Tuple
 from typing import List
+
+from . import history
+from .CONSTANTS import MAXIMUM_REAL_DEPTH
 
 
 """ Lists for improved move ordering"""

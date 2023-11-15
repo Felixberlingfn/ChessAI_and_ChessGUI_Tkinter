@@ -4,8 +4,8 @@ import chess.engine
 
 
 def lc0(board, time_limit = 0.2):
-    LCZERO_PATH = 'lc0/lc0.exe'
-    NETWORK_PATH = 'lc0/791556.pb.gz'
+    LCZERO_PATH = 'lc0.exe'
+    NETWORK_PATH = '791556.pb.gz'
 
     engine = chess.engine.SimpleEngine.popen_uci(LCZERO_PATH)
 

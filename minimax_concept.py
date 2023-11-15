@@ -1,4 +1,4 @@
-"""This is a concept"""
+""" This is a concept - the basic minimax algorithm without any extra features """
 
 import chess
 # from evaluate_board import evaluate_board
@@ -6,7 +6,7 @@ import chess
 
 def minimax(board, depth, is_maximizing_player):
     if depth == 0 or board.is_game_over():
-        return #evaluate_board(board)
+        return evaluate_board(board)
 
     legal_moves = list(board.legal_moves)
 

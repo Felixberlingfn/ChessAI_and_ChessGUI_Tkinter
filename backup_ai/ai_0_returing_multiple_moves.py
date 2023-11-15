@@ -5,7 +5,7 @@ import time
 import inspect
 from typing import Tuple
 from typing import List
-from evaluate_board import evaluate_board
+from stable_ai.evaluate_board import evaluate_board
 
 """
 Sources:

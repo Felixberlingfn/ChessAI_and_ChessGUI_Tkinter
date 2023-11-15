@@ -1,40 +1,40 @@
 import chess
 import sqlite3
-from ai_0 import ai_0
-from backup_ai.ai_0_copy import my_ai_0_copy
 import chess_tk
-from  stockfish import stockfish
 import random
 import time
+
+from stable_ai.ai_0 import ai_0
+from stockfish import stockfish
 
 
 def main():
     """  ---------------------------   chess_tk gui --------------------------------------------------------"""
 
-    def version_vs_version(cboard, version_a, version_b, time_limit=0.001):
+    def version_vs_version(chess_board, version_a, version_b, time_limit_1=0.001, time_limit_2=0.001):
         for i in range(999999999):
-            save_game_state(cboard)
+            save_game_state(chess_board)
 
-            if cboard.is_game_over():
-                app.display_message(game_status(cboard), "label2")
+            if chess_board.is_game_over():
+                app.display_message(game_status(chess_board), "label2")
                 break
 
             if i % 2 == 0:
                 print(version_a.__name__)
                 app.display_message(f"{version_a.__name__} is thinking 💭", "label2")
-                ai_move = version_a(cboard, time_limit)
+                ai_move = version_a(chess_board, time_limit_1)
             else:
                 print(version_b.__name__)
                 app.display_message(f"{version_b.__name__} is thinking 💭", "label2")
-                ai_move = version_b(cboard, time_limit)
+                ai_move = version_b(chess_board, time_limit_2)
 
             if ai_move is None:
                 print(f"no best move was returned.")
                 return
             else:
-                cboard.push(ai_move)
+                chess_board.push(ai_move)
                 app.display_message(random.choice(comments), "label1")
-                app.update_board(cboard, True)
+                app.update_board(chess_board, True)
 
             if i != 0 and i % 10 == 0:
                 time.sleep(3)
@@ -42,80 +42,80 @@ def main():
                 if response.lower() != 'y':
                     print("Stopping ai vs ai")
                     break"""
-        for move in cboard.move_stack:
+        for move in chess_board.move_stack:
             print(f'"{move.uci()}", ', end="")
         return
 
-    def play_human_vs_ai(cboard, ai_function=ai_0, time_limit=0.001):
+    def play_human_vs_ai(chess_board, ai_function=ai_0, time_limit=30.0):
         app.display_message(f"{ai_function.__name__} is thinking ... 💭", "label2")
-        best_move = ai_function(cboard, time_limit)  # ai_2.run(cboard, 5) # ai_2.run(cboard, 5) # lc0.get_best(cboard, 0.01) #
+        best_move = ai_function(chess_board, time_limit)
 
-        # display messages and update cboard
+        # display messages and update chess_board
         app.display_message(random.choice(comments), "label1")
-        cboard.push(best_move)
-        app.update_board(cboard, True)
-        if cboard.is_game_over():
-            app.display_message(game_status(cboard), "label2")
+        chess_board.push(best_move)
+        app.update_board(chess_board, True)
+        if chess_board.is_game_over():
+            app.display_message(game_status(chess_board), "label2")
         app.update()
         return
 
     def on_chess_move(event):
         # Retrieve the move data from the ChessBoard instance
-        start_pos, end_pos, cboard, passed_value = event.widget.move_data
+        start_pos, end_pos, chess_board, passed_value = event.widget.move_data
 
         random.seed(time.time())
 
-        if cboard.is_game_over():
-            app.display_message(game_status(cboard), "label2")
+        if chess_board.is_game_over():
+            app.display_message(game_status(chess_board), "label2")
             return
 
         if not passed_value:
             return
 
         if passed_value == "save_game":
-            save_game_state(cboard)
+            save_game_state(chess_board)
             return
 
         if passed_value == "make_stockfish_move":
-            play_human_vs_ai(cboard, stockfish, 0.1)
+            play_human_vs_ai(chess_board, stockfish, 0.1)
             return
 
-        if passed_value == "play_stockfish" and cboard.turn == chess.BLACK:
-            play_human_vs_ai(cboard, stockfish, 0.1)
+        if passed_value == "play_stockfish" and chess_board.turn == chess.BLACK:
+            play_human_vs_ai(chess_board, stockfish, 0.1)
             return
 
         """ custom_ai """
-        if passed_value == "custom_ai" and cboard.turn == chess.BLACK:
-            play_human_vs_ai(cboard, ai_0, 0.1)
+        if passed_value == "custom_ai" and chess_board.turn == chess.BLACK:
+            play_human_vs_ai(chess_board, ai_0, 30)
             return
 
         if passed_value == "lc0_vs_stockfish":
-            version_vs_version(cboard, stockfish, stockfish, 0.01)
+            version_vs_version(chess_board, stockfish, stockfish, 0.01)
             return
 
         if passed_value == "myai_vs_stockfish":
-            version_vs_version(cboard, ai_0, stockfish, 0.001)
+            version_vs_version(chess_board, ai_0, stockfish, 30, 0.001)
             return
 
         if passed_value == "version_vs_version":
-            version_vs_version(cboard, ai_0, ai_0)
+            version_vs_version(chess_board, ai_0, ai_0, 30, 30)
             return
 
         return
 
     """ ---------------- load game from database (optional) ------------------------ """
-    tboard = load_game_state()
-    if tboard and tboard.is_game_over(claim_draw=True):
-        tboard.reset()
-    # tboard.reset()
+    start_board = load_game_state()
+    if start_board and start_board.is_game_over(claim_draw=True):
+        start_board.reset()
+    # start_board.reset()
     """ ---------------- load game from database  (optional) ------------------------ """
 
-    if not tboard:
-        tboard = chess.Board()
+    if not start_board:
+        start_board = chess.Board()
 
     app = chess_tk.ChessBoard()
     app.start_game()
-    app.update_board(tboard, True)
+    app.update_board(start_board, True)
     app.bind("<<ChessMove>>", on_chess_move)
 
     """this blocks anything coming after it so everything else is handled in the on_chess_move event 
@@ -202,7 +202,7 @@ comments = [
     "This is a known position with 17.3% chances of leading to a draw. "
     "Let's see if we can make things more interesting.",
     "I have reduced the complexity of the position to increase the accuracy of my calculations.",
-    "I'm anticipating a few possible counterplays from you. My processors are ready.",
+    "I'm anticipating a few possible counter plays from you. My processors are ready.",
     "My move aims to slowly improve my position. Chess is an art of patience.",
     "With that move, I have created a new threat. Can you identify and counter it?",
     "This move serves multiple purposes. A good strategy often has more than one objective.",

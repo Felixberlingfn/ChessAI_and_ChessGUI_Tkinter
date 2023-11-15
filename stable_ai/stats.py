@@ -1,4 +1,4 @@
-from CONSTANTS import MAXIMUM_REAL_DEPTH
+from .CONSTANTS import MAXIMUM_REAL_DEPTH
 
 """ Counters for stats """
 n_extensions: int = 0

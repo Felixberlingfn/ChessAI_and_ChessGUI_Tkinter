@@ -7,8 +7,8 @@ import inspect
 # import timeit
 from typing import Tuple
 from typing import List
-import evaluate_board
-from evaluate_board_new import evaluate_board
+from stable_ai import evaluate_board
+from backup_ai.evaluate_board_new import evaluate_board
 
 """
 Sources:

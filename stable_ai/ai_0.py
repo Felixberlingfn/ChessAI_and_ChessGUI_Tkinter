@@ -1,17 +1,15 @@
-import random
 import chess
+import random
 import datetime
 import time
 import inspect
-import history
-import stats
-from typing import Tuple
-from typing import List
-from evaluate_board import evaluate_board
-from order_moves import order_moves
-from horizon import get_next_depth
-from CONSTANTS import INIT_DEPTH, CAPTURE_EXTENSION, CHECK_EXTENSION
-from order_moves import killer_moves
+
+from . import history, stats
+from .evaluate_board import evaluate_board
+from .order_moves import order_moves
+from .horizon import get_next_depth
+from .CONSTANTS import INIT_DEPTH, CHECK_EXTENSION
+from .order_moves import killer_moves
 
 """
 Sources:
@@ -21,10 +19,10 @@ https://www.chessprogramming.org/Main_Page
 
 end_time = 0
 
-def ai_0(board=None, time_limit=0) -> object:
+def ai_0(board=None, time_limit=30) -> object:
     global end_time
 
-    end_time = time.time() + 30
+    end_time = time.time() + time_limit
 
     """ The main function of the AI """
     stats.n_extensions = 0  # reset

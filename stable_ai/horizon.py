@@ -1,8 +1,8 @@
-from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
-from CONSTANTS import CAPTURE_EXTENSION
-import stats
+from chess import WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
-from typing import List
+
+from .CONSTANTS import CAPTURE_EXTENSION
+from . import stats
 
 
 def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type: int = 0) -> Tuple[int, any, float]:
