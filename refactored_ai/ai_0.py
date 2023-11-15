@@ -7,9 +7,10 @@ import inspect
 from refactored_ai import history, stats
 from refactored_ai.evaluate_board import evaluate_board
 from refactored_ai.order_moves import order_moves
-from refactored_ai.horizon import get_next_depth
+from refactored_ai.next_depth import get_next_depth
 from refactored_ai.CONSTANTS import INIT_DEPTH, CHECK_EXTENSION
 from refactored_ai.order_moves import killer_moves
+
 
 """
 Sources:
@@ -83,7 +84,6 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
 
     """ We do Check Extension Check here (is_check is cheaper than gives_check) """
     if depth == 0 and quiescence_x < 6 and board.is_check():
-        stats.n_extensions += CHECK_EXTENSION  # just for stats
         depth = 1  # extend the search
         quiescence_x += 1  # False becomes 1, then 2 etc. = number of extensions
 
@@ -94,7 +94,6 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
         return final_val_list
 
     ordered_moves, opportunities = order_moves(board, real_depth, material)
-    # number_of_moves = len(ordered_moves)  # now using opportunities
 
     """ MAXIMIZING """
     if max_player:

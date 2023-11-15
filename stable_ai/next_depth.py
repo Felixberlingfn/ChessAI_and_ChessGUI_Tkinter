@@ -5,6 +5,9 @@ from stable_ai.CONSTANTS import CAPTURE_EXTENSION
 from stable_ai import stats
 
 
+debugging_list = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+
 def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type: int = 0) -> Tuple[int, any, float]:
     # gets the depth of the next minimax recursion
     # taking into account depth extension, quiescence and a horizon risk
@@ -28,6 +31,7 @@ def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type
     # default
     if not quiescence_x and depth != 1:
         # we are not doing quiescence search yet and have not yet reached final move
+        debugging_list[0] += 1
         return depth - 1, False, 0  # quiet_search=False
 
     """ start quiescence search """
@@ -38,6 +42,7 @@ def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type
         # we are reaching final node and are not yet performing quiescence search
         if move_type in [1, 2]:  # 1=capture, 2=promo, 3=check is tested by is_check
             stats.n_extensions += CAPTURE_EXTENSION  # just for stats
+            debugging_list[1] += 1
             return (depth + CAPTURE_EXTENSION), True, 0  # quiet_search=True starts quiescence search
         else:
             return 0, False, 0
@@ -48,6 +53,7 @@ def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type
         # I know gives_check is expensive but here it is checked less often
         if move_type in [1, 2]:    # 1=capture, 2=promo, 3=check
             # we don't need board.gives_check(move) because otherwise we extend with is_check
+            debugging_list[2] += 1
             return depth - 1, quiescence_x, 0  # continue quiet_search
         else:
             """ unless this causes a check this ends quiescence search """
@@ -64,19 +70,22 @@ def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type
                 stats.n_extensions += 1
                 return 1, quiescence_x + 1, 0"""
 
-            if quiescence_x < 3 and (risk > 1 or risk < -1):  # > 1 = bishop/horse
+            if quiescence_x == 1 and (risk > 1 or risk < -1):  # > 1 = bishop/horse
                 """ extra (second) quiescence extension when more than bishop capture"""
                 stats.n_extensions += 1
+                debugging_list[3] += 1
                 return 1, quiescence_x + 1, 0
 
-            elif quiescence_x < 4 and (risk > 2 or risk < -2):    # > 2 = rook
+            elif quiescence_x == 2 and (risk > 2 or risk < -2):    # > 2 = rook
                 """ extra (third) quiescence extension when more than rook capture """
                 stats.n_extensions += 1
+                debugging_list[4] += 1
                 return 1, quiescence_x + 1, 0
 
-            elif quiescence_x < 5 and (risk > 4 or risk < -4):  # > 4 = queen
+            elif quiescence_x == 3 and (risk > 4 or risk < -4):  # > 4 = queen
                 """ extra (fourth) quiescence extension when queen capture """
                 stats.n_extensions += 1
+                debugging_list[5] += 1
                 return 1, quiescence_x + 1, 0
 
             """ too many extensions, evaluate with horizon risk value (50% of attacker value) """
@@ -85,12 +94,14 @@ def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type
         """ extend promotions too """
         if move_type == 2 and quiescence_x < 5:  # 2 = promotion
             stats.n_extensions += 1
+            debugging_list[6] += 1
             return 2, quiescence_x + 1, 0
 
         """ unless this causes a check this ends quiescence search """
         return 0, quiescence_x, 0
 
     # quiescence default
+    debugging_list[7] += 1
     return depth-1, quiescence_x, 0  # quiet_search=True
 
 
