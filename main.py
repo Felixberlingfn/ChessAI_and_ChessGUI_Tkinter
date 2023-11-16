@@ -4,8 +4,8 @@ import chess_tk
 import random
 import time
 
-from stable_ai.ai_0 import ai_0
-import stable_ai_v2
+from stable_ai import ai_0
+from stable_ai_v2 import ai_0 as v2
 from stockfish import stockfish
 
 
@@ -21,11 +21,11 @@ def main():
 
             if i % 2 == 0:
                 print(version_a.__name__)
-                app.display_message(f"{version_a.__name__} is thinking 💭", "label2")
+                app.display_message(f"version_a is thinking 💭", "label2")
                 ai_move = version_a(chess_board, time_limit_1)
             else:
                 print(version_b.__name__)
-                app.display_message(f"{version_b.__name__} is thinking 💭", "label2")
+                app.display_message(f"version_b is thinking 💭", "label2")
                 ai_move = version_b(chess_board, time_limit_2)
 
             if ai_move is None:
@@ -98,7 +98,7 @@ def main():
             return
 
         if passed_value == "version_vs_version":
-            version_vs_version(chess_board, ai_0, stable_ai_v2.ai_0, 30, 30)
+            version_vs_version(chess_board, ai_0, v2,  30, 30)
             return
 
         return

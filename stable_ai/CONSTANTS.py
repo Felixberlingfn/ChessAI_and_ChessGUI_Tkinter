@@ -1,11 +1,11 @@
 """ Constants """
-INIT_DEPTH = 7  # initial depth for minimax
-# QUIESCENCE_START = 5
-REAL_QUIESCENCE_START = 2  # now in real depth
-
+INIT_DEPTH = 6  # initial depth for minimax
+REAL_QUIESCENCE_START = 3  # now in real depth
+CHECK_X_LIMITER = 15  # using real_depth
+MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 1
 
 """ for evaluations """
-HORIZON_RISK_MULTIPLIER = 0.5
+HORIZON_RISK_MULTIPLIER = 0.6
 OPPORTUNITY_MULTIPLIER = 0.010  # it is really difficult to find the right value
 GOOD_POS_BONUS = 0.1  # this has been working alright
 BAD_POS_PUNISH = 0.01  # keep this low
@@ -16,8 +16,7 @@ ROOK_THRESH = 5 * HORIZON_RISK_MULTIPLIER - 0.1
 QUEEN_THRESH = 9 * HORIZON_RISK_MULTIPLIER - 0.1
 
 REAL_DEPTH_AND_THRESHOLDS = ((INIT_DEPTH + 0, KNIGHT_THRESH), (INIT_DEPTH + 2, ROOK_THRESH), (INIT_DEPTH + 4, QUEEN_THRESH))
-CHECK_X_LIMITER = 20  # using real_depth
-MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 1
+
 
 """ for readability """
 CALM = 0
