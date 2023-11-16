@@ -7,8 +7,8 @@ import inspect
 from stable_ai import history, stats
 from stable_ai.evaluate_board import evaluate_board
 from stable_ai.order_moves import order_moves
-from stable_ai.next_depth import get_next_depth
-from stable_ai.CONSTANTS import INIT_DEPTH, CHECK_EXTENSION
+from stable_ai.depth import adjust_depth
+from stable_ai.CONSTANTS import INIT_DEPTH, CHECK_EXTENSION, CHECK_X_LIMITER
 from stable_ai.order_moves import killer_moves
 
 
@@ -74,17 +74,21 @@ def ai_0(board=None, time_limit=30) -> object:
         return False
 
 
-def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), quiescence_x=False,
-            horizon_risk=0.0, opportunities=0, material=0, real_depth=0) -> list:
-    """ Minimax returns optimal value for current player """
-
+def update_depth_stats(real_depth):
     if real_depth > stats.max_real_depth:
         stats.max_real_depth = real_depth  # just for stats
     stats.distribution[real_depth] += 1
 
+
+def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), quiescence_x=False,
+            horizon_risk=0.0, opportunities=0, material=0, real_depth=0, make_up_difference=0) -> list:
+    """ Minimax returns optimal value for current player """
+
+    update_depth_stats(real_depth)
+
     """ We do Check Extension Check here (is_check is cheaper than gives_check) """
-    if depth == 0 and quiescence_x < 6 and board.is_check():
-        depth = CHECK_EXTENSION  # extend the search
+    if depth == 0 and quiescence_x < CHECK_X_LIMITER and board.is_check():
+        depth = CHECK_EXTENSION + make_up_difference  # extend the search
         quiescence_x += 1  # False becomes 1, then 2 etc. = number of extensions
 
     if depth == 0 or board.is_game_over() or time.time() > end_time:
@@ -101,13 +105,13 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
         best_list: list = [best]
         """ Loop through moves """
         for move, move_type, material_balance, _ in ordered_moves:
-            next_depth, new_quiescence, next_horizon_risk = get_next_depth(board, move, depth, quiescence_x,
-                                                                           move_type, )
+            next_depth, new_quiescence, next_horizon_risk, check_make_up = adjust_depth(board, move, depth,
+                                                                                        quiescence_x, move_type)
             """ Chess  move"""
             board.push(move)
             """ Recursive Call and Value Updating """
             val_list: list = minimax(board, next_depth, False, alpha, beta, new_quiescence,
-                                     next_horizon_risk, opportunities, material_balance, real_depth + 1)
+                                     next_horizon_risk, opportunities, material_balance, real_depth + 1, check_make_up)
             if val_list[0] >= best_list[0]:
                 best_list = val_list  # use the evaluation list as the new best list
                 best_list.append(board.uci(move))   # append the move history
@@ -131,13 +135,13 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), qu
         best_list: list = [best]
         # loop through moves
         for move, move_type, material_balance, _ in ordered_moves:
-            next_depth, new_quiescence, next_horizon_risk = get_next_depth(board, move, depth, quiescence_x,
-                                                                           move_type)
+            next_depth, new_quiescence, next_horizon_risk, check_make_up = adjust_depth(board, move, depth,
+                                                                                        quiescence_x, move_type)
             # Chess  move"""
             board.push(move)
             # Recursive Call and Value Updating"""
             val_list: list = minimax(board, next_depth, True, alpha, beta, new_quiescence,
-                                     next_horizon_risk, opportunities, material_balance, real_depth + 1)
+                                     next_horizon_risk, opportunities, material_balance, real_depth + 1, check_make_up)
             if val_list[0] <= best_list[0]:
                 best_list = val_list
                 best_list.append(board.uci(move))  # append the move history

@@ -1,13 +1,13 @@
 from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 
-from stable_ai.CONSTANTS import CAPTURE_EXTENSION, PROMOTION_EXTENSION, HORIZON_RISK_MULTIPLIER
+from stable_ai.CONSTANTS import (CAPTURE_EXTENSION, PROMOTION_EXTENSION, HORIZON_RISK_MULTIPLIER, QUIESCENCE_START,
+                                 CAPTURE, PROMOTION)
 from stable_ai import stats
-from stable_ai.CONSTANTS import QUIESCENCE_START, CAPTURE, PROMOTION
 
 
-def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type: int = 0) -> Tuple[int, any, float]:
-    # gets the next depth of the minimax recursion, based on quiescence and risk
+def adjust_depth(board, move, depth: int, quiescence_x: any = False, move_type: int = 0) -> Tuple[int, any, float, int]:
+    # adjusts the current depth based on if the last move was capture, promotion, or gave check
 
     def calculate_horizon_risk() -> float:
         # because of horizon uncertainty let's not overvalue the capture
@@ -30,15 +30,15 @@ def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type
 
     """ 1) default """
     if depth > QUIESCENCE_START:
-        return depth - 1, False, 0
+        return depth - 1, False, 0, 0
 
     """ 2) end search early checks """
     if depth <= QUIESCENCE_START and depth != 1:
         if move_type in [CAPTURE, PROMOTION]:
-            return depth - 1, True, 0
+            return depth - 1, True, 0, 0
         else:
             stats.n_early_end += 1
-            return 0, True, 0
+            return 0, True, 0, depth - 1
 
     """ 3) extra quiescence extensions """
     if depth == 1:
@@ -46,23 +46,23 @@ def get_next_depth(board, move, depth: int, quiescence_x: any = False, move_type
         if move_type == CAPTURE:
             risk = calculate_horizon_risk()
             if add_risk_based_extension():
-                return CAPTURE_EXTENSION, quiescence_x + 1, 0
+                return CAPTURE_EXTENSION, quiescence_x + 1, 0, 0
             else:
-                return 0, quiescence_x, risk
+                return 0, quiescence_x, risk, 0
 
         # type promotion
         if move_type == PROMOTION:
             if quiescence_x < 5:
-                return PROMOTION_EXTENSION, quiescence_x + 1, 0
+                return PROMOTION_EXTENSION, quiescence_x + 1, 0, 0
             else:
                 promotion_risk = HORIZON_RISK_MULTIPLIER if board.turn == WHITE else - HORIZON_RISK_MULTIPLIER
-                return 0, quiescence_x + 1, promotion_risk
+                return 0, quiescence_x + 1, promotion_risk, 0
 
         # type calm or gives_check
-        return 0, quiescence_x, 0
+        return 0, quiescence_x, 0, 0
 
     """ 4) Default Fallback """
-    return depth - 1, quiescence_x, 0
+    return depth - 1, quiescence_x, 0, 0
 
 
 def get_piece_value(piece) -> int:  # expects piece object not piece type
