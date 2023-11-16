@@ -126,7 +126,7 @@ class ChessBoard(tk.Tk):
         self.make_stockfish_move_button = ttk.Button(self, text="STOP AI VS AI", command=lambda: self.stop_ai_vs_ai())
         self.make_stockfish_move_button.place(x=10, y=500)
 
-        self.lc0_vs_stockfish_button = ttk.Button(self, text="0 lc0 vs stockfish", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "lc0_vs_stockfish"))
+        self.lc0_vs_stockfish_button = ttk.Button(self, text="stockfish vs stockfish", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "lc0_vs_stockfish"))
         self.lc0_vs_stockfish_button.place(x=10, y=220)
 
         self.ai_vs_stockfish_button = ttk.Button(self, text="🤖 My ai vs. stockfish", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "myai_vs_stockfish"))

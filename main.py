@@ -94,7 +94,7 @@ def main():
             return
 
         if passed_value == "myai_vs_stockfish":
-            version_vs_version(chess_board, ai_0, stockfish, 30, 0.001)
+            version_vs_version(chess_board, ai_0, stockfish, 30, 0.010)
             return
 
         if passed_value == "version_vs_version":
