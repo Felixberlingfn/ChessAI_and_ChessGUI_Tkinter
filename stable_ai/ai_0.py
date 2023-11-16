@@ -88,7 +88,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
     if depth == 0 and real_depth < CHECK_X_LIMITER and board.is_check():
         depth = 1 + make_up_difference
 
-    if depth == 0 or board.is_game_over() or time.time() > end_time:
+    if depth == 0 or board.is_game_over():  # or time.time() > end_time:
         """ Final Node reached. Do the Evaluation of the board """
         final_val_list = evaluate_board(board, horizon_risk, opportunities, material)
         stats.n_evaluated_leaf_nodes += 1

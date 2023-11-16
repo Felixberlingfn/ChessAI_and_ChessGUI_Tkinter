@@ -2,10 +2,7 @@ import chess
 import inspect
 import timeit
 
-""" Constants """
-MOBILITY_MULTIPLIER = 0.010  # it is really difficult to find the right value
-GOOD_POS_BONUS = 0.1  # this has been working alright
-BAD_POS_PUNISH = 0.01  # keep this low
+from stable_ai_v2.CONSTANTS import OPPORTUNITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH
 
 def run(board, testing=False) -> list:
     """ wrapper for evaluate_board() - runs when not imported as module """
@@ -24,10 +21,10 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> l
     if board.is_checkmate():
         if board.turn == chess.WHITE:  # is turn dependent
             """great for black"""
-            final_val[0] = -99999999
+            final_val[0] = -9999999999
         else:
             """great for white"""
-            final_val[0] = 99999999
+            final_val[0] = 9999999999
 
     """ adding extra values to simple material balance """
     pos = get_position_score(board) * 100  # centi-pawns is convention
@@ -40,7 +37,7 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> l
     """ append details to list for stats """
     final_val.append(pos)
     final_val.append(mob)
-    final_val.append(-horizon_risk * 100)
+    final_val.append(- horizon_risk * 100)
 
     return final_val
 
@@ -222,11 +219,11 @@ def get_opportunity_score(board, opportunity_score) -> float:
     opportunity_score_black = 0
 
     if board.turn == chess.WHITE:
-        opportunity_score_white = get_opportunities() * MOBILITY_MULTIPLIER
-        opportunity_score_black = opportunity_score * MOBILITY_MULTIPLIER
+        opportunity_score_white = get_opportunities() * OPPORTUNITY_MULTIPLIER
+        opportunity_score_black = opportunity_score * OPPORTUNITY_MULTIPLIER
     if board.turn == chess.BLACK:
-        opportunity_score_black = get_opportunities() * MOBILITY_MULTIPLIER
-        opportunity_score_white = opportunity_score * MOBILITY_MULTIPLIER
+        opportunity_score_black = get_opportunities() * OPPORTUNITY_MULTIPLIER
+        opportunity_score_white = opportunity_score * OPPORTUNITY_MULTIPLIER
 
     # approximating this from previous move saves time
     # null move would also just be an approximation

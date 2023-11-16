@@ -5,13 +5,13 @@ REAL_QUIESCENCE_START = 2  # now in real depth
 
 
 """ for evaluations """
-HORIZON_RISK_MULTIPLIER = 0.5
+HORIZON_RISK_MULTIPLIER = 0.6
 OPPORTUNITY_MULTIPLIER = 0.010  # it is really difficult to find the right value
 GOOD_POS_BONUS = 0.1  # this has been working alright
 BAD_POS_PUNISH = 0.01  # keep this low
 
 """ for depth adjustment """
-KNIGHT_THRESH = 3 * HORIZON_RISK_MULTIPLIER - 0.1
+KNIGHT_THRESH = 3 * HORIZON_RISK_MULTIPLIER - 0.1  # at final step we extend based on horizon risk
 ROOK_THRESH = 5 * HORIZON_RISK_MULTIPLIER - 0.1
 QUEEN_THRESH = 9 * HORIZON_RISK_MULTIPLIER - 0.1
 

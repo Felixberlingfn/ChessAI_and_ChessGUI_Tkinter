@@ -2,12 +2,9 @@ from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 from typing import List
 
-from refactored_ai import history
-from refactored_ai.CONSTANTS import MAXIMUM_REAL_DEPTH
+from stable_ai_v2 import history
+from stable_ai_v2.CONSTANTS import MAXIMUM_REAL_DEPTH, CALM, CAPTURE, PROMOTION
 
-CALM = 0
-CAPTURE = 1
-PROMOTION = 2
 
 """ Lists for improved move ordering"""
 # Initialize the killer moves table with None. Each depth has two slots for killer moves.
