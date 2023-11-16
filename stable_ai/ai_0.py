@@ -8,7 +8,7 @@ from stable_ai import history, stats
 from stable_ai.evaluate_board import evaluate_board
 from stable_ai.order_moves import order_moves
 from stable_ai.depth import adjust_depth
-from stable_ai.CONSTANTS import INIT_DEPTH, CHECK_EXTENSION, CHECK_X_LIMITER
+from stable_ai.CONSTANTS import INIT_DEPTH, CHECK_X_LIMITER
 from stable_ai.order_moves import killer_moves
 
 
@@ -86,7 +86,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
 
     """ We do Check Extension Check here (is_check is cheaper than gives_check) """
     if depth == 0 and real_depth < CHECK_X_LIMITER and board.is_check():
-        depth = CHECK_EXTENSION + make_up_difference
+        depth = 1 + make_up_difference
 
     if depth == 0 or board.is_game_over() or time.time() > end_time:
         """ Final Node reached. Do the Evaluation of the board """

@@ -10,7 +10,6 @@ from stockfish import stockfish
 
 def main():
     """  ---------------------------   chess_tk gui --------------------------------------------------------"""
-
     def version_vs_version(chess_board, version_a, version_b, time_limit_1=0.001, time_limit_2=0.001):
         for i in range(999999999):
             save_game_state(chess_board)
