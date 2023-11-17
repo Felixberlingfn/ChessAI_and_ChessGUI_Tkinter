@@ -2,7 +2,7 @@ from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 
 from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_QUIESCENCE_START,
-                        REAL_DEPTH_AND_THRESHOLDS, REAL_QUIESCENCE_START)
+                        REAL_DEPTH_AND_THRESHOLDS, REAL_QUIESCENCE_START, CHECK_X_LIMITER)
 from . import stats
 
 
@@ -32,19 +32,28 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
                 if risk >= threshold or risk <= - threshold:  # 1=B/N 2=R 3=Q
                     return True
 
-    """ 1) default 
-    using a number of evals based quiescence start, and we should at least start quiescence at depth 2"""
-    if depth > 2 and stats.n_evaluated_leaf_nodes < EVAL_BASED_QUIESCENCE_START:
+    """ 1) default """
+    if real_depth < REAL_QUIESCENCE_START:
         return depth - 1, 0, 0
 
-    """ 2) end search early checks """
-    if depth > 1:
-        if move_type in [CAPTURE, PROMOTION] or real_depth < REAL_QUIESCENCE_START:  # minimum depth
+    """ 1 B) for most promising moves (ordered high) evaluate until defined number is reached
+    but no further than 3 (next is 2) because we need at least one quiescence check
+    This is essentially a minimum before starting quiescence"""
+    if depth > 3 and stats.n_evaluated_leaf_nodes < EVAL_BASED_QUIESCENCE_START:
+        return depth - 1, 0, 0
+
+    """ 2) end search early checks (simple quiescence without risk, just continue if capture or promotion)"""
+    if depth > 1:  # implement a time limiter here
+        if move_type in [CAPTURE, PROMOTION]:
             return depth - 1, 0, 0
         else:
             difference = depth - 2
-            # print(f"{real_depth}: {difference}")
             return 0, 0, difference
+
+    """ 2 B)"""
+    if depth == 1 and real_depth < CHECK_X_LIMITER and stats.n_evaluated_leaf_nodes < EVAL_BASED_QUIESCENCE_START:
+        if move_type in [CAPTURE, PROMOTION]:
+            return 1, 0, 0
 
     """ 3) extra quiescence extensions """
     """ depth == 1 """
@@ -58,7 +67,7 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
 
     # type promotion
     if move_type == PROMOTION:
-        if real_depth < 10:
+        if real_depth < 14:
             return 1, 0, 0
         else:
             promotion_risk = HORIZON_RISK_MULTIPLIER if board.turn == WHITE else - HORIZON_RISK_MULTIPLIER

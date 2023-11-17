@@ -1,11 +1,11 @@
 """ Constants """
 INIT_DEPTH = 7  # after this depth only checks and captures with high value pieces are further investigated
-EVAL_BASED_QUIESCENCE_START = 145000  # increasing this means wider search but slower
+EVAL_BASED_QUIESCENCE_START = 100000  # increasing this means wider search but slower
 REAL_QUIESCENCE_START = 2  # increasing this means wider search
 LATEST_QUIESCENCE_START = INIT_DEPTH - 2
 
 CHECK_X_LIMITER = 15  # using real_depth
-MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 1
+MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 3
 
 """ for evaluations """
 HORIZON_RISK_MULTIPLIER = 0.6

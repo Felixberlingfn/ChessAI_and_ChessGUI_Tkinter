@@ -2,14 +2,8 @@ from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 from typing import List
 
-from . import history
+from .tables import history_table, killer_moves
 from .CONSTANTS import MAXIMUM_REAL_DEPTH, CALM, CAPTURE, PROMOTION
-
-
-""" Lists for improved move ordering"""
-# Initialize the killer moves table with None. Each depth has two slots for killer moves.
-# The length is depth + max depth extension + estimate for check extension
-killer_moves = [[None, None] for _ in range(MAXIMUM_REAL_DEPTH)]
 
 
 def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
@@ -74,7 +68,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
 
     """ Third: Sorting """
     captures.sort(key=lambda a: a[3], reverse=True)
-    quiet_moves.sort(key=lambda m: history.table[m[0].from_square][m[0].to_square], reverse=True)
+    quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
 
     return (checks + promotions + captures + quiet_killer_moves + quiet_moves), opportunities
 

@@ -8,11 +8,12 @@ from stable_ai import ai_0
 from stable_ai_v2 import ai_0 as v2
 from stable_ai_v3 import ai_0 as v3
 from stable_ai_v4 import ai_0 as v4
+from stable_ai_v5 import ai_0 as v5
 from stockfish import stockfish
 
 
-ai_player_1 = v4
-ai_player_2 = v2
+ai_player_1 = v2
+ai_player_2 = v5
 ai_playing_against_human = v2
 
 

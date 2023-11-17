@@ -11,7 +11,7 @@ from .evaluate_board import evaluate_board
 from .order_moves import order_moves
 from .depth import adjust_depth
 from .CONSTANTS import INIT_DEPTH, CHECK_X_LIMITER
-from .order_moves import killer_moves
+from .tables import add_to_killers_and_history
 
 
 """
@@ -121,12 +121,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
             board.pop()
             """ Alpha Beta Pruning """
             if beta <= alpha:
-                """ Killer moves for move ordering """
-                if move not in killer_moves[real_depth]:
-                    killer_moves[real_depth].insert(0, move)
-                    killer_moves[real_depth].pop()
-                """ Update history table """
-                history.update(move.from_square, move.to_square, depth)
+                add_to_killers_and_history(move, real_depth)
                 break
         return best_list
 
@@ -151,12 +146,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
             board.pop()
             # Alpha Beta Pruning"""
             if beta <= alpha:
-                # Killer moves for move ordering
-                if move not in killer_moves[real_depth]:
-                    killer_moves[real_depth].insert(0, move)
-                    killer_moves[real_depth].pop()
-                # Update history table
-                history.update(move.from_square, move.to_square, depth)
+                add_to_killers_and_history(move, real_depth)
                 break
         return best_list
 
