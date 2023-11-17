@@ -1,5 +1,4 @@
 """ from root: python -m stable_ai_YOUR_VERSION.ai_0 """
-
 import chess
 import random
 import datetime
@@ -120,13 +119,9 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
             """ Undo Chess  move """
             board.pop()
             """ Alpha Beta Pruning """
+            if real_depth == 0: stats.top_moves.append(val_list)
             if beta <= alpha:
-                """ Killer moves for move ordering """
-                if move not in killer_moves[real_depth]:
-                    killer_moves[real_depth].insert(0, move)
-                    killer_moves[real_depth].pop()
-                """ Update history table """
-                history.update(move.from_square, move.to_square, depth)
+                add_to_killers_and_history(move, real_depth)
                 break
         return best_list
 
@@ -150,16 +145,20 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
             # Undo Chess  move"""
             board.pop()
             # Alpha Beta Pruning"""
+            if real_depth == 0: stats.top_moves.append(val_list)
             if beta <= alpha:
-                # Killer moves for move ordering
-                if move not in killer_moves[real_depth]:
-                    killer_moves[real_depth].insert(0, move)
-                    killer_moves[real_depth].pop()
-                # Update history table
-                history.update(move.from_square, move.to_square, depth)
+                add_to_killers_and_history(move, real_depth)
                 break
         return best_list
 
+
+def add_to_killers_and_history(move, real_depth):
+    """ Killer moves for move ordering """
+    if move not in killer_moves[real_depth]:
+        killer_moves[real_depth].insert(0, move)
+        killer_moves[real_depth].pop()
+    """ Update history table """
+    history.update(move.from_square, move.to_square, real_depth)  # was depth
 
 def get_piece_value(piece) -> int:  # expects piece object not piece type
     piece_values = {
@@ -197,6 +196,8 @@ def print_results_and_stats(board, best_move_at_index_depth):
 
     if board.is_capture(move_object):
         print(f"Captured: {board.piece_at(move_object.to_square)}")
+
+    print(stats.top_moves)
 
     # print(killer_moves)
 

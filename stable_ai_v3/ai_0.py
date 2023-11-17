@@ -1,3 +1,4 @@
+""" from root: python -m stable_ai_YOUR_VERSION.ai_0 """
 import chess
 import random
 import datetime
