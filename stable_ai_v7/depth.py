@@ -11,8 +11,10 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
 
     # real_depth_and_qx = ((7, 1), (8, 2), (9, 3))
 
-    """if quiescence_x == 5:
-        print(f"{real_depth} : {quiescence_x} : {depth}")  # {check_x} : {make_up_difference}"""
+    """ CHANGE ALL THIS TO MAKE NORMAL SEARCH IN POSITIVE DEPTH; THEN QUIESCENCE SEARCH
+    IN NEGATIVE DEPTH, THAT WILL MAKE THE WHOLE LOGIC EASIER. WHEN STARTING QUIESCENCE
+    SIMPLY SET THE DEPTH TO FOR EXAMPLE -7 AND IN QUIESCEN COUNT UP INSTEAD OF DOWN"""
+
 
     def calculate_horizon_risk() -> float:
         # because of horizon uncertainty let's not overvalue the capture
