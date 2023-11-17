@@ -76,7 +76,6 @@ def get_pins_score(board):
 
 def get_position_score(board) -> float:
     """PLUS MEANS GOOD FOR WHITE"""
-    """ List of common good pawn positions for white """
     score = 0
 
     """WHITE"""

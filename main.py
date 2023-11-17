@@ -12,6 +12,7 @@ from stockfish import stockfish
 
 ai_player_1 = v2
 ai_player_2 = v3
+ai_playing_against_human = v2
 
 
 def main():
@@ -91,7 +92,7 @@ def main():
 
         """ custom_ai """
         if passed_value == "custom_ai" and chess_board.turn == chess.BLACK:
-            play_human_vs_ai(chess_board, ai_0, 30)
+            play_human_vs_ai(chess_board, ai_playing_against_human, 30)
             return
 
         if passed_value == "lc0_vs_stockfish":

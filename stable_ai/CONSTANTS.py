@@ -1,7 +1,8 @@
 """ Constants """
-INIT_DEPTH = 6  # initial depth for minimax
-REAL_QUIESCENCE_START = 3  # now in real depth
-CHECK_X_LIMITER = 15  # using real_depth
+INIT_DEPTH = 6  # after this depth only checks and captures with high value pieces are further investigated
+REAL_QUIESCENCE_START = 3  # increasing this means wider search
+CHECK_X_LIMITER = 15  # absolute limit for increases even when a check happens
+
 MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 1
 
 """ for evaluations """

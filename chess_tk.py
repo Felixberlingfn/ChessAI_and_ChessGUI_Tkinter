@@ -74,9 +74,9 @@ class ChessBoard(tk.Tk):
         self.state('zoomed')
         self.title("Chess TK")
         self.chess_board_object = chess_board_object
-        self.black_square_color = "burlywood" #"dimgray" #burlywood
-        self.white_square_color = "snow" #lightgray" #snow
-        self.piece_color = {"black": "black", "white":"dimgray", "":""}
+        self.black_square_color = "burlywood"  # "dimgray"
+        self.white_square_color = "snow"  # lightgray"
+        self.piece_color = {"black": "black", "white": "dimgray", "": ""}
 
         self.chess_font = ("Arial", 48, "bold")
 
@@ -165,10 +165,7 @@ class ChessBoard(tk.Tk):
         self.int_510 = int(510 * zoom)
 
     def stop_ai_vs_ai(self):
-        # set a stop ai vs ai variable or remove the ai vs ai variable
-        # the problem is currently the ai vs ai runs in a loop und I don't think the gui is responsive during that
-        # probably best to let the ai make a move, wait for a new event and make the next move by the other ai
-        # then I have to decide though who is black and who is white
+        # requires multithreading
         pass
 
     def handle_move_by_ai(self):
@@ -573,7 +570,7 @@ class ChessBoard(tk.Tk):
             self.remove_all_outlining()
             self.handle_red_outlining()
             self.update_board(chess_board_object)
-        else: # chess board stored
+        else:  # chess board stored
             try:
                 self.chess_board_object.pop()
             except:
@@ -620,9 +617,6 @@ def style_color(abbr):
     if abbr.islower():
         return "black"
     else:
-        #return "snow" #"dimgray"
-        #return "deeppink"
-        #return "midnightblue"
         return "crimson"
 
 
