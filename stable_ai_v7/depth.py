@@ -2,7 +2,8 @@ from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 
 from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_QUIESCENCE_START,
-                        REAL_DEPTH_AND_THRESHOLDS, REAL_QUIESCENCE_START, CHECK_X_LIMITER)
+                        REAL_DEPTH_AND_THRESHOLDS, REAL_QUIESCENCE_START, CHECK_X_LIMITER,
+                        KNIGHT_THRESH)
 from . import stats
 
 
@@ -26,6 +27,14 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
         return horizon_risk
 
     def add_risk_based_extension():
+        """REAL_DEPTH_AND_THRESHOLDS =
+        ((7 + 0, KNIGHT_THRESH), (7 + 2, ROOK_THRESH), (7 + 4, QUEEN_THRESH))
+
+        INSTEAD OF REAL DEPTH: QUIESCENCE STARTS IN NEGATIVE DEPTH
+        E.G.:
+        ((-7, NO_THRESH),(-7, KNIGHT_THRESH), (-7 + 2, ROOK_THRESH), (-7 + 4, QUEEN_THRESH))
+"""
+        new_thresholds = ((-7, 0), (-7, KNIGHT_THRESH), (-7 + 2, ROOK_THRESH), (-7 + 4, QUEEN_THRESH))
         if real_depth > REAL_DEPTH_AND_THRESHOLDS[2][0]:  # already too many extensions
             return False
         # risk threshold based on how many extensions already added
@@ -34,13 +43,11 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
                 if risk >= threshold or risk <= - threshold:  # 1=B/N 2=R 3=Q
                     return True
 
-    """ 1) default """
+    """ 1) # never start quiescence before this"""
     if real_depth < REAL_QUIESCENCE_START:
         return depth - 1, 0, 1
 
-    """ 1 B) for most promising moves (ordered high) evaluate until defined number is reached
-    but no further than 3 (next is 2) because we need at least one quiescence check
-    This is essentially a minimum before starting quiescence"""
+    """ 1 B) Start quiescence if limit of nodes reached or when we reach X"""
     if depth > 3 and stats.n_evaluated_leaf_nodes < EVAL_BASED_QUIESCENCE_START:
         return depth - 1, 0, 1
 
@@ -52,9 +59,9 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
             return 0, 0, depth - 1
 
     """ 2 B)"""
-    if depth == 1 and real_depth < CHECK_X_LIMITER and stats.n_evaluated_leaf_nodes < EVAL_BASED_QUIESCENCE_START:
+    """if depth == 1 and real_depth < CHECK_X_LIMITER and stats.n_evaluated_leaf_nodes < EVAL_BASED_QUIESCENCE_START:
         if move_type in [CAPTURE, PROMOTION]:
-            return 1, 0, 1
+            return 1, 0, 1"""
 
     """ 3) extra quiescence extensions """
     """ depth == 1 """
