@@ -2,7 +2,7 @@ import chess
 import inspect
 import timeit
 
-from stable_ai_v2.CONSTANTS import OPPORTUNITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH
+from .CONSTANTS import OPPORTUNITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH
 
 def run(board, testing=False) -> list:
     """ wrapper for evaluate_board() - runs when not imported as module """

@@ -2,7 +2,8 @@ import chess
 import inspect
 import timeit
 
-from .CONSTANTS import OPPORTUNITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH
+from .CONSTANTS import MOBILITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH
+
 
 def run(board, testing=False) -> list:
     """ wrapper for evaluate_board() - runs when not imported as module """
@@ -12,7 +13,7 @@ def run(board, testing=False) -> list:
     return evaluate_board(board)
 
 
-def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> list:
+def evaluate_board(board, horizon_risk=0.0, mobility=0, material=None) -> list:
     """ Simplistic but most important: Material Balance + White - Black"""
     material_balance = material if material else get_material_balance(board)
 
@@ -28,7 +29,7 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> l
 
     """ adding extra values to simple material balance """
     pos = get_position_score(board) * 100  # centi-pawns is convention
-    mob = get_opportunity_score(board, opportunities) * 100  # centi-pawns is convention
+    mob = get_mobility_score(board, mobility) * 100  # centi-pawns is convention
 
     final_val[0] += pos
     final_val[0] += mob  # is turn dependent
@@ -71,7 +72,6 @@ def get_pins_score(board):
                     pin_value += get_piece_value(piece) * 0.2
 
     return pin_value * 100
-
 
 
 def get_position_score(board) -> float:
@@ -194,7 +194,7 @@ def get_position_score(board) -> float:
     return score
 
 
-def get_opportunity_score(board, opportunity_score) -> float:
+def get_mobility_score(board, mobility_score) -> float:
     def get_opportunities() -> int:
         moves = board.legal_moves
         opportunities = 0
@@ -215,15 +215,15 @@ def get_opportunity_score(board, opportunity_score) -> float:
         return opportunities
 
     """PLUS MEANS GOOD FOR WHITE"""
-    opportunity_score_white = 0
-    opportunity_score_black = 0
+    mobility_score_white = 0
+    mobility_score_black = 0
 
     if board.turn == chess.WHITE:
-        opportunity_score_white = get_opportunities() * OPPORTUNITY_MULTIPLIER
-        opportunity_score_black = opportunity_score * OPPORTUNITY_MULTIPLIER
+        mobility_score_white = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
+        mobility_score_black = mobility_score * MOBILITY_MULTIPLIER
     if board.turn == chess.BLACK:
-        opportunity_score_black = get_opportunities() * OPPORTUNITY_MULTIPLIER
-        opportunity_score_white = opportunity_score * OPPORTUNITY_MULTIPLIER
+        mobility_score_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
+        mobility_score_white = mobility_score * MOBILITY_MULTIPLIER
 
     # approximating this from previous move saves time
     # null move would also just be an approximation
@@ -234,7 +234,7 @@ def get_opportunity_score(board, opportunity_score) -> float:
         mobility_black = len(list(board.legal_moves)) * MOBILITY_MULTIPLIER
     board.pop()"""
 
-    return opportunity_score_white - opportunity_score_black
+    return mobility_score_white - mobility_score_black
 
 
 def get_piece_value(piece) -> int:

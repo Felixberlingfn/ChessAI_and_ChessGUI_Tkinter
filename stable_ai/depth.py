@@ -1,9 +1,9 @@
 from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 
-from stable_ai.CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, REAL_QUIESCENCE_START,
+from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, REAL_QUIESCENCE_START,
                                  REAL_DEPTH_AND_THRESHOLDS)
-from stable_ai import stats
+from . import stats
 
 
 def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 0,) -> Tuple[int, float, int]:
@@ -24,7 +24,7 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
         return horizon_risk
 
     def add_risk_based_extension():
-        if real_depth > 10:  # already too many extensions
+        if real_depth > REAL_DEPTH_AND_THRESHOLDS[2][0]:  # already too many extensions
             return False
         # risk threshold based on how many extensions already added
         for real_depth_limit, threshold in REAL_DEPTH_AND_THRESHOLDS:

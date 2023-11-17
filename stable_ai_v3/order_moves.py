@@ -28,10 +28,11 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
     promotions: List[tuple] = []
     quiet_moves: List[tuple] = []
     quiet_killer_moves: List[tuple] = []
-    opportunities = 0
+    mobility = 0
 
     """ Second: Separate captures, checks, killer moves and quiet moves"""
     for move in moves:
+        mobility += 1
         if board.is_capture(move):
             """ We can already calculate material balance change, save time later"""
             victim = board.piece_at(move.to_square)
@@ -51,32 +52,28 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
                 difference = victim_value if victim_color == BLACK else - victim_value
                 new_material_balance = material + difference
                 vv_minus_av = victim_value - aggressor_value
-            opportunities += victim_value
             captures.append((move, CAPTURE, new_material_balance, vv_minus_av))  # 1=capture, 2=promo, 3=check
 
         elif move.promotion:
             promoting_color = board.piece_at(move.from_square).color
             new_material_balance = material + 8 if promoting_color == WHITE else material - 8
-            opportunities += 9
             promotions.append((move, PROMOTION, new_material_balance, 0))  # 1=capture, 2=promo, 3=check
 
         elif move in killers:
-            opportunities += 1
             quiet_killer_moves.append((move, CALM, material, 0))
 
         else:
-            opportunities += 1
             quiet_moves.append((move, CALM, material, 0))  # 0=calm
 
     """elif board.gives_check(move):  # is expensive. not sure if worth - when I remove it I need to do is_check later
-        opportunities += 1  # just 1 because gives_check is too expensive to calculate later for opponent
+        mobility += 1  # just 1 because gives_check is too expensive to calculate later for opponent
         checks.append((move, 3, material, 0))  # 1=capture, 2=promo, 3=check"""
 
     """ Third: Sorting """
     captures.sort(key=lambda a: a[3], reverse=True)
     quiet_moves.sort(key=lambda m: history.table[m[0].from_square][m[0].to_square], reverse=True)
 
-    return (checks + promotions + captures + quiet_killer_moves + quiet_moves), opportunities
+    return (checks + promotions + captures + quiet_killer_moves + quiet_moves), mobility
 
 
 def get_piece_value(piece) -> int:  # expects piece object not piece type

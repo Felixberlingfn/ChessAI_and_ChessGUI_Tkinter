@@ -6,7 +6,12 @@ import time
 
 from stable_ai import ai_0
 from stable_ai_v2 import ai_0 as v2
+from stable_ai_v3 import ai_0 as v3
 from stockfish import stockfish
+
+
+ai_player_1 = v2
+ai_player_2 = v3
 
 
 def main():
@@ -98,7 +103,7 @@ def main():
             return
 
         if passed_value == "version_vs_version":
-            version_vs_version(chess_board, ai_0, v2,  30, 30)
+            version_vs_version(chess_board, ai_player_1, ai_player_2,  30, 30)
             return
 
         return

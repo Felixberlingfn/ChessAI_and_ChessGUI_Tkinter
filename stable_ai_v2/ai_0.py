@@ -4,12 +4,12 @@ import datetime
 import time
 import inspect
 
-from stable_ai_v2 import history, stats
-from stable_ai_v2.evaluate_board import evaluate_board
-from stable_ai_v2.order_moves import order_moves
-from stable_ai_v2.depth import adjust_depth
-from stable_ai_v2.CONSTANTS import INIT_DEPTH, CHECK_X_LIMITER
-from stable_ai_v2.order_moves import killer_moves
+from . import history, stats
+from .evaluate_board import evaluate_board
+from .order_moves import order_moves
+from .depth import adjust_depth
+from .CONSTANTS import INIT_DEPTH, CHECK_X_LIMITER
+from .order_moves import killer_moves
 
 
 """
