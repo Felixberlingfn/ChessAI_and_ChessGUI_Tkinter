@@ -1,6 +1,6 @@
 """ Constants """
-INIT_DEPTH = 7  # after this depth only checks and captures with high value pieces are further investigated
-EVAL_BASED_QUIESCENCE_START = 100000  # increasing this means wider search but slower
+INIT_DEPTH = 5  # after this depth only checks and captures with high value pieces are further investigated
+EVAL_BASED_QUIESCENCE_START = 80000  # increasing this means wider search but slower
 REAL_QUIESCENCE_START = 2  # increasing this means wider search
 LATEST_QUIESCENCE_START = INIT_DEPTH - 2
 
@@ -19,9 +19,12 @@ ROOK_THRESH = 5 * HORIZON_RISK_MULTIPLIER - 0.1
 QUEEN_THRESH = 9 * HORIZON_RISK_MULTIPLIER - 0.1
 
 REAL_DEPTH_AND_THRESHOLDS = ((INIT_DEPTH + 0, KNIGHT_THRESH), (INIT_DEPTH + 2, ROOK_THRESH), (INIT_DEPTH + 4, QUEEN_THRESH))
+NEW_THRESHOLDS = ((-7, KNIGHT_THRESH), (-5, ROOK_THRESH), (-3, QUEEN_THRESH))
 
 """ for readability """
 CALM = 0
 CAPTURE = 1
 PROMOTION = 2
 CHECK = 3
+
+QUEEN_VALUE = 9

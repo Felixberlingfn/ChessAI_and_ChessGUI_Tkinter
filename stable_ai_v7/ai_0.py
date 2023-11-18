@@ -97,6 +97,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
 
     ordered_moves, opportunities = order_moves(board, real_depth, material)
 
+    # board.__hash__()
+
     """ MAXIMIZING """
     if max_player:
         best = float('-inf')
@@ -109,6 +111,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
 
             """ Chess  move """
             board.push(move)
+            if real_depth == 0 and board.is_repetition(2): board.pop(); continue  # skips repetitive move
             """ Recursive Call and Value Updating """
             val_list: list = minimax(board, n_depth, False, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
@@ -135,6 +138,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
             n_depth, nhr, ndiff = adjust_depth(board, move, depth, real_depth, move_type)
             # Chess  move"""
             board.push(move)
+            if real_depth == 0 and board.is_repetition(2): board.pop(); continue  # skips repetitive move
             # Recursive Call and Value Updating"""
             val_list: list = minimax(board, n_depth, True, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
