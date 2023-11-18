@@ -5,6 +5,7 @@ import datetime
 import time
 import inspect
 
+from .minimax import minimax
 from . import stats
 from .tables import add_to_killers_and_history
 from .evaluate_board import evaluate_board
@@ -79,81 +80,6 @@ def update_depth_stats(real_depth):
     if real_depth > stats.max_real_depth:
         stats.max_real_depth = real_depth  # just for stats
     stats.distribution[real_depth] += 1
-
-
-def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
-            horizon_risk=0.0, opportunities=0, material=0, real_depth=0, make_up_difference=1) -> list:
-    """ Minimax returns optimal value for current player """
-
-    """ We do Check Extension Check here (is_check is cheaper than gives_check) """
-    if depth == 0 and real_depth < CHECK_X_LIMITER and board.is_check():
-        depth = make_up_difference
-
-    if depth == 0 or board.is_game_over():  # or time.time() > end_time:
-        """ Final Node reached. Do the Evaluation of the board """
-        final_val_list = evaluate_board(board, horizon_risk, opportunities, material)
-        stats.n_evaluated_leaf_nodes += 1
-        return final_val_list
-
-    ordered_moves, opportunities = order_moves(board, real_depth, material)
-
-    # board.__hash__()
-
-    """ MAXIMIZING """
-    if max_player:
-        best = float('-inf')
-        best_list: list = [best]
-        """ Loop through moves """
-        for move, move_type, material_balance, _ in ordered_moves:
-            update_depth_stats(real_depth)
-
-            n_depth, nhr, ndiff = adjust_depth(board, move, depth, real_depth, move_type)
-
-            """ Chess  move """
-            board.push(move)
-            if real_depth == 0 and board.is_repetition(2): board.pop(); continue  # skips repetitive move
-            """ Recursive Call and Value Updating """
-            val_list: list = minimax(board, n_depth, False, alpha, beta,
-                                     nhr, opportunities, material_balance, real_depth + 1, ndiff)
-            if val_list[0] >= best_list[0]:
-                best_list = val_list  # use the evaluation list as the new best list
-                best_list.append(board.uci(move))   # append the move history
-            alpha = max(alpha, best_list[0])
-            """ Undo Chess  move """
-            board.pop()
-            """ Alpha Beta Pruning """
-            if real_depth == 0: stats.top_moves.append(val_list)
-            if beta <= alpha:
-                add_to_killers_and_history(move, real_depth)
-                break
-        return best_list
-
-    # minimizing
-    else:
-        best = float('inf')
-        best_list: list = [best]
-        # loop through moves
-        for move, move_type, material_balance, _ in ordered_moves:
-            update_depth_stats(real_depth)
-            n_depth, nhr, ndiff = adjust_depth(board, move, depth, real_depth, move_type)
-            # Chess  move"""
-            board.push(move)
-            if real_depth == 0 and board.is_repetition(2): board.pop(); continue  # skips repetitive move
-            # Recursive Call and Value Updating"""
-            val_list: list = minimax(board, n_depth, True, alpha, beta,
-                                     nhr, opportunities, material_balance, real_depth + 1, ndiff)
-            if val_list[0] <= best_list[0]:
-                best_list = val_list
-                best_list.append(board.uci(move))  # append the move history
-            beta = min(beta, best_list[0])
-            # Undo Chess  move"""
-            board.pop()
-            # Alpha Beta Pruning"""
-            if real_depth == 0: stats.top_moves.append(val_list)
-            if beta <= alpha:
-                add_to_killers_and_history(move, real_depth)
-                break
-        return best_list
 
 
 def get_piece_value(piece) -> int:  # expects piece object not piece type

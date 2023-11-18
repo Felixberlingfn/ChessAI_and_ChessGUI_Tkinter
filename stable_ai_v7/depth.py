@@ -8,7 +8,7 @@ from . import stats
 
 def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 0,) -> Tuple[int, float, int]:
     """ NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH """
-
+    global start_q
     def get_capture_risk() -> float:
         attacker_piece = board.piece_at(move.from_square)  # victim already in material balance
         if attacker_piece.color == WHITE:
@@ -22,7 +22,7 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
             return promotion_risk
         return 0.0
 
-    def is_risk_higher_than_current_threshold():
+    def is_risk_higher_than_current_threshold() -> bool:
         """((-4, KNIGHT_THRESH), (-3, ROOK_THRESH), (-2, QUEEN_THRESH))"""
         for depth_for_threshold, threshold in NEW_THRESHOLDS:
             if depth < depth_for_threshold:

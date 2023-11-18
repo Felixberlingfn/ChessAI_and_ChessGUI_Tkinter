@@ -1,3 +1,5 @@
+""" .\pypy main.py is faster but doesn't work with stockfish """
+
 import chess
 import sqlite3
 import chess_tk
@@ -6,17 +8,14 @@ import time
 
 from stable_ai import ai_0
 from stable_ai_v2 import ai_0 as v2
-from stable_ai_v3 import ai_0 as v3
-from stable_ai_v4 import ai_0 as v4
-from stable_ai_v5 import ai_0 as v5
-from stable_ai_v6 import ai_0 as v6
 from stable_ai_v7 import ai_0 as v7
 from stockfish import stockfish
 
 
 ai_player_1 = v7
 ai_player_2 = v2
-ai_playing_against_human = v2
+ai_playing_against_human = v7
+ai_playing_against_stockfish = v7
 
 
 def main():
@@ -56,7 +55,7 @@ def main():
             print(f'"{move.uci()}", ', end="")
         return
 
-    def play_human_vs_ai(chess_board, ai_function=ai_0, time_limit=30.0):
+    def play_human_vs_ai(chess_board, ai_function=ai_playing_against_human, time_limit=30.0):
         app.display_message(f"{ai_function.__name__} is thinking ... 💭", "label2")
         best_move = ai_function(chess_board, time_limit)
 
@@ -104,7 +103,7 @@ def main():
             return
 
         if passed_value == "myai_vs_stockfish":
-            version_vs_version(chess_board, ai_0, stockfish, 30, 0.010)
+            version_vs_version(chess_board, ai_playing_against_stockfish, stockfish, 30, 0.001)
             return
 
         if passed_value == "version_vs_version":
