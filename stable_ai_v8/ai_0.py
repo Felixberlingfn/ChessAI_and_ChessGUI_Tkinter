@@ -76,10 +76,10 @@ def ai_0(board=None, time_limit=30) -> object:
         return False
 
 
-def update_depth_stats(real_depth):
+"""def update_depth_stats(real_depth):
     if real_depth > stats.max_real_depth:
         stats.max_real_depth = real_depth  # just for stats
-    stats.distribution[real_depth] += 1
+    stats.distribution[real_depth] += 1"""
 
 
 def get_piece_value(piece) -> int:  # expects piece object not piece type
@@ -100,7 +100,7 @@ def get_piece_value(piece) -> int:  # expects piece object not piece type
 
 def print_results_and_stats(board, best_move_at_index_depth):
 
-    stats.printf()
+    stats.printf(board.turn)
 
     rounded_list = [round(item, 2) if isinstance(item, float) else item for item in best_move_at_index_depth]
 
@@ -116,10 +116,6 @@ def print_results_and_stats(board, best_move_at_index_depth):
 
     if board.is_capture(move_object):
         print(f"Captured: {board.piece_at(move_object.to_square)}")
-
-    print(stats.top_moves)
-
-    # print(killer_moves)
 
 
 def show_potential_last_capture(board):

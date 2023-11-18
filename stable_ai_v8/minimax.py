@@ -26,8 +26,8 @@ def update_depth_stats(real_depth):
     stats.distribution[real_depth] += 1
 
 
-def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
-            horizon_risk=0.0, opportunities=0, material=0, real_depth=0, make_up_difference=1) -> list:
+def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), horizon_risk=0.0,
+            opportunities=0, material=0, real_depth=0, make_up_difference=1) -> list:
     """ Minimax returns optimal value for current player """
 
     """ We do Check Extension Check here (is_check is cheaper than gives_check) """
@@ -42,7 +42,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
 
     ordered_moves, opportunities = order_moves(board, real_depth, material)
 
-    # board.__hash__()
+    # board.__hash__() # might come soon
 
     """ MAXIMIZING """
     if max_player:

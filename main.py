@@ -1,5 +1,3 @@
-""" .\pypy main.py is faster but doesn't work with stockfish """
-
 import chess
 import sqlite3
 import chess_tk
@@ -14,8 +12,13 @@ from stockfish import stockfish
 
 ai_player_1 = v8
 ai_player_2 = v7
-ai_playing_against_human = v7
-ai_playing_against_stockfish = v7
+ai_playing_against_human = v8
+ai_playing_against_stockfish = v8
+
+STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
+
+
+""" '.\pypy main.py' is faster but doesn't work with stockfish """
 
 
 def main():
@@ -103,7 +106,7 @@ def main():
             return
 
         if passed_value == "myai_vs_stockfish":
-            version_vs_version(chess_board, ai_playing_against_stockfish, stockfish, 30, 0.001)
+            version_vs_version(chess_board, ai_playing_against_stockfish, stockfish, 30, STOCKFISH_TIME_LIMIT)
             return
 
         if passed_value == "version_vs_version":
