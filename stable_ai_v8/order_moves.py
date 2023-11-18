@@ -3,7 +3,7 @@ from typing import Tuple
 from typing import List
 
 from .tables import history_table, killer_moves
-from .CONSTANTS import CALM, CAPTURE, PROMOTION
+from .CONSTANTS import CALM, CAPTURE, PROMOTION, DEGRADATION_FACTOR
 
 
 def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
@@ -24,6 +24,8 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
     quiet_killer_moves: List[tuple] = []
     opportunities = 0
 
+    degradation = 1 - (real_depth / DEGRADATION_FACTOR)  # captures happening far in the future get less value
+
     """ Second: Separate captures, checks, killer moves and quiet moves"""
     for move in moves:
         if board.is_capture(move):
@@ -33,7 +35,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
                 victim_value = get_piece_value(victim)
                 aggressor_value = get_piece_value(board.piece_at(move.from_square))
                 difference = victim_value if victim.color == BLACK else - victim_value
-                new_material_balance = material
+                new_material_balance = material + (difference * degradation)
                 """ for mvv - lva score sorting """
                 vv_minus_av = victim_value - aggressor_value
             else:
@@ -43,7 +45,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
                 victim_color = not aggressor.color
                 aggressor_value = get_piece_value(aggressor)
                 difference = victim_value if victim_color == BLACK else - victim_value
-                new_material_balance = material
+                new_material_balance = material + (difference * degradation)
                 vv_minus_av = victim_value - aggressor_value
             opportunities += victim_value
             captures.append((move, CAPTURE, new_material_balance, vv_minus_av))  # 1=capture, 2=promo, 3=check

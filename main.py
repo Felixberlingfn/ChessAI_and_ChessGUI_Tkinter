@@ -7,13 +7,13 @@ import random
 import time
 
 from stable_ai import ai_0
-from stable_ai_v2 import ai_0 as v2
+from stable_ai_v8 import ai_0 as v8
 from stable_ai_v7 import ai_0 as v7
 from stockfish import stockfish
 
 
-ai_player_1 = v7
-ai_player_2 = v2
+ai_player_1 = v8
+ai_player_2 = v7
 ai_playing_against_human = v7
 ai_playing_against_stockfish = v7
 
