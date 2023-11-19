@@ -5,15 +5,20 @@ import random
 import time
 
 from stable_ai import ai_0
-from stable_ai_v8 import ai_0 as v8
 from stable_ai_v7 import ai_0 as v7
+from stable_ai_v8 import ai_0 as v8
+from stable_ai_v8B import ai_0 as v8B
+from stable_ai_v9 import ai_0 as v9
+from stable_ai_v10 import ai_0 as v10
+from stable_ai_v11 import ai_0 as v11
+
 from stockfish import stockfish
 
 
-ai_player_1 = v8
-ai_player_2 = v7
+ai_player_1 = v8B
+ai_player_2 = v11
 ai_playing_against_human = v8
-ai_playing_against_stockfish = v8
+ai_playing_against_stockfish = v10
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 

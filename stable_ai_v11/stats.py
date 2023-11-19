@@ -6,7 +6,7 @@ from typing import List
 n_extensions: int = 0
 n_early_end: int = 0
 n_evaluated_leaf_nodes: int = 0
-max_real_depth: int = 0
+# max_real_depth: int = 0
 
 top_moves: List[list] = []
 
@@ -56,7 +56,8 @@ def printf(player_color):
     rounded_top_moves: List[list] = get_rounded_top_moves()
 
     print(f"visualize this distribution: {distribution}")
+    max_real_depth = sum(1 for item in distribution if item != 0)
     print(f"Leaf nodes: {n_evaluated_leaf_nodes} maximum depth:{max_real_depth}")
-    print(f"top 5:{rounded_top_moves[:5]}")
+    print(f"top 2:{rounded_top_moves[:2]}")
 
     reset()

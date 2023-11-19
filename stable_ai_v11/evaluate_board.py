@@ -16,11 +16,6 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> l
     """ Simplistic but most important: Material Balance + White - Black"""
     material_balance = material if material else get_material_balance(board)
 
-    # maybe add a depth boost ... * (1 + real_depth/depthboost_div)
-    # to give more credit to deeper evaluated moves
-    # this is no conflict with the degradation as that just gives less likelyness
-    # to material loss or gain at greater depth, not punishing evaluating deep itself
-
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
     """ endgame check """
     if board.is_checkmate():

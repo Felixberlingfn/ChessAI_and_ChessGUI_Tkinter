@@ -2,7 +2,8 @@ import chess
 import inspect
 import timeit
 
-from .CONSTANTS import OPPORTUNITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH
+from .CONSTANTS import (OPPORTUNITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH,
+                        DEGRADATION_FACTOR)
 
 def run(board, testing=False) -> list:
     """ wrapper for evaluate_board() - runs when not imported as module """
@@ -12,14 +13,12 @@ def run(board, testing=False) -> list:
     return evaluate_board(board)
 
 
-def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> list:
+def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real_depth=0) -> list:
     """ Simplistic but most important: Material Balance + White - Black"""
     material_balance = material if material else get_material_balance(board)
+    material_balance -= horizon_risk * 100  # centi-pawns is convention
 
-    # maybe add a depth boost ... * (1 + real_depth/depthboost_div)
-    # to give more credit to deeper evaluated moves
-    # this is no conflict with the degradation as that just gives less likelyness
-    # to material loss or gain at greater depth, not punishing evaluating deep itself
+    material_balance = material_balance * (1 + (real_depth / 1000))
 
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
     """ endgame check """
@@ -37,7 +36,6 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> l
 
     final_val[0] += pos
     final_val[0] += mob  # is turn dependent
-    final_val[0] -= horizon_risk * 100  # centi-pawns is convention
 
     """ append details to list for stats """
     final_val.append(pos)

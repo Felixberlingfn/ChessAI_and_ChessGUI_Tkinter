@@ -57,6 +57,6 @@ def printf(player_color):
 
     print(f"visualize this distribution: {distribution}")
     print(f"Leaf nodes: {n_evaluated_leaf_nodes} maximum depth:{max_real_depth}")
-    print(f"top 5:{rounded_top_moves[:5]}")
+    print(f"top 2:{rounded_top_moves[:2]}")
 
     reset()

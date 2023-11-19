@@ -84,19 +84,23 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
         for move, move_type, material_balance, _ in ordered_moves:
             update_depth_stats(real_depth)
             n_depth, nhr, ndiff = adjust_depth(board, move, depth, real_depth, move_type)
-            # Chess  move"""
+
+            # Chess  move
             board.push(move)
             if real_depth == 0 and board.is_repetition(2): board.pop(); continue  # skips repetitive move
-            # Recursive Call and Value Updating"""
+
+            # Recursive Call and Value Updating
             val_list: list = minimax(board, n_depth, True, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
             if val_list[0] <= best_list[0]:
                 best_list = val_list
                 best_list.append(board.uci(move))  # append the move history
             beta = min(beta, best_list[0])
-            # Undo Chess  move"""
+
+            # Undo Chess  move
             board.pop()
-            # Alpha Beta Pruning"""
+
+            # Alpha Beta Pruning
             if real_depth == 0: stats.top_moves.append(val_list)
             if beta <= alpha:
                 add_to_killers_and_history(move, real_depth)

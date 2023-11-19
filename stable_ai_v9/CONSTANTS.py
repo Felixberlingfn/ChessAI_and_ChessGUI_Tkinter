@@ -1,7 +1,7 @@
 """ Constants """
-INIT_DEPTH = 5  # after this depth only checks and captures with high value pieces are further investigated
-EVAL_BASED_QUIESCENCE_START = 140000  # was 80000 increasing this means wider search but slower
-REAL_QUIESCENCE_START = 2  # increasing this means wider search
+INIT_DEPTH = 5  # was 5 # after this depth only checks and captures with high value pieces are further investigated
+EVAL_BASED_QUIESCENCE_START = 80000  # was 10000# increasing this means wider search but slower
+REAL_QUIESCENCE_START = 2  # was 3 # increasing this means wider search
 
 CHECK_X_LIMITER = 15  # using real_depth
 MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 3

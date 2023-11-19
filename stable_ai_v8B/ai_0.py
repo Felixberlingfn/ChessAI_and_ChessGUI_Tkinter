@@ -20,12 +20,15 @@ https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-4-alpha-beta-
 https://www.chessprogramming.org/Main_Page
 """
 
-end_time = 0
+#end_time = 0
 
 
 def ai_0(board=None, time_limit=30) -> object:
-    global end_time
-    end_time = time.time() + time_limit
+    print(f"---------------------------------{chess.COLOR_NAMES[int(board.turn)]}------------------------------------")
+    #global end_time
+    #end_time = time.time() + time_limit
+
+    start_time = time.time()
 
     """ The main function of the AI """
     stats.n_extensions = 0  # reset
@@ -54,6 +57,10 @@ def ai_0(board=None, time_limit=30) -> object:
     else:
         best_move_at_last_index = minimax(board, INIT_DEPTH, False, float('-inf'), float('inf'),
                                           0.0, 0, init_material_balance)
+
+    end_time = time.time()
+    execution_time = round((end_time - start_time) * 1000)
+    print(f"Execution time: {execution_time} milliseconds")
 
     """ Check if finding best move was successful """
     if best_move_at_last_index:
@@ -145,8 +152,4 @@ if __name__ == "__main__":
 
         return board
 
-    start_time = time.time()
     ai_0(test_board_moves())
-    end_time = time.time()
-    execution_time = round((end_time - start_time) * 1000)
-    print(f"Execution time: {execution_time} milliseconds")

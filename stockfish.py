@@ -8,7 +8,7 @@ def stockfish(board, time_limit=0.1):
 
     engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
 
-    result = engine.play(board, chess.engine.Limit(time=time_limit))
+    result = engine.play(board, chess.engine.Limit(depth=2))
 
     engine.quit()
 
