@@ -1,10 +1,18 @@
-""" Constants """
-INIT_DEPTH = 5  # was 5 # after this depth only checks and captures with high value pieces are further investigated
-EVAL_BASED_QUIESCENCE_START = 80000  # was 10000# increasing this means wider search but slower
-REAL_QUIESCENCE_START = 2  # was 3 # increasing this means wider search
+""" Constants (some of these are settings, and some of them should NEVER be changed)"""
 
+""" DEPTH """
+REAL_QUIESCENCE_START = 2  # 2 means my move, opponent move, my move, then evaluate or quiescence search
+""" EVAL_BASED_QUIESCENCE_START: essentially a minimum number of evaluations improves opening and endgame"""
+EVAL_BASED_QUIESCENCE_START = 80000  # Number of evaluations after which REAL_QUIESCENCE_START takes effect
+EXTRA_DEPTH_BEFORE_LIMIT = 1  # The number of extra steps while above limit is not reached
 CHECK_X_LIMITER = 15  # using real_depth
+
+""" Do not change these: """
+INIT_DEPTH = REAL_QUIESCENCE_START + 2 + EXTRA_DEPTH_BEFORE_LIMIT
 MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 3
+
+""" Preference for more deeply evaluated moves """
+PREFERENCE_DEEP = 0.1
 
 """ for evaluations """
 DEGRADATION_FACTOR = 500  # Capture Val * (real_depth/DEGRADATION_FACTOR)

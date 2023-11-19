@@ -1,16 +1,9 @@
-""" from root: python -m stable_ai_YOUR_VERSION.ai_0 """
-import chess
-import random
-import datetime
-import time
-import inspect
-
 from . import stats
 from .tables import add_to_killers_and_history
 from .evaluate_board import evaluate_board
 from .order_moves import order_moves
 from .depth import adjust_depth
-from .CONSTANTS import INIT_DEPTH, CHECK_X_LIMITER
+from .CONSTANTS import CHECK_X_LIMITER, PREFERENCE_DEEP
 
 
 """
@@ -50,13 +43,13 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             """ Chess  move """
             board.push(move)
-            if real_depth == 0 and board.is_repetition(2): board.pop(); continue  # skips repetitive move
+            if real_depth == 0 and opportunities > 1 and board.is_repetition(2): board.pop(); continue
 
             """ Recursive Call and Value Updating """
             val_list: list = minimax(board, n_depth, False, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
-            if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 5) * 0.1)
+            if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 5) * PREFERENCE_DEEP)
 
             if val_list[0] >= best_list[0]:
                 # if real_depth == 0: print(f"{val_list[0]} >= {best_list[0]}")
@@ -86,13 +79,13 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             # Chess  move
             board.push(move)
-            if real_depth == 0 and board.is_repetition(2): board.pop(); continue  # skips repetitive move
+            if real_depth == 0 and opportunities > 1 and board.is_repetition(2): board.pop(); continue
 
             # Recursive Call and Value Updating
             val_list: list = minimax(board, n_depth, True, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
-            if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 5) * 0.1)
+            if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 5) * PREFERENCE_DEEP)
 
             if val_list[0] <= best_list[0]:
                 # if real_depth == 0: print(f"{val_list[0]} <= {best_list[0]}")
@@ -115,7 +108,4 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
 
 if __name__ == "__main__":
-    start_time = time.time()
-    end_time = time.time()
-    execution_time = round((end_time - start_time) * 1000)
-    print(f"Execution time: {execution_time} milliseconds")
+    pass

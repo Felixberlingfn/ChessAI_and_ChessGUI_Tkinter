@@ -7,11 +7,7 @@ import inspect
 
 from .minimax import minimax
 from . import stats
-from .tables import add_to_killers_and_history
-from .evaluate_board import evaluate_board
-from .order_moves import order_moves
-from .depth import adjust_depth
-from .CONSTANTS import INIT_DEPTH, CHECK_X_LIMITER
+from .CONSTANTS import INIT_DEPTH
 
 
 """
@@ -24,7 +20,7 @@ https://www.chessprogramming.org/Main_Page
 
 
 def ai_0(board=None, time_limit=30) -> object:
-    print(f"---------------------------------{chess.COLOR_NAMES[int(board.turn)]}------------------------------------")
+    print(f"---------------------------------{chess.COLOR_NAMES[int(board.turn)]}-AI V11 ----------------------------")
     # global end_time
     # end_time = time.time() + time_limit
 
@@ -60,9 +56,8 @@ def ai_0(board=None, time_limit=30) -> object:
 
     end_time = time.time()
     execution_time = round((end_time - start_time) * 1000)
-    print(f"Execution time: {execution_time} milliseconds")
-
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    readable_time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    print(f"Execution time: {execution_time} milliseconds --- {readable_time}")
 
     """ Check if finding best move was successful """
     if best_move_at_last_index:
@@ -111,11 +106,11 @@ def print_results_and_stats(board, best_move_at_index_depth):
 
     stats.printf(board.turn)
 
-    readable_time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    # readable_time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
     move_id = len(board.move_stack) + 1
 
-    print(f"Move # {move_id}: {best_move_at_index_depth[-1]}. [Sum, Pos., ..., ..., Path... ] - {readable_time}")
+    # print(f"Move # {move_id}: {best_move_at_index_depth[-1]}. [Sum, Pos., ..., ..., Path... ] - {readable_time}")
 
     move_object = chess.Move.from_uci(best_move_at_index_depth[-1])
 

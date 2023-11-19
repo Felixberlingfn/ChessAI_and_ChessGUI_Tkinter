@@ -5,6 +5,7 @@ import random
 import time
 
 from stable_ai import ai_0
+from stable_ai_v2 import ai_0 as v2
 from stable_ai_v7 import ai_0 as v7
 from stable_ai_v8 import ai_0 as v8
 from stable_ai_v8B import ai_0 as v8B
@@ -15,10 +16,10 @@ from stable_ai_v11 import ai_0 as v11
 from stockfish import stockfish
 
 
-ai_player_1 = v8B
-ai_player_2 = v11
-ai_playing_against_human = v8
-ai_playing_against_stockfish = v10
+ai_player_1 = v7  # White
+ai_player_2 = v11  # Black
+ai_playing_against_human = v11
+ai_playing_against_stockfish = v11
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 
@@ -37,11 +38,9 @@ def main():
                 break
 
             if i % 2 == 0:
-                print(version_a.__name__)
                 app.display_message(f"version_a is thinking 💭", "label2")
                 ai_move = version_a(chess_board, time_limit_1)
             else:
-                print(version_b.__name__)
                 app.display_message(f"version_b is thinking 💭", "label2")
                 ai_move = version_b(chess_board, time_limit_2)
 

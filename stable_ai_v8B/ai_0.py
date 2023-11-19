@@ -24,7 +24,7 @@ https://www.chessprogramming.org/Main_Page
 
 
 def ai_0(board=None, time_limit=30) -> object:
-    print(f"---------------------------------{chess.COLOR_NAMES[int(board.turn)]}------------------------------------")
+    print(f"---------------------------------{chess.COLOR_NAMES[int(board.turn)]}-AI V8B ----------------------------")
     #global end_time
     #end_time = time.time() + time_limit
 
@@ -60,7 +60,8 @@ def ai_0(board=None, time_limit=30) -> object:
 
     end_time = time.time()
     execution_time = round((end_time - start_time) * 1000)
-    print(f"Execution time: {execution_time} milliseconds")
+    readable_time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+    print(f"Execution time: {execution_time} milliseconds --- {readable_time}")
 
     """ Check if finding best move was successful """
     if best_move_at_last_index:
