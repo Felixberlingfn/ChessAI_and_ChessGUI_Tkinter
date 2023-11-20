@@ -1,8 +1,8 @@
 import chess
-import sqlite3
 import chess_tk
 import random
 import time
+import db
 
 from stable_ai import ai_0
 from stable_ai_v2 import ai_0 as v2
@@ -14,12 +14,17 @@ from stable_ai_v10 import ai_0 as v10
 from stable_ai_v11 import ai_0 as v11
 
 from stockfish import stockfish
+from comments import comments
+from tournament import run_round_robin_tournament
 
 
 ai_player_1 = v7  # White
 ai_player_2 = v11  # Black
 ai_playing_against_human = v11
 ai_playing_against_stockfish = v11
+
+""" ai tournament (round robin) """
+ai_versions = [ai_0, v2, v7, v8, v8B, v9, v10, v11]
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 
@@ -31,7 +36,7 @@ def main():
     """  ---------------------------   chess_tk gui --------------------------------------------------------"""
     def version_vs_version(chess_board, version_a, version_b, time_limit_1=0.001, time_limit_2=0.001):
         for i in range(999999999):
-            save_game_state(chess_board)
+            db.save_game_state(chess_board)
 
             if chess_board.is_game_over():
                 app.display_message(game_status(chess_board), "label2")
@@ -89,7 +94,7 @@ def main():
             return
 
         if passed_value == "save_game":
-            save_game_state(chess_board)
+            db.save_game_state(chess_board)
             return
 
         if passed_value == "make_stockfish_move":
@@ -117,10 +122,15 @@ def main():
             version_vs_version(chess_board, ai_player_1, ai_player_2,  30, 30)
             return
 
+        if passed_value == "tournament":
+            run_round_robin_tournament(chess_board, ai_versions, app)
+            return
+
+
         return
 
     """ ---------------- load game from database (optional) ------------------------ """
-    start_board = load_game_state()
+    start_board = db.load_game_state()
     if start_board and start_board.is_game_over(claim_draw=True):
         start_board.reset()
     # start_board.reset()
@@ -163,110 +173,6 @@ def game_status(board):
 # -----------------------------------------------------------------------
 
 
-def create_chess_database():
-    # Connect to the SQLite database
-    conn = sqlite3.connect('chess_game.db')
-    cursor = conn.cursor()
-
-    # Create the table (if it doesn't already exist)
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS game_state (
-        id INTEGER PRIMARY KEY,
-        fen TEXT NOT NULL
-    )''')
-    conn.commit()
-    conn.close()
-
-# Save the game state to the database
-
-
-def save_game_state(board):
-    conn = sqlite3.connect('chess_game.db')
-    cursor = conn.cursor()
-    current_fen = board.fen()
-    cursor.execute('SELECT EXISTS(SELECT 1 FROM game_state WHERE id=1)')
-    result = cursor.fetchone()[0]
-
-    if result:
-        # Update the existing row
-        cursor.execute('UPDATE game_state SET fen=? WHERE id=1', (current_fen,))
-    else:
-        # Insert a new row if it does not exist
-        cursor.execute('INSERT INTO game_state (id, fen) VALUES (1, ?)', (current_fen,))
-
-    conn.commit()
-    conn.close()
-
-
-def load_game_state():
-    conn = sqlite3.connect('chess_game.db')
-    cursor = conn.cursor()
-    # Get the FEN string of the current game state
-    cursor.execute('SELECT fen FROM game_state WHERE id=1')
-    fen = cursor.fetchone()
-    conn.close()
-    if fen:
-        return chess.Board(fen[0])
-    else:
-        # Handle the case where there is no saved game state.
-        # This could mean returning a new board, or handling the error in some other way.
-        return chess.Board()
-
-
-comments = [
-    "I have updated my evaluation of the position. Your response will be critical.",
-    "This is a known position with 17.3% chances of leading to a draw. "
-    "Let's see if we can make things more interesting.",
-    "I have reduced the complexity of the position to increase the accuracy of my calculations.",
-    "I'm anticipating a few possible counter plays from you. My processors are ready.",
-    "My move aims to slowly improve my position. Chess is an art of patience.",
-    "With that move, I have created a new threat. Can you identify and counter it?",
-    "This move serves multiple purposes. A good strategy often has more than one objective.",
-    "Now, the dynamics of the position have changed. How will you adapt?",
-    "I'm setting the stage for a long-term strategic plan. The current move is just the beginning.",
-    "By reducing material, I aim to enter an endgame where my algorithmic efficiency can shine.",
-    "That move tightens the game.",
-    "I'm shifting the balance.",
-    "Pressure applied. Your turn.",
-    "Strategically interesting.",
-    "The plot thickens.",
-    "A subtle shift in the game.",
-    "Now the game truly begins.",
-    "Let's see how you respond to this.",
-    "Positional dynamics at play.",
-    "I've set the stage, make your move.",
-    "Complexity increased; your move.",
-    "Position closed; your tactics are needed.",
-    "Prophylactic move made; your plan is anticipated.",
-    "Quiet move executed; its power is subtle.",
-    "Center tension added; possibilities abound.",
-    "Rook file opened; vertical pressure applied.",
-    "Pawn push cramps your position; space is key.",
-    "Knight on the rim; potential future threat.",
-    "Innocuous move with strategic depth.",
-    "Pawn break; king safety may be compromised.",
-    "Endeavors merge on this sixty-four square stage.",
-    "A moment's pause, the next move could be sage.",
-    "Options abound, the board is ever vast.",
-    "My move's complete, but will the tension last?",
-    "Silent board, yet minds converse in rapid lore.",
-    "Fate's hand moves; pieces touch the core.",
-    "A strategic silence falls like soft night.",
-    "Pieces dance, a ballet of foresight.",
-    "Each move a verse in this silent chess sonnet.",
-    "Two minds entwined in this game, upon it.",
-    "A move so sly, it could fly by the eye.",
-    "In this game of mind, every move is a bind.",
-    "Pawns push with might, in the chessboard's night.",
-    "Bishops diagonal leap, secrets they keep.",
-    "Knights in their dance, give not chance to chance.",
-    "Rooks slide with grace, claiming their space.",
-    "The queen reigns supreme, in her own regime.",
-    "Kings move with a thought, in battles fought.",
-    "Check is but a call, in the rise and fall.",
-    "A checkmate’s end, to the victor extend.",
-]
-
-
 if __name__ == "__main__":
+    db.create_chess_database()
     main()

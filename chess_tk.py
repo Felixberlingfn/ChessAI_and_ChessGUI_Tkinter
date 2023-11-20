@@ -139,8 +139,8 @@ class ChessBoard(tk.Tk):
         self.make_stockfish_move_button = ttk.Button(self, text="🐠 Make a Stockfish move", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "make_stockfish_move"))
         self.make_stockfish_move_button.place(x=10, y=260)
 
-        self.make_stockfish_move_button = ttk.Button(self, text="STOP AI VS AI", command=lambda: self.stop_ai_vs_ai())
-        self.make_stockfish_move_button.place(x=10, y=500)
+        self.tournament_button = ttk.Button(self, text="Start A Round Robin Tournament", command=lambda: self.trigger_moved_event("", "", self.chess_board_object, "tournament"))
+        self.tournament_button.place(x=10, y=540)
 
         self.lc0_vs_stockfish_button = ttk.Button(self, text="stockfish vs stockfish", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "lc0_vs_stockfish"))
         self.lc0_vs_stockfish_button.place(x=10, y=220)
