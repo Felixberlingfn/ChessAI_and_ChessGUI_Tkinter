@@ -51,10 +51,12 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
             captures.append((move, CAPTURE, new_material_balance, vv_minus_av))  # 1=capture, 2=promo, 3=check
 
         elif move.promotion:
-            promoting_color = board.piece_at(move.from_square).color
-            new_material_balance = material + 8 if promoting_color == WHITE else material - 8
-            opportunities += 9
-            promotions.append((move, PROMOTION, new_material_balance, 0))  # 1=capture, 2=promo, 3=check
+            if move.promotion == QUEEN:
+                promoting_color = board.piece_at(move.from_square).color
+                new_material_balance = material + 8 if promoting_color == WHITE else material - 8
+                opportunities += 9
+                promotions.append((move, PROMOTION, new_material_balance, 0))  # 1=capture, 2=promo, 3=check
+                # Now all non queen promotions are ignored
 
         elif move in killers:
             opportunities += 1
