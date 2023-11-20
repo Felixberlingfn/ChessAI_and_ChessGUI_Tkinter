@@ -108,11 +108,4 @@ def determine_winner(result, version_a, version_b):
 
 
 if __name__ == "__main__":
-    """ai_versions = []
-    chess_board = ""
-    app = ""
-    # Run the tournament
-    tournament_results = run_round_robin_tournament(ai_versions, chess_board, app)
-    for ai, result in tournament_results:
-        print(f"AI {ai.__name__}: Wins: {result['wins']}, Draws: {result['draws']}, Losses: {result['losses']}")
-"""
+    pass

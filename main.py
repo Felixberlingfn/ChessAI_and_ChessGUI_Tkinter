@@ -26,7 +26,7 @@ ai_playing_against_human = v11_1
 ai_playing_against_stockfish = v11_1
 
 """ ai tournament (round robin / everyone against everyone) """
-# ai_tournament_vs = [("V7", v7), ("V11", v11)]
+# tuple like [("V11.1", v11_1), ("V11.2", v11_2)]
 ai_tournament_vs = [("V11.1", v11_1), ("V11.2", v11_2)]  # ("V11.2", v11_2)
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds

@@ -1,6 +1,8 @@
 from chess import WHITE
 from .CONSTANTS import MAXIMUM_REAL_DEPTH
 from typing import List
+import csv
+from datetime import datetime
 
 """ Counters for stats """
 n_extensions: int = 0
@@ -67,5 +69,20 @@ def printf(player_color):
 def print_end_of_game_stats():
     global material_balance_over_time
     print(material_balance_over_time)
+
+    directory = 'tournament_results'
+
+    # Get current date and time and format it as a string
+    current_time = datetime.now()
+    formatted_time = current_time.strftime("%Y_%m_%d_%H_%M_%S")
+    file_name = f"{formatted_time}.csv"
+    file_path = f'{directory}/{file_name}'
+
+    # Write data to a csv file
+    with open(file_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        for balance in material_balance_over_time:
+            writer.writerow([balance])
+
     material_balance_over_time = []
 
