@@ -8,6 +8,8 @@ import inspect
 from .minimax import minimax
 from . import stats
 from .CONSTANTS import INIT_DEPTH
+from .tables_maximizer import reset_history_max
+from .tables_minimizer import reset_history_min
 
 
 """
@@ -20,7 +22,7 @@ https://www.chessprogramming.org/Main_Page
 
 
 def ai_0(board=None, time_limit=30) -> object:
-    print(f"---------------------------------{chess.COLOR_NAMES[int(board.turn)]}-AI V11 ----------------------------")
+    print(f"---------------------------{chess.COLOR_NAMES[int(board.turn)]}-AI V11.2 ----------------------------")
     # global end_time
     # end_time = time.time() + time_limit
 
@@ -34,6 +36,11 @@ def ai_0(board=None, time_limit=30) -> object:
     if not board:
         board = chess.Board()
 
+    if board.ply() == 0:
+        print("resetting history")
+        reset_history_min()
+        reset_history_max()
+
     show_potential_last_capture(board)
 
     """ Find the Best Move with minimax """
@@ -45,6 +52,8 @@ def ai_0(board=None, time_limit=30) -> object:
             init_material_balance += value
         else:
             init_material_balance -= value
+
+    stats.material_balance_over_time.append(init_material_balance)
 
     best_move_at_last_index: list
     if board.turn == chess.WHITE:
@@ -59,25 +68,40 @@ def ai_0(board=None, time_limit=30) -> object:
     readable_time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
     print(f"Execution time: {execution_time} milliseconds --- {readable_time}")
 
-    """ Check if finding best move was successful """
     if best_move_at_last_index:
-        print_results_and_stats(board, best_move_at_last_index)
+        """ This is some ugly error handling I know """
+        if board.turn == chess.WHITE and best_move_at_last_index[0] == float("-inf"):
+            return_move = generate_random_move(board)
+            check_if_ends_game(board, return_move)
+            return return_move
+        if board.turn == chess.BLACK and best_move_at_last_index[0] == float("inf"):
+            return_move = generate_random_move(board)
+            check_if_ends_game(board, return_move)
+            return return_move
+
         move_object = chess.Move.from_uci(best_move_at_last_index[-1])
+        print_results_and_stats(board, move_object)
 
         if move_object.promotion:
-            """ otherwise it will promote to random """
+            """ this is not necessary anymore, minimax only considers queen promotion """
             from_square = move_object.from_square
             to_square = move_object.to_square
             generated_queen_promotion = chess.Move(from_square, to_square, chess.QUEEN)
+            check_if_ends_game(board, generated_queen_promotion)
             return generated_queen_promotion
+        check_if_ends_game(board, move_object)
         return move_object
     else:
-        print("minimax search failed. Last resort: Use random move to avoid error")
-        legal_moves = list(board.legal_moves)
-        random_move = random.choice(legal_moves)
-        if random_move:
-            return random_move
-        return False
+        return_move = generate_random_move(board)
+        check_if_ends_game(board, return_move)
+        return return_move
+
+
+def check_if_ends_game(board: chess.Board, move):
+    board.push(move)
+    if board.is_game_over():
+        stats.print_end_of_game_stats()
+    board.pop()
 
 
 """def update_depth_stats(real_depth):
@@ -102,17 +126,11 @@ def get_piece_value(piece) -> int:  # expects piece object not piece type
 """ The rest: Printing stats etc. """
 
 
-def print_results_and_stats(board, best_move_at_index_depth):
+def print_results_and_stats(board, move_object):
 
     stats.printf(board.turn)
 
-    # readable_time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-
     move_id = len(board.move_stack) + 1
-
-    # print(f"Move # {move_id}: {best_move_at_index_depth[-1]}. [Sum, Pos., ..., ..., Path... ] - {readable_time}")
-
-    move_object = chess.Move.from_uci(best_move_at_index_depth[-1])
 
     if board.is_capture(move_object):
         print(f"Captured: {board.piece_at(move_object.to_square)}")
@@ -135,6 +153,13 @@ def show_potential_last_capture(board):
 
 def inspect_function_name() -> str:
     return inspect.currentframe().f_code.co_name
+
+
+def generate_random_move(board):
+    legal_moves = list(board.legal_moves)
+    random_move = random.choice(legal_moves)
+    if random_move:
+        return random_move
 
 
 if __name__ == "__main__":

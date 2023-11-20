@@ -1,5 +1,5 @@
 from . import stats
-from .tables import add_to_killers_and_history
+from .tables_maximizer import add_to_killers_and_history
 from .evaluate_board import evaluate_board
 from .order_moves import order_moves
 from .depth import adjust_depth
@@ -43,13 +43,15 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             """ Chess  move """
             board.push(move)
-            if real_depth == 0 and opportunities > 1 and board.is_repetition(2): board.pop(); continue
+            """maybe the bug is they are both repetition"""
+            if real_depth == 0 and opportunities > 1 and board.is_repetition(2):
+                board.pop(); continue
 
             """ Recursive Call and Value Updating """
             val_list: list = minimax(board, n_depth, False, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
-            if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 5) * PREFERENCE_DEEP)
+            if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 4) * PREFERENCE_DEEP)
 
             if val_list[0] >= best_list[0]:
                 # if real_depth == 0: print(f"{val_list[0]} >= {best_list[0]}")
@@ -65,6 +67,9 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
             if beta <= alpha:
                 add_to_killers_and_history(move, real_depth)
                 break
+
+        """ I need to handle the case when this returns float(inf). but I want to know why
+        anyways it is usually when all is lost so choosing a random move might be ok"""
         return best_list
 
     # minimizing
@@ -79,13 +84,14 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             # Chess  move
             board.push(move)
-            if real_depth == 0 and opportunities > 1 and board.is_repetition(2): board.pop(); continue
+            if real_depth == 0 and opportunities > 1 and board.is_repetition(2):
+                board.pop(); continue
 
             # Recursive Call and Value Updating
             val_list: list = minimax(board, n_depth, True, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
-            if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 5) * PREFERENCE_DEEP)
+            if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 4) * PREFERENCE_DEEP)
 
             if val_list[0] <= best_list[0]:
                 # if real_depth == 0: print(f"{val_list[0]} <= {best_list[0]}")

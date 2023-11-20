@@ -8,6 +8,7 @@ import inspect
 from .minimax import minimax
 from . import stats
 from .CONSTANTS import INIT_DEPTH
+from .tables import reset_history
 
 
 """
@@ -19,7 +20,10 @@ https://www.chessprogramming.org/Main_Page
 # end_time = 0
 
 
-def ai_0(board=None, time_limit=30) -> object:
+def ai_0(board=None, time_limit=30, first_game=False) -> object:
+    if first_game:
+        reset_history()
+
     print(f"---------------------------------{chess.COLOR_NAMES[int(board.turn)]}-AI V11 ----------------------------")
     # global end_time
     # end_time = time.time() + time_limit
@@ -112,7 +116,11 @@ def print_results_and_stats(board, best_move_at_index_depth):
 
     # print(f"Move # {move_id}: {best_move_at_index_depth[-1]}. [Sum, Pos., ..., ..., Path... ] - {readable_time}")
 
-    move_object = chess.Move.from_uci(best_move_at_index_depth[-1])
+    move_object: any = ""
+    try:
+        move_object = chess.Move.from_uci(best_move_at_index_depth[-1])
+    except:
+        print("error with printing result")
 
     if board.is_capture(move_object):
         print(f"Captured: {board.piece_at(move_object.to_square)}")

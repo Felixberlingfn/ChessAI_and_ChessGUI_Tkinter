@@ -15,37 +15,47 @@ Usage:
     The final standings are printed, showing each AI's performance.
 """
 
+from typing import Dict, Callable
 
-results: dict = {}
+
+results: Dict[Callable, dict] = {}
 
 
-def run_round_robin_tournament(ai_versions, chess_board, app, injected_function):
+def run_round_robin_tournament(ai_versions, chess_board, app, injected_function: Callable):
     global results
+
+    chess_board.reset()
+    app.update_board(chess_board, True)
 
     app.display_message("tournament started", "label2")
     print("tournament started")
 
-    results = {ai: {"points": 0, "wins": 0, "draws": 0, "losses": 0} for ai in ai_versions}
+    results = {ai: {"name": name, "points": 0, "wins": 0, "draws": 0, "losses": 0} for name, ai in ai_versions}
 
     for i, ai1 in enumerate(ai_versions):
         for ai2 in ai_versions[i+1:]:
             """ ai1 as white and ai2 as black """
-            winner = play_match(ai1, ai2, chess_board, injected_function)
-            update_results(winner, ai1, ai2)
+            winner = play_match(ai1[1], ai2[1], chess_board, injected_function)
+            update_results(winner, ai1[1], ai2[1])
+            app.update_board(chess_board, True)
 
             """ ai2 as white and ai1 as black """
-            winner_reverse = play_match(ai2, ai1, chess_board, injected_function)
-            update_results(winner_reverse, ai1, ai2)
+            winner_reverse = play_match(ai2[1], ai1[1], chess_board, injected_function)
+            update_results(winner_reverse, ai1[1], ai2[1])
+            app.update_board(chess_board, True)
 
     return rank_ais()
 
 
-def play_match(ai1, ai2, chess_board, injected_function):
+def play_match(ai1, ai2, chess_board, injected_function: Callable):
     chess_board.reset()
 
     """ use the dependency injected version_vs_version function"""
     winner = injected_function(chess_board, ai1, ai2, 30, 30)
     # Return the result: winner AI, 'draw', or 'none' if the match couldn't be completed
+
+    print("####################### --- NEXT MATCH  --- #############################")
+    chess_board.reset()
     return winner
 
 
@@ -78,6 +88,12 @@ def rank_ais():
     # Sort AI based on points
     sorted_ais = sorted(results.items(), key=lambda x: (x[1]['points']), reverse=True)
     return sorted_ais
+
+
+def print_tournament_results(tournament_results):
+    for ai, result in tournament_results:
+        print(f"AI {result['name']}: Points: {result['points']}, Wins: {result['wins']}, Draws: {result['draws']}, Losses: {result['losses']}")
+    return
 
 
 def determine_winner(result, version_a, version_b):

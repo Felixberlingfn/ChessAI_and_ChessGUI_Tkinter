@@ -2,7 +2,8 @@ from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 from typing import List
 
-from .tables import history_table, killer_moves
+from .tables_maximizer import history_table_max, killer_moves_max
+from .tables_minimizer import history_table_min, killer_moves_min
 from .CONSTANTS import CALM, CAPTURE, PROMOTION, DEGRADATION_IMPACT_RATIO
 
 
@@ -16,7 +17,13 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
 
     """ First: Initialization """
     moves = board.legal_moves
-    killers: list = killer_moves[real_depth] if killer_moves[real_depth] is not None else []  # (depth <= len)
+    if board.turn == BLACK:
+        turn = BLACK
+        killers = killer_moves_min[real_depth] if killer_moves_min[real_depth] is not None else []  # (depth <= len)
+    else:
+        turn = WHITE
+        killers = killer_moves_max[real_depth] if killer_moves_max[real_depth] is not None else []
+
     captures: List[tuple] = []
     checks: List[tuple] = []
     promotions: List[tuple] = []
@@ -24,7 +31,10 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
     quiet_killer_moves: List[tuple] = []
     opportunities = 0
 
-    degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)  # captures happening far in the future get less value
+    if real_depth > 2:
+        degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
+    else:
+        degradation = 1
 
     """ Second: Separate captures, checks, killer moves and quiet moves"""
     for move in moves:
@@ -72,7 +82,10 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
 
     """ Third: Sorting """
     captures.sort(key=lambda a: a[3], reverse=True)
-    quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
+    if turn == BLACK:
+        quiet_moves.sort(key=lambda m: history_table_min[m[0].from_square][m[0].to_square], reverse=True)
+    else:
+        quiet_moves.sort(key=lambda m: history_table_max[m[0].from_square][m[0].to_square], reverse=True)
 
     return (checks + promotions + captures + quiet_killer_moves + quiet_moves), opportunities
 

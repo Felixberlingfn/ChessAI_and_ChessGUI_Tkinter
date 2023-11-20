@@ -18,8 +18,8 @@ PREFERENCE_DEEP = 0.1
 
 """ for evaluations """
 """ DEGRADATION_FACTOR: We give any material change far in the future a lower value, because of uncertainty"""
-DEGRADATION_IMPACT_RATIO = 500  # Capture Val * (1 - (real_depth/DEGRADATION_FACTOR))
-HORIZON_RISK_MULTIPLIER = 0.9
+DEGRADATION_IMPACT_RATIO = 1000  # lower is bigger impact Capture Val * (1 - (real_depth/DEGRADATION_FACTOR))
+HORIZON_RISK_MULTIPLIER = 0.6
 OPPORTUNITY_MULTIPLIER = 0.010  # it is really difficult to find the right value
 GOOD_POS_BONUS = 0.1  # this has been working alright
 BAD_POS_PUNISH = 0.01  # keep this low

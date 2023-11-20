@@ -22,6 +22,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
         depth = make_up_difference
 
     if depth == 0 or board.is_game_over():  # or time.time() > end_time:
+        if real_depth == 0:
+            print("game was already over when minimax was called")
         """ Final Node reached. Do the Evaluation of the board """
         final_val_list = evaluate_board(board, horizon_risk, opportunities, material)
         stats.n_evaluated_leaf_nodes += 1
@@ -43,13 +45,14 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             """ Chess  move """
             board.push(move)
-            if real_depth == 0 and opportunities > 1 and board.is_repetition(2): board.pop(); continue
+            if real_depth == 0 and opportunities > 1 and board.is_repetition(2):
+                board.pop(); continue
 
             """ Recursive Call and Value Updating """
             val_list: list = minimax(board, n_depth, False, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
-            if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 5) * PREFERENCE_DEEP)
+            if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 4) * PREFERENCE_DEEP)
 
             if val_list[0] >= best_list[0]:
                 # if real_depth == 0: print(f"{val_list[0]} >= {best_list[0]}")
@@ -79,13 +82,14 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             # Chess  move
             board.push(move)
-            if real_depth == 0 and opportunities > 1 and board.is_repetition(2): board.pop(); continue
+            if real_depth == 0 and opportunities > 1 and board.is_repetition(2):
+                board.pop(); continue
 
             # Recursive Call and Value Updating
             val_list: list = minimax(board, n_depth, True, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
-            if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 5) * PREFERENCE_DEEP)
+            if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 4) * PREFERENCE_DEEP)
 
             if val_list[0] <= best_list[0]:
                 # if real_depth == 0: print(f"{val_list[0]} <= {best_list[0]}")

@@ -28,7 +28,7 @@ n_evaluated_leaf_nodes: int = 0
 killer_moves = [[None, None] for _ in range(INIT_DEPTH + CAPTURE_EXTENSION + CHECK_EXTENSION)]
 
 # Initialize the history table or previously successful moves (64x64 from to)
-history_table = [[0 for _ in range(64)] for _ in range(64)]
+history_table_min = [[0 for _ in range(64)] for _ in range(64)]
 
 
 def my_ai_0_oldmaterialcalc(board=None, time_limit=0) -> object:
@@ -103,7 +103,7 @@ def order_moves(board, depth, material=1000) -> List[tuple]:
     """ Third: Sort Captures by MVV-LVA """
     captures.sort(key=lambda m: mvv_lva_score(m[0]), reverse=True)
     """ Fourth: Sort Quiet Moves by History Table """
-    non_killer_quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
+    non_killer_quiet_moves.sort(key=lambda m: history_table_min[m[0].from_square][m[0].to_square], reverse=True)
 
     return checks + promotions + captures + quiet_killer_moves + non_killer_quiet_moves
 
@@ -262,7 +262,7 @@ def get_next_depth(board, move, depth: int, quiet_search: bool = False, move_typ
 def update_history_table(move, depth):
     from_square = move.from_square
     to_square = move.to_square
-    history_table[from_square][to_square] += depth ** 2  # Weight by depth squared
+    history_table_min[from_square][to_square] += depth ** 2  # Weight by depth squared
 
 
 def get_piece_value(piece) -> int:  # expects piece object not piece type

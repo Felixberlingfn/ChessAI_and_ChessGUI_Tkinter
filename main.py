@@ -11,21 +11,23 @@ from stable_ai_v8 import ai_0 as v8
 from stable_ai_v8B import ai_0 as v8B
 from stable_ai_v9 import ai_0 as v9
 from stable_ai_v10 import ai_0 as v10
-from stable_ai_v11 import ai_0 as v11
+from stable_ai_v11_1 import ai_0 as v11_1
+from stable_ai_v11_2 import ai_0 as v11_2
 
 from stockfish import stockfish
 from comments import comments
-from tournament import run_round_robin_tournament
+from tournament import run_round_robin_tournament, print_tournament_results
 from helpers import determine_winner
 
 
 ai_player_1 = v7  # White
-ai_player_2 = v11  # Black
-ai_playing_against_human = v11
-ai_playing_against_stockfish = v11
+ai_player_2 = v11_1  # Black
+ai_playing_against_human = v11_1
+ai_playing_against_stockfish = v11_1
 
 """ ai tournament (round robin / everyone against everyone) """
-ai_tournament_vs = [v7, v11]
+# ai_tournament_vs = [("V7", v7), ("V11", v11)]
+ai_tournament_vs = [("V11.1", v11_1), ("V11.2", v11_2)]  # ("V11.2", v11_2)
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 
@@ -42,6 +44,9 @@ def main():
             if chess_board.is_game_over():
                 result = game_status(chess_board)
                 app.display_message(result, "label2")
+                print("############################################")
+                print(result)
+                print("############################################")
                 return determine_winner(result, version_a, version_b)
 
             if i % 2 == 0:
@@ -126,8 +131,7 @@ def main():
 
         if passed_value == "tournament":
             tournament_results = run_round_robin_tournament(ai_tournament_vs, chess_board, app, version_vs_version)
-            for ai, result in tournament_results:
-                print(f"AI {ai.__name__}: Wins: {result['wins']}, Draws: {result['draws']}, Losses: {result['losses']}")
+            print_tournament_results(tournament_results)
             return
 
 

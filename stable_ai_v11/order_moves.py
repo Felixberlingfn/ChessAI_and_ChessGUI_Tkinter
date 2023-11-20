@@ -72,7 +72,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
 
     """ Third: Sorting """
     captures.sort(key=lambda a: a[3], reverse=True)
-    quiet_moves.sort(key=lambda m: history_table[m[0].from_square][m[0].to_square], reverse=True)
+    quiet_moves.sort(key=lambda m: history_table_max[m[0].from_square][m[0].to_square], reverse=True)
 
     return (checks + promotions + captures + quiet_killer_moves + quiet_moves), opportunities
 

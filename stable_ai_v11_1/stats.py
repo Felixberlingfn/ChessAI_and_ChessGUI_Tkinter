@@ -13,6 +13,8 @@ top_moves: List[list] = []
 distribution: list = [0 for _ in range(MAXIMUM_REAL_DEPTH)]
 another_debugging_dict: dict = {i: 0 for i in range(MAXIMUM_REAL_DEPTH)}
 
+material_balance_over_time = []
+
 
 def sort_top_moves(player_color) -> None:
     global top_moves
@@ -59,5 +61,11 @@ def printf(player_color):
     max_real_depth = sum(1 for item in distribution if item != 0)
     print(f"Leaf nodes: {n_evaluated_leaf_nodes} maximum depth:{max_real_depth}")
     print(f"top 2:{rounded_top_moves[:2]}")
-
     reset()
+
+
+def print_end_of_game_stats():
+    global material_balance_over_time
+    print(material_balance_over_time)
+    material_balance_over_time = []
+
