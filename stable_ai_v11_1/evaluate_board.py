@@ -12,19 +12,20 @@ def run(board, testing=False) -> list:
     return evaluate_board(board)
 
 
-def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None) -> list:
+def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real_depth=1) -> list:
     """ Simplistic but most important: Material Balance + White - Black"""
     material_balance = material if material else get_material_balance(board)
 
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
     """ endgame check """
+    try_to_win_soon = real_depth if real_depth > 0 else 1
     if board.is_checkmate():
         if board.turn == chess.WHITE:  # is turn dependent
             """great for black"""
-            final_val[0] = float("-inf")
+            final_val[0] = - 1.7976931348623150e308 / try_to_win_soon
         else:
             """great for white"""
-            final_val[0] = float("inf")
+            final_val[0] = 1.7976931348623150e308 / try_to_win_soon
 
     """ adding extra values to simple material balance """
     pos = get_position_score(board) * 100  # centi-pawns is convention
