@@ -57,15 +57,31 @@ def help():
 
 def push_human_move(chess_board_object, prev_clicked_square, now_clicked_square):
     move_uci = prev_clicked_square + now_clicked_square
+
     move = ""
-    try:
-        move = chess.Move.from_uci(move_uci)
+
+    from_square = chess.SQUARE_NAMES.index(prev_clicked_square)
+    to_square = chess.SQUARE_NAMES.index(now_clicked_square)
+
+    try:  # Try a regular move
+        move = chess.Move(from_square, to_square)
     except:
-        print("push_human_move: not valid uci")
-    if move not in chess_board_object.legal_moves:
-        return False
-    chess_board_object.push(move)
-    return chess_board_object
+        pass
+
+    if move in chess_board_object.legal_moves:
+        chess_board_object.push(move)
+        return chess_board_object
+
+    try:  # try it as a pawn promotion to queen
+        move = chess.Move(from_square, to_square, promotion=chess.QUEEN)
+    except:
+        pass
+
+    if move in chess_board_object.legal_moves:
+        chess_board_object.push(move)
+        return chess_board_object
+
+    return False
 
 
 class ChessBoard(tk.Tk):

@@ -2,10 +2,12 @@
 
 """ DEPTH """
 REAL_QUIESCENCE_START = 2  # 2 means my move, opponent move, my move, then evaluate or quiescence search
-""" EVAL_BASED_QUIESCENCE_START: essentially a minimum number of evaluations improves opening and endgame"""
-EVAL_BASED_QUIESCENCE_START = 80000  # Number of evaluations after which REAL_QUIESCENCE_START takes effect
+""" EVAL_BASED_QUIESCENCE_START: essentially a minimum number of evaluations - improves opening and endgame
+A nice side effect: captures are automatically searched deeper because they are first with move ordering"""
+EVAL_BASED_QUIESCENCE_START = 80000
 EXTRA_DEPTH_BEFORE_LIMIT = 1  # The number of extra steps while above limit is not reached
-CHECK_X_LIMITER = 15  # using real_depth
+CHECK_X_LIMITER = 20  # if I am in check there is no way I can put the opponent in check so actually this could be inf
+QUIESCENCE_DEPTH = 11  # total counting from - 11 but starting from - 7 only knight capture are not calm etc.
 
 """ Do not change these: """
 INIT_DEPTH = REAL_QUIESCENCE_START + 2 + EXTRA_DEPTH_BEFORE_LIMIT
@@ -15,6 +17,7 @@ MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 3
 PREFERENCE_DEEP = 0.1
 
 """ for evaluations """
+""" DEGRADATION_FACTOR: We give any material change far in the future a lower value, because of uncertainty"""
 DEGRADATION_FACTOR = 500  # Capture Val * (real_depth/DEGRADATION_FACTOR)
 HORIZON_RISK_MULTIPLIER = 0.6
 OPPORTUNITY_MULTIPLIER = 0.010  # it is really difficult to find the right value

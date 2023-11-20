@@ -7,11 +7,7 @@ import inspect
 
 from .minimax import minimax
 from . import stats
-from .tables import add_to_killers_and_history
-from .evaluate_board import evaluate_board
-from .order_moves import order_moves
-from .depth import adjust_depth
-from .CONSTANTS import INIT_DEPTH, CHECK_X_LIMITER
+from .CONSTANTS import INIT_DEPTH
 
 
 """

@@ -42,7 +42,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'),
 
     ordered_moves, opportunities = order_moves(board, real_depth, material)
 
-    # board.__hash__()
+    # board.__hash__()  transposition table
 
     """ MAXIMIZING """
     if max_player:

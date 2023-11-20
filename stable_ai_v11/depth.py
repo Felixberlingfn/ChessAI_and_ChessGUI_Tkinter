@@ -2,7 +2,7 @@ from chess import WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
 from typing import Tuple
 
 from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_QUIESCENCE_START,
-                        NEW_THRESHOLDS, REAL_QUIESCENCE_START, DEGRADATION_FACTOR)
+                        NEW_THRESHOLDS, REAL_QUIESCENCE_START, DEGRADATION_FACTOR, QUIESCENCE_DEPTH)
 from . import stats
 
 
@@ -37,7 +37,7 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
             return depth - 1, 0, 0  # Default
 
         if depth == 1 or stats.n_evaluated_leaf_nodes > EVAL_BASED_QUIESCENCE_START:
-            depth = - 11  # Start Quiescence
+            depth = - QUIESCENCE_DEPTH  # 11  # Start Quiescence
         else:
             return depth - 1, 0, 0  # Default
 
