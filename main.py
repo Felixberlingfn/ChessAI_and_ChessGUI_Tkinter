@@ -16,6 +16,7 @@ from stable_ai_v11 import ai_0 as v11
 from stockfish import stockfish
 from comments import comments
 from tournament import run_round_robin_tournament
+from helpers import determine_winner
 
 
 ai_player_1 = v7  # White
@@ -23,8 +24,8 @@ ai_player_2 = v11  # Black
 ai_playing_against_human = v11
 ai_playing_against_stockfish = v11
 
-""" ai tournament (round robin) """
-ai_versions = [ai_0, v2, v7, v8, v8B, v9, v10, v11]
+""" ai tournament (round robin / everyone against everyone) """
+ai_tournament_vs = [v7, v11]
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 
@@ -39,8 +40,9 @@ def main():
             db.save_game_state(chess_board)
 
             if chess_board.is_game_over():
-                app.display_message(game_status(chess_board), "label2")
-                break
+                result = game_status(chess_board)
+                app.display_message(result, "label2")
+                return determine_winner(result, version_a, version_b)
 
             if i % 2 == 0:
                 app.display_message(f"version_a is thinking 💭", "label2")
@@ -123,7 +125,9 @@ def main():
             return
 
         if passed_value == "tournament":
-            run_round_robin_tournament(chess_board, ai_versions, app)
+            tournament_results = run_round_robin_tournament(ai_tournament_vs, chess_board, app, version_vs_version)
+            for ai, result in tournament_results:
+                print(f"AI {ai.__name__}: Wins: {result['wins']}, Draws: {result['draws']}, Losses: {result['losses']}")
             return
 
 
