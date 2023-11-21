@@ -1,22 +1,22 @@
-from chess import WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
+from chess import WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
 from typing import Tuple
 
 from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_QUIESCENCE_START,
-                        NEW_THRESHOLDS, REAL_QUIESCENCE_START, DEGRADATION_IMPACT_RATIO, QUIESCENCE_DEPTH)
+                        RELATIVE_QUIESCENCE_START, NEW_THRESHOLDS, REAL_QUIESCENCE_START,
+                        DEGRADATION_IMPACT_RATIO, QUIESCENCE_DEPTH)
 from . import stats
 
 
-def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 0,) -> Tuple[int, float, int]:
+def adjust_depth(board, move, depth: int, real_depth, move_type, aggressor, victim) -> Tuple[int, float, int]:
     """ NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH """
-    global start_q
     degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
 
     def get_capture_risk() -> float:
         attacker_piece = board.piece_at(move.from_square)  # victim already in material balance
         if attacker_piece.color == WHITE:
-            return get_piece_value(attacker_piece) * HORIZON_RISK_MULTIPLIER  # bad for white
+            return get_piece_value_from_type(aggressor) * HORIZON_RISK_MULTIPLIER  # bad for white
         else:
-            return - get_piece_value(attacker_piece) * HORIZON_RISK_MULTIPLIER  # bad for black
+            return - get_piece_value_from_type(aggressor) * HORIZON_RISK_MULTIPLIER  # bad for black
 
     def get_promotion_risk() -> float:
         if depth == - 1:  # 9 because new queen is at risk, already in material balance
@@ -33,9 +33,24 @@ def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 
 
     """ default: depth - 1 """
     if depth > 0:
+        if real_depth == 0:
+            """'aggressor' just means move by if not a capture'"""
+            if aggressor == QUEEN:  # or victim == QUEEN
+                depth += 1
+            if aggressor == KING:
+                depth += 2
+
         """ 1) # never start quiescence before this"""
         if real_depth < REAL_QUIESCENCE_START:
+            """if move_type == CAPTURE and aggressor in [QUEEN, KING] or victim == QUEEN:
+                depth += 1
+            if move_type != CAPTURE and aggressor == KING: # with QUEEN this would explode
+                depth += 1"""
             return depth - 1, 0, 0  # Default
+
+        """ 2) no more extensions but don't start quiescence yet"""
+        if depth > RELATIVE_QUIESCENCE_START:
+            return depth - 1, 0, 0
 
         if depth == 1 or stats.n_evaluated_leaf_nodes > EVAL_BASED_QUIESCENCE_START:
             depth = - QUIESCENCE_DEPTH  # 11  # Start Quiescence
@@ -81,6 +96,15 @@ def get_piece_value(piece) -> int:  # expects piece object not piece type
         ROOK: 5,
         QUEEN: 9,
     }
-    if not piece:
-        return 0
     return piece_values.get(piece.piece_type, 0)
+
+
+def get_piece_value_from_type(piece_type) -> int:  # expects piece object not piece type
+    piece_values = {
+        PAWN: 1,
+        KNIGHT: 3,
+        BISHOP: 3,
+        ROOK: 5,
+        QUEEN: 9,
+    }
+    return piece_values.get(piece_type, 0)

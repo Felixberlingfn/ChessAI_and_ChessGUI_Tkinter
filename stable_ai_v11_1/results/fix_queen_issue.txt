@@ -1,0 +1,3 @@
+in Order to fix the issue of careless queen attacks I am implementing a queen attack extension
+
+whenever attacking with or being attacked by a queen the depth is increased by 2 but only while quiescence has not started yet

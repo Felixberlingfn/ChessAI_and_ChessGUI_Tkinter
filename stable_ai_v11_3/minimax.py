@@ -50,9 +50,9 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
             val_list: list = minimax(board, n_depth, False, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
-            if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 4) * PREFERENCE_DEEP)
+            # if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 4) * PREFERENCE_DEEP)
 
-            if val_list[0] >= best_list[0]:
+            if val_list[0] > best_list[0] or (val_list[0] == best_list[0] and len(val_list) >= len(best_list)):
                 # if real_depth == 0: print(f"{val_list[0]} >= {best_list[0]}")
                 best_list = val_list
                 best_list.append(board.uci(move))
@@ -90,9 +90,9 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
             val_list: list = minimax(board, n_depth, True, alpha, beta,
                                      nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
-            if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 4) * PREFERENCE_DEEP)
+            # if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 4) * PREFERENCE_DEEP)
 
-            if val_list[0] <= best_list[0]:
+            if val_list[0] < best_list[0] or (val_list[0] == best_list[0] and len(val_list) <= len(best_list)):
                 # if real_depth == 0: print(f"{val_list[0]} <= {best_list[0]}")
                 best_list = val_list
                 best_list.append(board.uci(move))  # append the move history

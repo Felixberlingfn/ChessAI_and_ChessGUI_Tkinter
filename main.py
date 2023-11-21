@@ -13,6 +13,7 @@ from stable_ai_v9 import ai_0 as v9
 from stable_ai_v10 import ai_0 as v10
 from stable_ai_v11_1 import ai_0 as v11_1
 from stable_ai_v11_2 import ai_0 as v11_2
+from stable_ai_v11_3 import ai_0 as v11_3
 
 from stockfish import stockfish
 from comments import comments
@@ -20,10 +21,10 @@ from tournament import run_round_robin_tournament, print_tournament_results
 from helpers import determine_winner
 
 
-ai_player_1 = v7  # White
-ai_player_2 = v11_1  # Black
-ai_playing_against_human = v11_1
-ai_playing_against_stockfish = v11_1
+ai_player_1 = v11_1  # White
+ai_player_2 = v11_2  # Black
+ai_playing_against_human = v11_3
+ai_playing_against_stockfish = v11_2
 
 """ ai tournament (round robin / everyone against everyone) """
 # tuple like [("V11.1", v11_1), ("V11.2", v11_2)]
