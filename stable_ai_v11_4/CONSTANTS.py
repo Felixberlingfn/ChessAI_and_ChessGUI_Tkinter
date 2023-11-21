@@ -2,6 +2,7 @@
 
 """ DEPTH """
 REAL_QUIESCENCE_START = 2  # 2 means my move, opponent move, my move, then evaluate or quiescence search
+
 """ EVAL_BASED_QUIESCENCE_START: essentially a minimum number of evaluations - improves opening and endgame
 A nice side effect: captures are automatically searched deeper because they are first with move ordering"""
 EVAL_BASED_QUIESCENCE_START = 80000
@@ -12,13 +13,14 @@ QUIESCENCE_DEPTH = 11  # total counting from - 11 but starting from - 7 only kni
 """ Do not change these: """
 INIT_DEPTH = REAL_QUIESCENCE_START + 2 + EXTRA_DEPTH_BEFORE_LIMIT
 MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 3
+RELATIVE_QUIESCENCE_START = INIT_DEPTH - REAL_QUIESCENCE_START
 
 """ Preference for more deeply evaluated moves """
 PREFERENCE_DEEP = 0.1
 
 """ for evaluations """
 """ DEGRADATION_FACTOR: We give any material change far in the future a lower value, because of uncertainty"""
-DEGRADATION_IMPACT_RATIO = 90  # was 500 # lower is bigger impact Capture Val * (1 - (real_depth/DEGRADATION_FACTOR))
+DEGRADATION_IMPACT_RATIO = 90  # lower is bigger impact Capture Val * (1 - (real_depth/DEGRADATION_FACTOR))
 HORIZON_RISK_MULTIPLIER = 0.6
 OPPORTUNITY_MULTIPLIER = 0.010  # it is really difficult to find the right value
 GOOD_POS_BONUS = 0.1  # this has been working alright

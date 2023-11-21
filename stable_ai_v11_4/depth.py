@@ -7,9 +7,11 @@ from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_
 from . import stats
 
 
-def adjust_depth(board, move, depth: int, real_depth, move_type, aggressor, victim) -> Tuple[int, float, int]:
+def adjust_depth(board, move_tuple, depth: int, real_depth) -> Tuple[int, float, int]:
     """ NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH """
     degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
+    """move_tuple: 0:move, 1:move_type, 2:material_balance, 3:mv_va, 4:aggressor, 5:victim"""
+    move, move_type, _, _, aggressor, victim = move_tuple
 
     def get_capture_risk() -> float:
         attacker_piece = board.piece_at(move.from_square)  # victim already in material balance
@@ -35,10 +37,12 @@ def adjust_depth(board, move, depth: int, real_depth, move_type, aggressor, vict
     if depth > 0:
         if real_depth == 0:
             """'aggressor' just means move by if not a capture'"""
-            if aggressor == QUEEN or victim == QUEEN:
+            if aggressor == QUEEN:  # or victim == QUEEN
                 depth += 1
             if aggressor == KING:
                 depth += 2
+            """maybe I can get the opponents last move (board.peek()) and evaluate any moves
+            of that piece deeper because it is likely this piece 'has a plan' """
 
         """ 1) # never start quiescence before this"""
         if real_depth < REAL_QUIESCENCE_START:

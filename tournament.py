@@ -92,7 +92,7 @@ def rank_ais():
 
 def print_tournament_results(tournament_results):
     for ai, result in tournament_results:
-        print(f"AI {result['name']}: Points: {result['points']}, Wins: {result['wins']}, Draws: {result['draws']}, Losses: {result['losses']}")
+        print(f"{result['name']}: Points: {result['points']}, Win: {result['wins']}, Draw: {result['draws']}, Loss: {result['losses']}")
     return
 
 

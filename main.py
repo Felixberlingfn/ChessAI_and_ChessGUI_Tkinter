@@ -14,21 +14,24 @@ from stable_ai_v10 import ai_0 as v10
 from stable_ai_v11_1 import ai_0 as v11_1
 from stable_ai_v11_2 import ai_0 as v11_2
 from stable_ai_v11_3 import ai_0 as v11_3
+from stable_ai_v11_4 import ai_0 as v11_4
 
-from stockfish import stockfish
+from stockfish import stockfish, stockfish_1, stockfish_2, stockfish_3
 from comments import comments
 from tournament import run_round_robin_tournament, print_tournament_results
 from helpers import determine_winner
 
 
-ai_player_1 = v11_1  # White
-ai_player_2 = v11_2  # Black
-ai_playing_against_human = v11_3
-ai_playing_against_stockfish = v11_2
+ai_player_1 = v11_3  # White
+ai_player_2 = v11_4  # Black
+ai_playing_against_human = v11_4
+ai_playing_against_stockfish = v11_3
+
+stockfish_level = stockfish_2
 
 """ ai tournament (round robin / everyone against everyone) """
-# tuple like [("V11.1", v11_1), ("V11.2", v11_2)]
-ai_tournament_vs = [("V11.1", v11_1), ("V11.2", v11_2)]  # ("V11.2", v11_2)
+# tuple like [("V11.1", v11_1), ("V11.2", v11_2)] ("V11.2", v11_2),
+ai_tournament_vs = [("V11.3", v11_3), ("st.fish lv2", stockfish_2)]  # ("V11.2", v11_2)
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 
@@ -110,7 +113,7 @@ def main():
             return
 
         if passed_value == "play_stockfish" and chess_board.turn == chess.BLACK:
-            play_human_vs_ai(chess_board, stockfish, 0.1)
+            play_human_vs_ai(chess_board, stockfish_level, 0.1)
             return
 
         """ custom_ai """
@@ -123,7 +126,7 @@ def main():
             return
 
         if passed_value == "myai_vs_stockfish":
-            version_vs_version(chess_board, ai_playing_against_stockfish, stockfish, 30, STOCKFISH_TIME_LIMIT)
+            version_vs_version(chess_board, ai_playing_against_stockfish, stockfish_level, 30, STOCKFISH_TIME_LIMIT)
             return
 
         if passed_value == "version_vs_version":
