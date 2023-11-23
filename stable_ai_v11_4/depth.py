@@ -3,15 +3,19 @@ from typing import Tuple
 
 from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_QUIESCENCE_START,
                         RELATIVE_QUIESCENCE_START, NEW_THRESHOLDS, REAL_QUIESCENCE_START,
-                        DEGRADATION_IMPACT_RATIO, QUIESCENCE_DEPTH)
+                        DEPTH_DEGRADATION, QUIESCENCE_DEPTH)
 from . import stats
+
+
+extreme_threshold_high = 12
+extreme_threshold_low = - 12
 
 
 def adjust_depth(board, move_tuple, depth: int, real_depth) -> Tuple[int, float, int]:
     """ NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH """
-    degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
     """move_tuple: 0:move, 1:move_type, 2:material_balance, 3:mv_va, 4:aggressor, 5:victim"""
-    move, move_type, _, _, aggressor, victim = move_tuple
+    move, move_type, material_balance, _, aggressor, victim = move_tuple
+    degradation = DEPTH_DEGRADATION[real_depth]
 
     def get_capture_risk() -> float:
         attacker_piece = board.piece_at(move.from_square)  # victim already in material balance
@@ -33,46 +37,62 @@ def adjust_depth(board, move_tuple, depth: int, real_depth) -> Tuple[int, float,
                 if risk >= threshold or risk <= - threshold:  # 1=B/N 2=R 3=Q
                     return True
 
+    if material_balance > extreme_threshold_high or material_balance < extreme_threshold_low:
+        # evaluate if the position is extremely good or bad
+        if depth > 0:
+            if depth in [1, -1]:
+                new_depth = 0
+            else:
+                new_depth = - 1
+            if move_type == CAPTURE:
+                return new_depth, get_capture_risk() * degradation, 1
+            return new_depth, 0, 1
+        else:
+            if move_type == CAPTURE:
+                return 0, get_capture_risk() * degradation, -1
+            return 0, 0, -1
+
     """ default: depth - 1 """
     if depth > 0:
         if real_depth == 0:
-            """'aggressor' just means move by if not a capture'"""
+            """extensions: 'aggressor' just means move by if not a capture'"""
             if aggressor == QUEEN:  # or victim == QUEEN
                 depth += 1
             if aggressor == KING:
                 depth += 2
-            """maybe I can get the opponents last move (board.peek()) and evaluate any moves
-            of that piece deeper because it is likely this piece 'has a plan' """
 
         """ 1) # never start quiescence before this"""
         if real_depth < REAL_QUIESCENCE_START:
-            return depth - 1, 0, 0  # Default
+            return depth - 1, 0, 1  # Default
 
         """ 2) no more extensions but don't start quiescence yet"""
         if depth > RELATIVE_QUIESCENCE_START:
-            return depth - 1, 0, 0
+            return depth - 1, 0, 1
 
         if depth == 1 or stats.n_evaluated_leaf_nodes > EVAL_BASED_QUIESCENCE_START:
             depth = - QUIESCENCE_DEPTH  # 11  # Start Quiescence
         else:
-            return depth - 1, 0, 0  # Default
+            return depth - 1, 0, 1  # Default
 
     """ default: depth + 1 """
     if depth < 0:
 
         if depth == - 1:  # quiescence search ends at - 1
             """ in this case always return depth 0 """
-            if move_type == PROMOTION: return 0, get_promotion_risk() * degradation, - 1
-            if move_type == CAPTURE: return 0, get_capture_risk() * degradation, - 1
+            if move_type == PROMOTION:
+                return 0, get_promotion_risk() * degradation, - 1
+            if move_type == CAPTURE:
+                return 0, get_capture_risk() * degradation, - 1
             return 0, 0, - 1  # calm state, unless check
 
         if move_type == PROMOTION:
             """ always continue - equivalent to queen risk """
-            return depth + 1, get_promotion_risk() * degradation, 0
+            return depth + 1, get_promotion_risk() * degradation, -1
 
         elif move_type == CAPTURE:
             """ continue search """
-            if depth < - 9: return depth + 1, 0, 0
+            if depth < - 9:
+                return depth + 1, 0, -1
 
             """ Continue based on risk """
             risk = get_capture_risk()

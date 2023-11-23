@@ -38,9 +38,7 @@ def adjust_depth(board, move, depth: int, real_depth, move_type, aggressor, vict
             if aggressor == QUEEN:  # or victim == QUEEN
                 depth += 1
             if aggressor == KING:
-                depth += 2
-            """maybe I can get the opponents last move (board.peek()) and evaluate any moves
-            of that piece deeper because it is likely this piece 'has a plan' """
+                depth += 1
 
         """ 1) # never start quiescence before this"""
         if real_depth < REAL_QUIESCENCE_START:

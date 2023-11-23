@@ -18,14 +18,13 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real
 
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
     """ endgame check """
-    try_to_win_soon = real_depth if real_depth > 0 else 1
     if board.is_checkmate():
         if board.turn == chess.WHITE:  # is turn dependent
             """great for black"""
-            final_val[0] = - 1.7976931348623150e308 / try_to_win_soon
+            final_val[0] = - 1.79e308 / real_depth  # real_depth won't be 0 don't worry
         else:
             """great for white"""
-            final_val[0] = 1.7976931348623150e308 / try_to_win_soon
+            final_val[0] = 1.79e308 / real_depth
 
     """ adding extra values to simple material balance """
     pos = get_position_score(board) * 100  # centi-pawns is convention

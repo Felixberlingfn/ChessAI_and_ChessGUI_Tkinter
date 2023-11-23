@@ -14,24 +14,26 @@ from stable_ai_v10 import ai_0 as v10
 from stable_ai_v11_1 import ai_0 as v11_1
 from stable_ai_v11_2 import ai_0 as v11_2
 from stable_ai_v11_3 import ai_0 as v11_3
+from stable_ai_v11_3b import ai_0 as v11_3b
+from stable_ai_v11_3bb import ai_0 as v11_3bb
 from stable_ai_v11_4 import ai_0 as v11_4
 
-from stockfish import stockfish, stockfish_1, stockfish_2, stockfish_3
+from stockfish import stockfish, stockfish_6, stockfish_5, stockfish_2, stockfish_3, stockfish_4
 from comments import comments
 from tournament import run_round_robin_tournament, print_tournament_results
 from helpers import determine_winner
 
 
-ai_player_1 = v11_3  # White
-ai_player_2 = v11_4  # Black
-ai_playing_against_human = v11_4
-ai_playing_against_stockfish = v11_3
+ai_player_1 = v11_3bb  # White
+ai_player_2 = v11_3bb  # Black
+ai_playing_against_human = v11_3bb
+ai_playing_against_stockfish = v11_3bb
 
-stockfish_level = stockfish_2
+stockfish_level = stockfish_4
 
 """ ai tournament (round robin / everyone against everyone) """
 # tuple like [("V11.1", v11_1), ("V11.2", v11_2)] ("V11.2", v11_2),
-ai_tournament_vs = [("V11.3", v11_3), ("st.fish lv2", stockfish_2)]  # ("V11.2", v11_2)
+ai_tournament_vs = [("V11.3bb", v11_3bb), ("st.fish lv4", stockfish_4)]  # ("V11.2", v11_2)
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 
@@ -137,7 +139,6 @@ def main():
             tournament_results = run_round_robin_tournament(ai_tournament_vs, chess_board, app, version_vs_version)
             print_tournament_results(tournament_results)
             return
-
 
         return
 

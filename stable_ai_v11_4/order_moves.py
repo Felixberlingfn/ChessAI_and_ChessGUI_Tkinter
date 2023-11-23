@@ -4,7 +4,7 @@ from typing import List
 
 from .tables_maximizer import history_table_max, killer_moves_max
 from .tables_minimizer import history_table_min, killer_moves_min
-from .CONSTANTS import CALM, CAPTURE, PROMOTION, DEGRADATION_IMPACT_RATIO
+from .CONSTANTS import CALM, CAPTURE, PROMOTION, DEPTH_DEGRADATION
 
 
 def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
@@ -27,7 +27,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
     opportunities = 0
 
     if real_depth > 2:
-        degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
+        degradation = DEPTH_DEGRADATION[real_depth]
     else:
         degradation = 1
 

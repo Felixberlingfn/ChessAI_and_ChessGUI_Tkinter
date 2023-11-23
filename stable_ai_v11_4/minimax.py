@@ -18,8 +18,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
     """ Minimax returns optimal value for current player """
 
     """ We do Check Extension Check here (is_check is cheaper than gives_check) """
-    if depth == 0 and real_depth < CHECK_X_LIMITER and board.is_check():
-        depth = make_up_difference
+    if depth in [0, 1, -1] and real_depth < CHECK_X_LIMITER and board.is_check():
+        depth += make_up_difference
 
     if depth == 0 or board.is_game_over():  # or time.time() > end_time:
         """ Final Node reached. Do the Evaluation of the board """

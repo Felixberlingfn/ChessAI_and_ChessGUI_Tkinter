@@ -2,6 +2,7 @@
 
 """ DEPTH """
 REAL_QUIESCENCE_START = 2  # 2 means my move, opponent move, my move, then evaluate or quiescence search
+
 """ EVAL_BASED_QUIESCENCE_START: essentially a minimum number of evaluations - improves opening and endgame
 A nice side effect: captures are automatically searched deeper because they are first with move ordering"""
 EVAL_BASED_QUIESCENCE_START = 80000

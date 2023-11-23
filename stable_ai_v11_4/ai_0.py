@@ -5,8 +5,9 @@ import datetime
 import time
 import inspect
 
-from .minimax import minimax
+from . import minimax
 from . import stats
+from . import depth
 from .CONSTANTS import INIT_DEPTH
 from .tables_maximizer import reset_history_max
 from .tables_minimizer import reset_history_min
@@ -53,14 +54,18 @@ def ai_0(board=None, time_limit=30) -> object:
         else:
             init_material_balance -= value
 
+    print(f"Current Material Balance: {init_material_balance}")
+    depth.extreme_threshold_low += init_material_balance
+    depth.extreme_threshold_high += init_material_balance
+
     stats.material_balance_over_time.append(init_material_balance)
 
     best_move_at_last_index: list
     if board.turn == chess.WHITE:
-        best_move_at_last_index = minimax(board, INIT_DEPTH, True, float('-inf'), float('inf'),
+        best_move_at_last_index = minimax.minimax(board, INIT_DEPTH, True, float('-inf'), float('inf'),
                                           0.0, 0, init_material_balance)
     else:
-        best_move_at_last_index = minimax(board, INIT_DEPTH, False, float('-inf'), float('inf'),
+        best_move_at_last_index = minimax.minimax(board, INIT_DEPTH, False, float('-inf'), float('inf'),
                                           0.0, 0, init_material_balance)
 
     end_time = time.time()
@@ -163,8 +168,12 @@ def generate_random_move(board):
 if __name__ == "__main__":
     def test_board_moves():
         board = chess.Board()
+
         moves = ["e2e4", "c7c6", "f1c4", "d7d5", "e4d5", "c6d5", "c4b5", "c8d7", "d1e2", "e7e6",
                  "g1f3", "d7b5", "e2b5", "d8d7", "b5d3", "b8c6", "f3g5", "c6b4"]
+
+        # moves = ["e2e4", "d7e5", "e4d5", "d8d6", "d1g4", "d6g6", "g4g6"]
+        # moves = ["e2e4"]
 
         for uci in moves:
             move = chess.Move.from_uci(uci)
