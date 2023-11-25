@@ -1,11 +1,9 @@
 from . import stats
-from . import tables_maximizer
-from . import tables_minimizer
+from .tables_maximizer import add_to_killers_and_history
 from .evaluate_board import evaluate_board
 from .order_moves import order_moves
 from .depth import adjust_depth
-from .CONSTANTS import CHECK_X_LIMITER, PREFERENCE_DEEP
-
+from .CONSTANTS import CHECK_X_LIMITER
 
 """
 Sources:
@@ -15,50 +13,41 @@ https://www.chessprogramming.org/Main_Page
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), horizon_risk=0.0,
-            op=0, material=0, real_depth=0, make_up_difference=1) -> list:
+            opportunities=0, material=0, real_depth=0, make_up_difference=1) -> list:
     """ Minimax returns optimal value for current player """
 
-    """ DEPTH EXTENSIONS """
+    """ We do Check Extension Check here (is_check is cheaper than gives_check) """
     if depth == 0 and real_depth < CHECK_X_LIMITER and board.is_check():
-        depth = make_up_difference  # increase depth by (at least) 1
+        depth = make_up_difference
 
-    """ CHECK AND END THE RECURSION: """
     if depth == 0 or board.is_game_over():  # or time.time() > end_time:
-        final_val_list = evaluate_board(board, horizon_risk, op, material, real_depth)
+        """ Final Node reached. Do the Evaluation of the board """
+        final_val_list = evaluate_board(board, horizon_risk, opportunities, material, real_depth)
         stats.n_evaluated_leaf_nodes += 1
         return final_val_list
 
-    ordered_moves, op = order_moves(board, real_depth, material)
+    ordered_moves, opportunities = order_moves(board, real_depth, material)
 
-    if real_depth == 0 and op < 10:
-        print("very few available moves, extend search")
-        depth += 1
-    """if op < 3 and real_depth < CHECK_X_LIMITER:
-        print("very few available moves, extend search")
-        depth += 1"""
+    # board.__hash__() # might come soon
 
     """ MAXIMIZING """
     if max_player:
         best = float('-inf')
         best_list: list = [best]
         """ Loop through moves """
-        for move_tuple in ordered_moves:
-            """move_tuple: move, move_type, material_balance, _, aggressor, victim"""
-            move, material = move_tuple[0], move_tuple[2]
-
+        for move, move_type, material_balance, _, aggressor, victim in ordered_moves:
             stats.distribution[real_depth] += 1
 
-            n_depth, risk, diff = adjust_depth(board, move_tuple, depth, real_depth, op)
+            n_depth, nhr, ndiff = adjust_depth(board, move, depth, real_depth, move_type, aggressor, victim)
 
             """ Chess  move """
             board.push(move)
-            if real_depth == 0 and op > 1 and board.is_repetition(2):
-                board.pop()
-                continue
+            if real_depth == 0 and opportunities > 1 and board.is_repetition(2):
+                board.pop(); continue
 
             """ Recursive Call and Value Updating """
             val_list: list = minimax(board, n_depth, False, alpha, beta,
-                                     risk, op, material, real_depth + 1, diff)
+                                     nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
             # if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 4) * PREFERENCE_DEEP)
 
@@ -74,7 +63,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             """ Alpha Beta Pruning """
             if beta <= alpha:
-                tables_maximizer.add_to_killers_and_history(move, real_depth)
+                add_to_killers_and_history(move, real_depth)
                 break
 
         """ I need to handle the case when this returns float(inf). but I want to know why
@@ -86,23 +75,19 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
         best = float('inf')
         best_list: list = [best]
         # loop through moves
-        for move_tuple in ordered_moves:
-            """move_tuple: move, move_type, material_balance, _, aggressor, victim"""
-            move, material = move_tuple[0], move_tuple[2]
-
+        for move, move_type, material_balance, _, aggressor, victim in ordered_moves:
             stats.distribution[real_depth] += 1
 
-            n_depth, risk, diff = adjust_depth(board, move_tuple, depth, real_depth, op)
+            n_depth, nhr, ndiff = adjust_depth(board, move, depth, real_depth, move_type, aggressor, victim)
 
             # Chess  move
             board.push(move)
-            if real_depth == 0 and op > 1 and board.is_repetition(2):
-                board.pop()
-                continue
+            if real_depth == 0 and opportunities > 1 and board.is_repetition(2):
+                board.pop(); continue
 
             # Recursive Call and Value Updating
             val_list: list = minimax(board, n_depth, True, alpha, beta,
-                                     risk, op, material, real_depth + 1, diff)
+                                     nhr, opportunities, material_balance, real_depth + 1, ndiff)
 
             # if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 4) * PREFERENCE_DEEP)
 
@@ -118,7 +103,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             # Alpha Beta Pruning
             if beta <= alpha:
-                tables_minimizer.add_to_killers_and_history(move, real_depth)
+                add_to_killers_and_history(move, real_depth)
                 break
         return best_list
 

@@ -33,9 +33,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
     if real_depth == 0 and op < 10:
         print("very few available moves, extend search")
         depth += 1
-    """if op < 3 and real_depth < CHECK_X_LIMITER:
-        print("very few available moves, extend search")
-        depth += 1"""
+    if depth > 0 and op < 3 and real_depth < CHECK_X_LIMITER:
+        depth += 1
 
     """ MAXIMIZING """
     if max_player:
@@ -77,8 +76,6 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
                 tables_maximizer.add_to_killers_and_history(move, real_depth)
                 break
 
-        """ I need to handle the case when this returns float(inf). but I want to know why
-        anyways it is usually when all is lost so choosing a random move might be ok"""
         return best_list
 
     # minimizing
@@ -121,9 +118,6 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
                 tables_minimizer.add_to_killers_and_history(move, real_depth)
                 break
         return best_list
-
-
-""" The rest: Printing stats etc. """
 
 
 if __name__ == "__main__":

@@ -2,21 +2,14 @@ from chess import WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
 from typing import Tuple
 
 from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_QUIESCENCE_START,
-                        RELATIVE_QUIESCENCE_START, NEW_THRESHOLDS, REAL_QUIESCENCE_START,
+                        NEW_THRESHOLDS, REAL_QUIESCENCE_START,
                         DEGRADATION_IMPACT_RATIO, QUIESCENCE_DEPTH, MAX_EVALS_SHORTEN_QUIESCENCE)
 from . import stats
 
 
-def adjust_depth(board, move_tuple, depth, real_depth, op) -> Tuple[int, float, int]:
-    """
-    param: board: chess.Board object
-    param: move_tuple: move, move_type, material_balance, vv-aa, aggressor, victim
-    param: depth
-    param: op
-    description: NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH
-    """
+def adjust_depth(board, move, depth: int, real_depth, move_type, aggressor, victim) -> Tuple[int, float, int]:
+    """ NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH """
     degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
-    move, move_type, _, _, aggressor, victim = move_tuple
 
     def get_capture_risk() -> float:
         attacker_piece = board.piece_at(move.from_square)  # victim already in material balance

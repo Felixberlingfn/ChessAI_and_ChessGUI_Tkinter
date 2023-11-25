@@ -25,7 +25,7 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real
     """ test """
 
     """ get material balance from material change """
-    material_balance = material if material else get_material_balance(board)
+    material_balance = material  # if material else get_material_balance(board)
 
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
     """ endgame check """
@@ -266,9 +266,9 @@ def get_piece_value(piece) -> int:
     piece_values = {
         chess.PAWN: 1,
         chess.KNIGHT: 3,
-        chess.BISHOP: 3,
-        chess.ROOK: 5,
-        chess.QUEEN: 9,
+        chess.BISHOP: 3.33,
+        chess.ROOK: 5.63,
+        chess.QUEEN: 9.5,
     }
     if piece is None:
         return 0  # Return 0 if there's no piece

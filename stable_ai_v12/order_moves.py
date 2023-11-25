@@ -29,7 +29,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
         if not piece:  # en passant if capture but nor piece at to square
             op += 1
             return 1
-        piece_values = {PAWN: 1, KNIGHT: 3, BISHOP: 3, ROOK: 5, QUEEN: 9}
+        piece_values = {PAWN: 1, KNIGHT: 3, BISHOP: 3.33, ROOK: 5.63, QUEEN: 9.5}
         piece_value = piece_values.get(piece.piece_type, 0)
         op += piece_value
         return piece_value
@@ -122,9 +122,9 @@ def get_piece_value(piece) -> int:  # expects piece object not piece type
     piece_values = {
         PAWN: 1,
         KNIGHT: 3,
-        BISHOP: 3,
-        ROOK: 5,
-        QUEEN: 9,
+        BISHOP: 3.33,
+        ROOK: 5.63,
+        QUEEN: 9.5,
     }
     if not piece:
         return 0
@@ -135,9 +135,9 @@ def get_piece_value_from_type(piece_type) -> int:  # expects piece object not pi
     piece_values = {
         PAWN: 1,
         KNIGHT: 3,
-        BISHOP: 3,
-        ROOK: 5,
-        QUEEN: 9,
+        BISHOP: 3.33,
+        ROOK: 5.63,
+        QUEEN: 9.5,
     }
     return piece_values.get(piece_type, 0)
 

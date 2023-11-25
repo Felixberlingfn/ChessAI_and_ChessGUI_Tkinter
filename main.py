@@ -4,19 +4,10 @@ import random
 import time
 import db
 
-from stable_ai import ai_0
-from stable_ai_v2 import ai_0 as v2
-from stable_ai_v7 import ai_0 as v7
-from stable_ai_v8 import ai_0 as v8
-from stable_ai_v8B import ai_0 as v8B
-from stable_ai_v9 import ai_0 as v9
-from stable_ai_v10 import ai_0 as v10
-from stable_ai_v11_1 import ai_0 as v11_1
-from stable_ai_v11_2 import ai_0 as v11_2
-from stable_ai_v11_3 import ai_0 as v11_3
-from stable_ai_v11_3b import ai_0 as v11_3b
+
 from stable_ai_v11_3bb import ai_0 as v11_3bb
-from stable_ai_v11_4 import ai_0 as v11_4
+from stable_ai_v12 import ai_0 as v12
+from stable_ai_v12_0 import ai_0 as v12_0
 
 from stockfish import stockfish, stockfish_6, stockfish_5, stockfish_2, stockfish_3, stockfish_4
 from comments import comments
@@ -24,16 +15,16 @@ from tournament import run_round_robin_tournament, print_tournament_results
 from helpers import determine_winner
 
 
-ai_player_1 = v11_3bb  # White
-ai_player_2 = v11_3bb  # Black
-ai_playing_against_human = v11_3bb
-ai_playing_against_stockfish = v11_3bb
+ai_player_1 = v12_0  # White
+ai_player_2 = v12_0  # Black
+ai_playing_against_human = v12_0
+ai_playing_against_stockfish = v12_0
 
 stockfish_level = stockfish_4
 
 """ ai tournament (round robin / everyone against everyone) """
 # tuple like [("V11.1", v11_1), ("V11.2", v11_2)] ("V11.2", v11_2),
-ai_tournament_vs = [("V11.3bb", v11_3bb), ("st.fish lv4", stockfish_4)]  # ("V11.2", v11_2)
+ai_tournament_vs = [("V12", v12), ("V12_0", v12_0), ("st.fish lv4", stockfish_4)]  # ("V11.2", v11_2)
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 

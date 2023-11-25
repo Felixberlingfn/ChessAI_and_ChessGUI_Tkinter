@@ -23,7 +23,7 @@ def stockfish(board, time_limit=0.1):
 
     engine.configure({"Skill Level": 10})
 
-    result = engine.play(board, chess.engine.Limit(depth=15))
+    result = engine.play(board, chess.engine.Limit(depth=20))
 
     engine.quit()
 
@@ -36,7 +36,7 @@ def stockfish_1(board, time_limit=0.1):
 
     engine.configure({"Skill Level": 1})
 
-    result = engine.play(board, chess.engine.Limit(depth=15))
+    result = engine.play(board, chess.engine.Limit(depth=20))
 
     engine.quit()
 
@@ -49,7 +49,7 @@ def stockfish_2(board, time_limit=0.1):
 
     engine.configure({"Skill Level": 2})
 
-    result = engine.play(board, chess.engine.Limit(depth=15))
+    result = engine.play(board, chess.engine.Limit(depth=20))
 
     engine.quit()
 
@@ -62,7 +62,7 @@ def stockfish_3(board, time_limit=0.1):
 
     engine.configure({"Skill Level": 3})
 
-    result = engine.play(board, chess.engine.Limit(depth=15))
+    result = engine.play(board, chess.engine.Limit(depth=20))
 
     engine.quit()
 
@@ -75,7 +75,7 @@ def stockfish_4(board, time_limit=0.1):
 
     engine.configure({"Skill Level": 4})
 
-    result = engine.play(board, chess.engine.Limit(depth=4))
+    result = engine.play(board, chess.engine.Limit(depth=20))
 
     engine.quit()
 
@@ -88,7 +88,7 @@ def stockfish_5(board, time_limit=0.1):
 
     engine.configure({"Skill Level": 5})
 
-    result = engine.play(board, chess.engine.Limit(depth=15))
+    result = engine.play(board, chess.engine.Limit(depth=20))
 
     engine.quit()
 
@@ -101,7 +101,7 @@ def stockfish_6(board, time_limit=0.1):
 
     engine.configure({"Skill Level": 6})
 
-    result = engine.play(board, chess.engine.Limit(depth=15))
+    result = engine.play(board, chess.engine.Limit(depth=20))
 
     engine.quit()
 

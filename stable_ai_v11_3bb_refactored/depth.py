@@ -7,16 +7,9 @@ from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_
 from . import stats
 
 
-def adjust_depth(board, move_tuple, depth, real_depth, op) -> Tuple[int, float, int]:
-    """
-    param: board: chess.Board object
-    param: move_tuple: move, move_type, material_balance, vv-aa, aggressor, victim
-    param: depth
-    param: op
-    description: NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH
-    """
+def adjust_depth(board, move, depth: int, real_depth, move_type, aggressor, victim, opportunities) -> Tuple[int, float, int]:
+    """ NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH """
     degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
-    move, move_type, _, _, aggressor, victim = move_tuple
 
     def get_capture_risk() -> float:
         attacker_piece = board.piece_at(move.from_square)  # victim already in material balance
@@ -44,8 +37,14 @@ def adjust_depth(board, move_tuple, depth, real_depth, op) -> Tuple[int, float, 
             """'aggressor' just means move by if not a capture'"""
             if aggressor == QUEEN:  # or victim == QUEEN
                 depth += 1
+                """if opportunities < 10:
+                    depth += 1"""
+                """maybe pass opportunities and add depth here if very few opportunities
+                to ensure both increased searched nodes and queen safety in endgame"""
             if aggressor == KING:
                 depth += 2
+                """if opportunities < 10:
+                    depth += 1"""
 
         """ 1) don't start quiescence start yet (by default 2)"""
         if real_depth < REAL_QUIESCENCE_START:  # real_depth < REAL_QUIESCENCE_START:

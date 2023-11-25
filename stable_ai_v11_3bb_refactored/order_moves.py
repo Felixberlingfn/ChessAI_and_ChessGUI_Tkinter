@@ -1,12 +1,14 @@
-from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN
-from typing import Tuple, List
+import chess
+from chess import BLACK, WHITE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
+from typing import Tuple
+from typing import List
 
 from .tables_maximizer import history_table_max, killer_moves_max
 from .tables_minimizer import history_table_min, killer_moves_min
 from .CONSTANTS import CALM, CAPTURE, PROMOTION, DEGRADATION_IMPACT_RATIO
 
 
-def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
+def order_moves(board: chess.Board, real_depth, material=0) -> Tuple[List[tuple], int]:
     """in contrast to the evaluate board this is BEFORE the move was made"""
     """ First: Initialization """
     moves = board.legal_moves
@@ -94,7 +96,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
     for move in moves:
         if board.is_capture(move):
             d_captures.append(move)
-        elif move.promotion and move.promotion == QUEEN:  # ignore other promotions
+        elif move.promotion and move.promotion == QUEEN:
             d_promotions.append(move)
         elif move in killers:
             d_killers.append(move)
@@ -119,26 +121,14 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
 
 
 def get_piece_value(piece) -> int:  # expects piece object not piece type
-    piece_values = {
-        PAWN: 1,
-        KNIGHT: 3,
-        BISHOP: 3,
-        ROOK: 5,
-        QUEEN: 9,
-    }
+    piece_values = {PAWN: 1, KNIGHT: 3, BISHOP: 3, ROOK: 5, QUEEN: 9}
     if not piece:
         return 0
     return piece_values.get(piece.piece_type, 0)
 
 
 def get_piece_value_from_type(piece_type) -> int:  # expects piece object not piece type
-    piece_values = {
-        PAWN: 1,
-        KNIGHT: 3,
-        BISHOP: 3,
-        ROOK: 5,
-        QUEEN: 9,
-    }
+    piece_values = {PAWN: 1, KNIGHT: 3, BISHOP: 3, ROOK: 5, QUEEN: 9}
     return piece_values.get(piece_type, 0)
 
 

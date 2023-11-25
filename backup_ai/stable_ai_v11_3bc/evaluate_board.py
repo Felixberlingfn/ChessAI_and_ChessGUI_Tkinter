@@ -4,6 +4,7 @@ import timeit
 
 from .CONSTANTS import OPPORTUNITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH
 
+
 def run(board, testing=False) -> list:
     """ wrapper for evaluate_board() - runs when not imported as module """
     if testing:
@@ -13,18 +14,7 @@ def run(board, testing=False) -> list:
 
 
 def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real_depth=1) -> list:
-    """
-    :param board: chess.Board object
-    :param horizon_risk
-    :param opportunities
-    :param material
-    :param real_depth
-    :return: score representing material balance
-    """
-
-    """ test """
-
-    """ get material balance from material change """
+    """ Simplistic but most important: Material Balance + White - Black"""
     material_balance = material if material else get_material_balance(board)
 
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
@@ -55,10 +45,6 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real
 
 
 def get_material_balance(board) -> int:
-    """
-    :param board: chess.Board object
-    :return: score representing material balance
-    """
     material_balance = 0
     for piece in board.piece_map().values():
         value = get_piece_value(piece)
@@ -90,9 +76,7 @@ def get_pins_score(board):
 
 
 def get_position_score(board) -> float:
-    """PLUS MEANS GOOD FOR WHITE
-    :param board: chess.Board object
-    """
+    """PLUS MEANS GOOD FOR WHITE"""
     score = 0
 
     """WHITE"""
@@ -211,10 +195,6 @@ def get_position_score(board) -> float:
 
 
 def get_opportunity_score(board, opportunity_score) -> float:
-    """
-    :param board: chess.Board object
-    :param opportunity_score
-    """
     def get_opportunities() -> int:
         moves = board.legal_moves
         opportunities = 0
@@ -258,10 +238,6 @@ def get_opportunity_score(board, opportunity_score) -> float:
 
 
 def get_piece_value(piece) -> int:
-    """
-    :param piece (not piece type!)
-    :return: integer representing the piece value
-    """
     # Assign values to the pieces for the purpose of MVV-LVA scoring
     piece_values = {
         chess.PAWN: 1,

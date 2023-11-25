@@ -35,6 +35,8 @@ def run_round_robin_tournament(ai_versions, chess_board, app, injected_function:
     for i, ai1 in enumerate(ai_versions):
         for ai2 in ai_versions[i+1:]:
             """ ai1 as white and ai2 as black """
+            if "fish" in ai1[0] and "fish" in ai2[0]:
+                continue  # skip stockfish3 against stockfish4
             winner = play_match(ai1[1], ai2[1], chess_board, injected_function)
             update_results(winner, ai1[1], ai2[1])
             app.update_board(chess_board, True)
