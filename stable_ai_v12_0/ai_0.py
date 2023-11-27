@@ -23,7 +23,7 @@ https://www.chessprogramming.org/Main_Page
 
 
 def ai_0(board=None, time_limit=30) -> object:
-    print(f"---------------{chess.COLOR_NAMES[int(board.turn)]}-AI V12 ----------------------------")
+    print(f"---------------{chess.COLOR_NAMES[int(board.turn)]}-AI V12_0 ----------------------------")
     # global end_time
     # end_time = time.time() + time_limit
 

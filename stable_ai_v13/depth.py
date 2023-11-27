@@ -7,7 +7,7 @@ from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, EVAL_BASED_
 from . import stats
 
 
-def adjust_depth(board, move_tuple, depth, real_depth, op) -> Tuple[int, float, int]:
+def adjust_depth(move_tuple, depth, real_depth, op, turn) -> Tuple[int, float, int]:
     """
     param: board: chess.Board object
     param: move_tuple: move, move_type, material_balance, vv-aa, attacker_type, victim
@@ -16,18 +16,22 @@ def adjust_depth(board, move_tuple, depth, real_depth, op) -> Tuple[int, float, 
     description: NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH
     """
     degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
-    move, move_type, _, _, attacker_type, attacker_value, attacker_color = move_tuple
+    move, move_type, _, _, attacker_type, attacker_value, moving_color, _ = move_tuple
     new_thresholds = NEW_THRESHOLDS
 
+    if turn != moving_color:
+        print("error")
+        return
+
     def get_capture_risk() -> float:
-        if board.turn == WHITE:  # same as attacking piece is white
+        if moving_color == WHITE:  # same as attacking piece is white
             return attacker_value * HORIZON_RISK_MULTIPLIER  # bad for white
         else:
             return - attacker_value * HORIZON_RISK_MULTIPLIER  # bad for black
 
     def get_promotion_risk() -> float:
         if depth == - 1:  # 9 because new queen is at risk, already in material balance
-            promotion_risk = 9 * HORIZON_RISK_MULTIPLIER if board.turn == WHITE else - 9 * HORIZON_RISK_MULTIPLIER
+            promotion_risk = attacker_value * HORIZON_RISK_MULTIPLIER if moving_color == WHITE else - attacker_value * HORIZON_RISK_MULTIPLIER
             return promotion_risk
         return 0.0
 
@@ -44,10 +48,10 @@ def adjust_depth(board, move_tuple, depth, real_depth, op) -> Tuple[int, float, 
             """'attacker_type' just means move by if not a capture'"""
             if attacker_type == QUEEN:  # or victim == QUEEN
                 depth += 1
-                if op < 5:
+                if op < 3:  # 5
                     depth += 1
             if attacker_type == KING:
-                depth += 2
+                depth += 1  # 2
 
         """ 1) don't start quiescence start yet (by default 2)"""
         if real_depth < REAL_QUIESCENCE_START:  # real_depth < REAL_QUIESCENCE_START:
@@ -60,7 +64,7 @@ def adjust_depth(board, move_tuple, depth, real_depth, op) -> Tuple[int, float, 
             else:
                 depth = - QUIESCENCE_DEPTH + 1
         else:
-            return depth - 1, 0, 0  # Default
+            return depth - 1, 0, 0
 
     """ default: depth + 1 """
     if depth < 0:
@@ -93,17 +97,6 @@ def adjust_depth(board, move_tuple, depth, real_depth, op) -> Tuple[int, float, 
     print(f"You fucked up. Depth: {depth} real depth: {real_depth}")
 
 
-def get_attacker_value(piece_type) -> float:  # expects piece object not piece type
-    """
-    :param piece_type:
-    :return: float
-    """
-    piece_values = {
-        PAWN: 1,
-        KNIGHT: 3,
-        BISHOP: 3.33,
-        ROOK: 5.63,
-        QUEEN: 9.5,
-        KING: 10,
-    }
-    return piece_values.get(piece_type, 0)
+if __name__ == "__main__":
+    """ implement something to test the function here """
+    pass

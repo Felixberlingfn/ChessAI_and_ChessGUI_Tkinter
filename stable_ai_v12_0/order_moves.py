@@ -94,8 +94,9 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
     for move in moves:
         if board.is_capture(move):
             d_captures.append(move)
-        elif move.promotion and move.promotion == QUEEN:  # ignore other promotions
-            d_promotions.append(move)
+        elif move.promotion:
+            if move.promotion == QUEEN:
+                d_promotions.append(move)
         elif move in killers:
             d_killers.append(move)
         else:

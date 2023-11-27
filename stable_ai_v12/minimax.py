@@ -1,3 +1,4 @@
+import chess
 from . import stats
 from . import tables_maximizer
 from . import tables_minimizer
@@ -15,8 +16,10 @@ https://www.chessprogramming.org/Main_Page
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), horizon_risk=0.0,
-            op=0, material=0, real_depth=0, make_up_difference=1) -> list:
+            op=0, material=0, real_depth=0, make_up_difference=1, op_total=0) -> list:
     """ Minimax returns optimal value for current player """
+
+    material = round(material, 2)
 
     """ DEPTH EXTENSIONS """
     if depth == 0 and real_depth < CHECK_X_LIMITER and board.is_check():
@@ -29,6 +32,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
         return final_val_list
 
     ordered_moves, op = order_moves(board, real_depth, material)
+    op_total = op_total + op if board.turn == chess.WHITE else op_total - op
 
     if real_depth == 0 and op < 10:
         print("very few available moves, extend search")
@@ -42,7 +46,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
         best_list: list = [best]
         """ Loop through moves """
         for move_tuple in ordered_moves:
-            """move_tuple: move, move_type, material_balance, _, aggressor, victim"""
+            """move_tuple: move, move_type, material_balance, _, aggr_type, aggr_value, aggr_color"""
             move, material = move_tuple[0], move_tuple[2]
 
             stats.distribution[real_depth] += 1
