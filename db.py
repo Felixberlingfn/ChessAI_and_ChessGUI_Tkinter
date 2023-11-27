@@ -46,3 +46,5 @@ def load_game_state():
         return Board(fen[0])
     else:
         return Board()
+
+

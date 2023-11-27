@@ -1,4 +1,6 @@
 """ Constants (some of these are settings, and some of them should NEVER be changed)"""
+AI_NAME = "V13"
+
 
 """ DEPTH """
 REAL_QUIESCENCE_START = 2  # 2 means my move, opponent move, my move, then evaluate or quiescence search
@@ -27,6 +29,7 @@ DEGRADATION_IMPACT_RATIO = 90  # 500 works the same but somehow 100 looses?
 HORIZON_RISK_MULTIPLIER = 0.6
 OPPORTUNITY_MULTIPLIER = 0.010  # it is really difficult to find the right value
 GOOD_POS_BONUS = 0.1  # this has been working alright
+POS_BONUS_MULTIPLIER = 0.1
 BAD_POS_PUNISH = 0.01  # keep this low
 
 """ for depth adjustment """

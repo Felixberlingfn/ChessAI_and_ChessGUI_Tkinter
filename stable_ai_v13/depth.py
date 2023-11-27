@@ -42,7 +42,7 @@ def adjust_depth(move_tuple, depth, real_depth, op, turn) -> Tuple[int, float, i
     if depth > 0:
         if real_depth == 0:
             """'attacker_type' just means move by if not a capture'"""
-            if attacker_type == QUEEN:  # or victim == QUEEN
+            if attacker_type == QUEEN:
                 depth += 1
                 if op < 3:  # 5
                     depth += 1
@@ -71,9 +71,9 @@ def adjust_depth(move_tuple, depth, real_depth, op, turn) -> Tuple[int, float, i
             if move_type == CAPTURE: return 0, get_capture_risk() * degradation, - 1
             return 0, 0, - 1  # calm state, unless check
 
-        """ extremwerte nicht weiter prüfen """
+        """this has almost no effect or negative effect and I don't fully understand it
         if material > stats.starting_material_balance + 14 or material < stats.starting_material_balance - 14:
-            return 0, 0, 0
+            return 0, 0, 0"""
 
         if move_type == PROMOTION:
             """ always continue - equivalent to queen risk """

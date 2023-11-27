@@ -20,6 +20,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
     """ Minimax returns optimal value for current player """
 
     material = round(material, 2)
+    horizon_risk = round(horizon_risk, 2)
 
     """ DEPTH EXTENSIONS """
     if depth == 0 and real_depth < CHECK_X_LIMITER and board.is_check():

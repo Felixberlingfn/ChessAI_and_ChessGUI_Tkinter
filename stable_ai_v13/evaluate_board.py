@@ -93,15 +93,8 @@ def get_position_score(board) -> float:
         :param board: chess.Board object
         """
     score = 0
-    """new easier maybe faster
-    good_positions_white = {
-            chess.PAWN: [],
-            
-            chess.KNIGHT: [],
-    }
-    
-    for square, piece in board.piece_map().items():
-        pass"""
+
+    # new easier maybe faster way in eval_positions.py
 
     """WHITE"""
     """good_pawn_positions_white"""

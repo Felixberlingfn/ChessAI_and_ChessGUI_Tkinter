@@ -13,3 +13,8 @@ for square, piece in board.piece_map().items():
     print(square)
     print(piece)
     print(piece.piece_type)
+
+print("white")
+print(int(chess.WHITE))
+print("pawn")
+print(chess.PAWN)

@@ -8,7 +8,7 @@ from copy import deepcopy
 
 from .minimax import minimax
 from . import stats
-from .CONSTANTS import INIT_DEPTH
+from .CONSTANTS import INIT_DEPTH, AI_NAME
 from .tables_maximizer import reset_history_max
 from .tables_minimizer import reset_history_min
 
@@ -23,7 +23,7 @@ https://www.chessprogramming.org/Main_Page
 
 
 def ai_0(board=None, time_limit=30) -> object:
-    print(f"---------------{chess.COLOR_NAMES[int(board.turn)]}-AI V13 ----------------------------")
+    print(f"---------------{chess.COLOR_NAMES[int(board.turn)]}-AI {AI_NAME} ----------------------------")
     # global end_time
     # end_time = time.time() + time_limit
 
