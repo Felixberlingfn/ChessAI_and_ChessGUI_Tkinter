@@ -16,12 +16,8 @@ def adjust_depth(move_tuple, depth, real_depth, op, turn) -> Tuple[int, float, i
     description: NORMAL SEARCH IN POSITIVE DEPTH --- QUIESCENCE SEARCH IN NEGATIVE DEPTH
     """
     degradation = 1 - (real_depth / DEGRADATION_IMPACT_RATIO)
-    move, move_type, _, _, attacker_type, attacker_value, moving_color, _ = move_tuple
+    move, move_type, material, _, attacker_type, attacker_value, moving_color, _ = move_tuple
     new_thresholds = NEW_THRESHOLDS
-
-    if turn != moving_color:
-        print("error")
-        return
 
     def get_capture_risk() -> float:
         if moving_color == WHITE:  # same as attacking piece is white
@@ -74,6 +70,10 @@ def adjust_depth(move_tuple, depth, real_depth, op, turn) -> Tuple[int, float, i
             if move_type == PROMOTION: return 0, get_promotion_risk() * degradation, - 1
             if move_type == CAPTURE: return 0, get_capture_risk() * degradation, - 1
             return 0, 0, - 1  # calm state, unless check
+
+        """ extremwerte nicht weiter prüfen """
+        if material > stats.starting_material_balance + 14 or material < stats.starting_material_balance - 14:
+            return 0, 0, 0
 
         if move_type == PROMOTION:
             """ always continue - equivalent to queen risk """

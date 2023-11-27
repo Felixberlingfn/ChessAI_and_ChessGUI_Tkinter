@@ -58,6 +58,7 @@ def ai_0(board=None, time_limit=30) -> object:
             material_values_2 -= value
 
     init_material_balance = round(material_values_1 + material_values_2, 2)
+    stats.starting_material_balance = init_material_balance
 
     use_depth = INIT_DEPTH
 

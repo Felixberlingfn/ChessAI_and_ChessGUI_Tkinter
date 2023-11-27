@@ -10,6 +10,8 @@ n_early_end: int = 0
 """ This one is actually used to determine depth"""
 n_evaluated_leaf_nodes: int = 0
 
+starting_material_balance = 0
+
 """ Whole game stats"""
 final_execution_times = []
 final_evaluated_leaf_nodes = []

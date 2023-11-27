@@ -48,10 +48,9 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
         best_list: list = [best]
         """ Loop through moves """
         for move_tuple in ordered_moves:
-            """move_tuple: move, move_type, material, _, aggr_type, aggr_value, aggr_color, lost_castling"""
+            """move_tuple: move, move_type, material, mvva, aggr_type, aggr_value, aggr_color, lost_castling"""
             move, material, move_lost_castling = move_tuple[0], move_tuple[2], move_tuple[7]
             move_lost_castling += lost_castling
-
             stats.distribution[real_depth] += 1
 
             n_depth, risk, diff = adjust_depth(move_tuple, depth, real_depth, op, board.turn)

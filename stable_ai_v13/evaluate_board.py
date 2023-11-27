@@ -77,15 +77,13 @@ def get_pins_score(board):
     :return: score representing pinned pieces
     """
     pin_value = 0
-    for square in chess.SQUARES:
-        piece = board.piece_at(square)
-        if piece:
-            if piece.color == chess.WHITE:
-                if board.is_pinned(chess.WHITE, square):
-                    pin_value -= get_piece_value(piece) * 0.2
-            if piece.color == chess.BLACK:
-                if board.is_pinned(chess.BLACK, square):
-                    pin_value += get_piece_value(piece) * 0.2
+    for square, piece in board.piece_map().items():
+        if piece.color == chess.WHITE:
+            if board.is_pinned(chess.WHITE, square):
+                pin_value -= get_piece_value(piece) * 0.2
+        if piece.color == chess.BLACK:
+            if board.is_pinned(chess.BLACK, square):
+                pin_value += get_piece_value(piece) * 0.2
 
     return pin_value * 100
 
@@ -95,6 +93,15 @@ def get_position_score(board) -> float:
         :param board: chess.Board object
         """
     score = 0
+    """new easier maybe faster
+    good_positions_white = {
+            chess.PAWN: [],
+            
+            chess.KNIGHT: [],
+    }
+    
+    for square, piece in board.piece_map().items():
+        pass"""
 
     """WHITE"""
     """good_pawn_positions_white"""
