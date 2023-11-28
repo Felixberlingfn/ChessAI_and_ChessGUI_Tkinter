@@ -91,14 +91,14 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
             for promoting_color in [board.piece_at(promotion_move.from_square).color]
         ]
 
-    def op_update_quiet(moving_piece) -> int:
+    def op_update_quiet(moving_piece, quiet_move) -> int:
         nonlocal op
         """ check if move might cause loosing castling rights"""
         if moving_piece != king and moving_piece != rook:
             op += 1
             return False
         lost_castling = False
-        if board.is_castling(move):
+        if board.is_castling(quiet_move):  # what move??????
             op += 2
             """ this is not really loosing castling, we give a tiny reward"""
             lost_castling = 20 if turn == WHITE else - 20
@@ -125,7 +125,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
             )
             for quiet_move in passed_moves
             for moving_piece in [board.piece_at(quiet_move.from_square).piece_type]
-            for lost_castling in [op_update_quiet(moving_piece)]
+            for lost_castling in [op_update_quiet(moving_piece, quiet_move)]
         ]
 
     d_captures, d_checks, d_promotions, d_killers, d_quiet, d_king = [], [], [], [], [], []

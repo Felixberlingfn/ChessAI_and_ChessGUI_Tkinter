@@ -56,6 +56,13 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             n_depth, risk, diff = adjust_depth(move_tuple, depth, real_depth, op, board.turn)
 
+            """ somewhere here I should skip moves
+            with delta pruning after lazy evaluation?
+            https://www.chessprogramming.org/Futility_Pruning
+            https://www.chessprogramming.org/Delta_Pruning
+            https://www.chessprogramming.org/Razoring
+            """
+
             """ Chess  move """
             board.push(move)
             if real_depth == 0 and op > 1 and board.is_repetition(2):

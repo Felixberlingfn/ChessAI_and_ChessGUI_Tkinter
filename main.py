@@ -26,7 +26,7 @@ stockfish_level = stockfish_4
 
 """ ai tournament (round robin / everyone against everyone) """
 # tuple like [("V11.1", v11_1), ("V11.2", v11_2)] ("V11.2", v11_2),
-ai_tournament_vs = [("V12_0", v12_0), ("V13", v13)]  # ("st.fish lv4", stockfish_4) ("V11.2", v11_2)
+ai_tournament_vs = [("st.fish lv4", stockfish_4), ("V13", v13)]  # ("st.fish lv4", stockfish_4) ("V11.2", v11_2)
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 

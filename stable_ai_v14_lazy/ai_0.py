@@ -7,7 +7,7 @@ import inspect
 from copy import deepcopy
 
 from .minimax import minimax
-from . import stats
+from . import stats, piece_sq_pesto
 from .CONSTANTS import INIT_DEPTH, AI_NAME
 from .tables_maximizer import reset_history_max
 from .tables_minimizer import reset_history_min
@@ -49,15 +49,9 @@ def ai_0(board=None, time_limit=30) -> object:
 
     """ Find the Best Move with minimax """
     # get initial material balance - we can calculate relative material balance as it is faster
-    init_material_balance, material_values_1, material_values_2, use_depth = 0, 0, 0, 0
-    for piece in board.piece_map().values():
-        value = get_piece_value(piece)
-        if piece.color == chess.WHITE:
-            material_values_1 += value
-        else:
-            material_values_2 -= value
+    init_material_balance, use_depth = 0, 0,
 
-    init_material_balance = round(material_values_1 + material_values_2, 2)
+    init_material_balance = piece_sq_pesto.score_board(board)
     stats.starting_material_balance = init_material_balance
 
     use_depth = INIT_DEPTH
@@ -67,13 +61,9 @@ def ai_0(board=None, time_limit=30) -> object:
 
     best_move_at_last_index: list
     if board.turn == chess.WHITE:
-        if material_values_1 < 1:  # only king left
-            use_depth = 1
         best_move_at_last_index = minimax(board, use_depth, True, float('-inf'), float('inf'),
                                           0.0, 0, init_material_balance)
     else:
-        if material_values_2 > -1:  # only king left
-            use_depth = 1
         best_move_at_last_index = minimax(board, use_depth, False, float('-inf'), float('inf'),
                                           0.0, 0, init_material_balance)
 
@@ -97,7 +87,6 @@ def ai_0(board=None, time_limit=30) -> object:
         print_results_and_stats(board, move_object, execution_time)
 
         if move_object.promotion:
-            """ this is not necessary anymore, minimax only considers queen promotion """
             from_square = move_object.from_square
             to_square = move_object.to_square
             generated_queen_promotion = chess.Move(from_square, to_square, chess.QUEEN)

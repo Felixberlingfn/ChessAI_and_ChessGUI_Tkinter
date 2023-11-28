@@ -38,16 +38,16 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real
             final_val[0] = 1.7976931348623150e308 / try_to_win_soon
 
     """ adding extra values to simple material balance """
-    pos = get_position_score(board) * 100  # centi-pawns is convention
+    # pos = get_position_score(board) * 100  # centi-pawns is convention
     mob = get_opportunity_score(board, opportunities) * 100  # centi-pawns is convention
 
-    final_val[0] += pos
+    # final_val[0] += pos
     final_val[0] += mob  # is turn dependent
     final_val[0] += lost_castling  # substract 0.5 if lost castling rights
     final_val[0] -= horizon_risk * 100  # centi-pawns is convention
 
     """ append details to list for stats """
-    final_val.append(pos)
+    final_val.append(horizon_risk)
     final_val.append(mob)
     final_val.append(lost_castling)
     # final_val.append(- horizon_risk * 100)
