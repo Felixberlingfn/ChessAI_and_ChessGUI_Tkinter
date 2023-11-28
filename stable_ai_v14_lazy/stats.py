@@ -5,6 +5,7 @@ import csv
 from datetime import datetime
 
 """ Counters for stats """
+sum_of_all_pieces = 78
 n_extensions: int = 0
 n_early_end: int = 0
 """ This one is actually used to determine depth"""

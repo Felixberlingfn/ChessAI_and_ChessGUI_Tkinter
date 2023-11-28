@@ -1,4 +1,5 @@
 from chess import square_rank, SQUARES, WHITE
+from . import stats
 
 from .CONSTANTS import POS_BONUS_MULTIPLIER
 
@@ -157,7 +158,7 @@ mg_good_positions = (
         king_mg,
     )
 
-endgame_good_positions = (
+eg_good_positions = (
         # MUSTER (index 0)
         muster,
         # PAWN ENDGAME (index 1)
@@ -224,40 +225,48 @@ def score_board(board) -> float:
     for square_64, piece in board.piece_map().items():
         score += score_piece(piece.piece_type, piece.color, square_64)
 
-    return score
+    return round(score, 2)
 
 
 def score_piece(piece_type, piece_color, piece_square_64) -> float:
-    """ get the positional score for a specific piece
-    :param piece_type
-    :param piece_color
-    :param piece_square_64
-    """
+    """ get the positional and material score for a specific piece"""
     if piece_color == WHITE:
-        index: int = indexes_for_white[piece_square_64]
-
-        """ TEMPORARY: Divide by 100 so it is compatible with old scoring system until fixed """
-        return round((mg_good_positions[piece_type][index] / 100) + piece_value(piece_type), 2)
+        return score_piece_positive(piece_type, piece_color, piece_square_64)
     else:
-        """ TEMPORARY: Divide by 100 so it is compatible with old scoring system until fixed """
-        return round(- (mg_good_positions[piece_type][piece_square_64] / 100) - piece_value(piece_type), 2)
+        return - score_piece_positive(piece_type, piece_color, piece_square_64)
 
 
 def score_piece_positive(piece_type, piece_color, piece_square_64) -> float:
-    """ returns a positive value no matter if black or white, needed for mv_mva score
+    """ returns a positive value no matter if black or white
     :param piece_type
     :param piece_color
     :param piece_square_64
     """
+    mg_score = 0
+    eg_score = 0
     if piece_color == WHITE:
         index: int = indexes_for_white[piece_square_64]
         """ TEMPORARY: Divide by 100 so it is compatible with old scoring system until fixed """
-        return round((mg_good_positions[piece_type][index] / 100) + piece_value(piece_type), 2)
+        mg_score = round((mg_good_positions[piece_type][index] / 100) + piece_value(piece_type), 2)
+        eg_score = round((eg_good_positions[piece_type][index] / 100) + piece_value(piece_type), 2)
     else:
         """ TEMPORARY: Divide by 100 so it is compatible with old scoring system until fixed """
-        return round((mg_good_positions[piece_type][piece_square_64] / 100) + piece_value(piece_type), 2)
+        mg_score = round((mg_good_positions[piece_type][piece_square_64] / 100) + piece_value(piece_type), 2)
+        eg_score = round((eg_good_positions[piece_type][piece_square_64] / 100) + piece_value(piece_type), 2)
+
+    """ I should increment the percentage of how far we are away from the endgame """
+    """ for now I will use the number from the beginning of the calculation """
+    progress = stats.sum_of_all_pieces / 78  # sum of pieces / 78 (overall chess pieces)
+
+    combined_score = mg_score * progress + eg_score * (1 - progress)
+
+    return combined_score
 
 
 if __name__ == "__main__":
-    pass
+    from chess import Board
+
+    test_board = Board()
+    print("score: ", score_board(test_board))
+
 

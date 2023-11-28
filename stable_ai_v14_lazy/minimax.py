@@ -1,11 +1,11 @@
-import chess
+# import chess
 from . import stats
 from . import tables_maximizer
 from . import tables_minimizer
 from .evaluate_board import evaluate_board
 from .order_moves import order_moves
 from .depth import adjust_depth
-from .CONSTANTS import CHECK_X_LIMITER, PREFERENCE_DEEP
+from .CONSTANTS import CHECK_X_LIMITER
 
 
 """
@@ -13,6 +13,19 @@ Sources:
 https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-4-alpha-beta-pruning/
 https://www.chessprogramming.org/Main_Page
 """
+
+""" I will need to increment the number of pieces to switch from start to endgame"""
+
+
+def sum_of_pieces(board):
+    """not counting the king - side effect on stats.sum_of_all_pieces"""
+    piece_values = {1: 1, 2: 3, 3: 3.33, 4: 5.63, 5: 9.5, 6: 0}
+    sum_of_all_pieces = 0
+    for square_64, piece in board.piece_map().items():
+        sum_of_all_pieces += piece_values.get(piece.piece_type, 0)
+
+    stats.sum_of_all_pieces = sum_of_all_pieces
+    return sum_of_all_pieces
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), horizon_risk=0.0,
@@ -35,11 +48,13 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
     ordered_moves, op = order_moves(board, real_depth, material)
     # op_total = op_total + op if board.turn == chess.WHITE else op_total - op
 
-    if real_depth == 0 and op < 10:
-        print("very few available moves, extend search")
-        depth += 1
-        """if op < 2:  # return if only one move available at start
-            return [0, 0, 0, 0, 0, 0, ordered_moves[0][0]]"""
+    if real_depth == 0:
+        if op < 10:
+            print("very few available moves, extend search")
+            depth += 1
+        if sum_of_pieces(board) < 20:  # less than two queens
+            print("very few pieces on the board, extend search")
+            depth += 1
     if depth > 0 and op < 3 and real_depth < CHECK_X_LIMITER:
         depth += 1
 
@@ -56,8 +71,8 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
             n_depth, risk, diff = adjust_depth(move_tuple, depth, real_depth, op, board.turn)
 
-            """ somewhere here I should skip moves
-            with delta pruning after lazy evaluation?
+            """ somewhere I should skip moves
+            with delta pruning after lazy evaluation or similar? we have the needed information
             https://www.chessprogramming.org/Futility_Pruning
             https://www.chessprogramming.org/Delta_Pruning
             https://www.chessprogramming.org/Razoring

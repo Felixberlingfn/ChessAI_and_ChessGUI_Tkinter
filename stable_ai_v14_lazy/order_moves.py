@@ -31,6 +31,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
 
     """ Generate move tuples and update opportunity score """
     def op_victim_value(victim_piece, victim_color, piece_square_64) -> float:
+        """ has a side effect on op """
         nonlocal op
         if not victim_piece:  # en passant if capture but no piece currently at to square
             v_piece_type = 1
@@ -40,13 +41,15 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
         op += piece_value + 1  # 1 is just being a move and victim value on top
         return piece_value
 
-    def op_attacker_value(piece_type, aggr_color, from_square) -> float:  # expects piece type
+    def op_attacker_value(piece_type, aggr_color, from_square) -> float:
+        """ has a side effect on op """
         nonlocal op
         value = score_piece_positive(piece_type, aggr_color, from_square)
         op -= (value / 20)  # at most remove 1 from opportunities when attacking with king
         return value
 
     def op_promotion_value(p_move, promoting_color, square_64) -> float:
+        """ has a side effect on op """
         nonlocal op
         # piece_values = {pawn: 1, knight: 3, bishop: 3.33, rook: 5.63, queen: 9.5}
         promotion_type = p_move.promotion
@@ -57,7 +60,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
 
     def get_material_and_position(moving_piece_type=0, from_square=0, to_square=0, promotion_value=None,
                                   victim_value=None, aggr_value=None, victim_color=None):
-        """ this function currently needs """
+        """ currently needs from outer scope: material, turn - no side effects """
         new_material = material
 
         if victim_value and aggr_value:  # only for captures
@@ -78,6 +81,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
         return round(final_material, 2)
 
     def generate_capture_move_tuples(d_captures) -> List[tuple]:
+        """ currently needs access to board, turn from outer scope and has an indirect side effect on op """
         return [
             (
                 capture_move,
@@ -104,6 +108,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
         ]
 
     def generate_promotion_move_tuples(d_promotions) -> List[tuple]:
+        """ currently needs access to turn from outer scope, has an indirect side effect on op """
         return [
             (
                 promotion_move,
@@ -124,6 +129,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
         ]
 
     def op_update_quiet(moving_piece, quiet_move) -> int:
+        """ has a side effect on op """
         nonlocal op
         """ check if move might cause loosing castling rights"""
         if moving_piece != king and moving_piece != rook:
@@ -144,6 +150,7 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int]:
         return lost_castling
 
     def generate_quiet_move_tuples(moves_list, is_king_move=False) -> List[tuple]:
+        """ currently needs access to turn and has an indirect side effect on op"""
         return [
             (
                 quiet_move,

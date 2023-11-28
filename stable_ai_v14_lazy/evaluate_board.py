@@ -52,6 +52,8 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real
     final_val.append(lost_castling)
     # final_val.append(- horizon_risk * 100)
 
+    final_val[0] = round(final_val[0])
+
     return final_val
 
 

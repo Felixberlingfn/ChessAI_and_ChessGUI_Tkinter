@@ -1,7 +1,8 @@
 from chess import (PAWN, KNIGHT, KNIGHT, BISHOP, ROOK,  QUEEN, KING,
-                   square_rank, SQUARES, WHITE, square_name)
+                   square_rank, SQUARES, WHITE, square_name,
+                   E1, E8,)
 
-from .CONSTANTS import POS_BONUS_MULTIPLIER
+from stable_ai_v14_lazy.CONSTANTS import POS_BONUS_MULTIPLIER
 
 """https://www.chessprogramming.org/Simplified_Evaluation_Function"""
 
@@ -269,9 +270,12 @@ def get_positional_piece_value(piece_type, piece_color, piece_square) -> float:
 
 if __name__ == "__main__":
 
-    for square in SQUARES:
+    print("WHITE:", good_positions[0][2][indexes[E1]])
+    print("BLACK:", good_positions[0][2][E8])
+
+    """for square in SQUARES:
         # print(square, square_name(square), index_from_64(square))
         # print(square, square_name(square), indexes[square])
         print("WHITE:", good_positions[0][2][indexes[square]], good_positions[1][1][indexes[square]] )
-        print("BLACK:", good_positions[0][2][square], good_positions[1][1][indexes[square]])
+        print("BLACK:", good_positions[0][2][square], good_positions[1][1][indexes[square]])"""
 

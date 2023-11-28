@@ -1,5 +1,5 @@
 """ Constants (some of these are settings, and some of them should NEVER be changed)"""
-AI_NAME = "V13"
+AI_NAME = "V14"
 
 
 """ DEPTH """
