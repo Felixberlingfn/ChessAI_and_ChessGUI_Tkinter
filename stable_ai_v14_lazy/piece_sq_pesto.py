@@ -242,25 +242,26 @@ def score_piece_positive(piece_type, piece_color, piece_square_64) -> float:
     :param piece_color
     :param piece_square_64
     """
-    mg_score = 0
-    eg_score = 0
     if piece_color == WHITE:
         index: int = indexes_for_white[piece_square_64]
         """ TEMPORARY: Divide by 100 so it is compatible with old scoring system until fixed """
-        mg_score = round((mg_good_positions[piece_type][index] / 100) + piece_value(piece_type), 2)
-        eg_score = round((eg_good_positions[piece_type][index] / 100) + piece_value(piece_type), 2)
+        mg_score = (mg_good_positions[piece_type][index] / 100) + piece_value(piece_type)
+        eg_score = (eg_good_positions[piece_type][index] / 100) + piece_value(piece_type)
     else:
         """ TEMPORARY: Divide by 100 so it is compatible with old scoring system until fixed """
-        mg_score = round((mg_good_positions[piece_type][piece_square_64] / 100) + piece_value(piece_type), 2)
-        eg_score = round((eg_good_positions[piece_type][piece_square_64] / 100) + piece_value(piece_type), 2)
+        mg_score = (mg_good_positions[piece_type][piece_square_64] / 100) + piece_value(piece_type)
+        eg_score = (eg_good_positions[piece_type][piece_square_64] / 100) + piece_value(piece_type)
 
     """ I should increment the percentage of how far we are away from the endgame """
     """ for now I will use the number from the beginning of the calculation """
     progress = stats.sum_of_all_pieces / 78  # sum of pieces / 78 (overall chess pieces)
 
-    combined_score = mg_score * progress + eg_score * (1 - progress)
+    tapered_mg_score = mg_score * progress
+    tapered_eg_score = eg_score * (1 - progress)
 
-    return combined_score
+    combined_score = tapered_mg_score + tapered_eg_score
+
+    return round(combined_score, 2)
 
 
 if __name__ == "__main__":

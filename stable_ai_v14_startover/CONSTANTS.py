@@ -1,5 +1,5 @@
 """ Constants (some of these are settings, and some of them should NEVER be changed)"""
-AI_NAME = "V14_lazy"
+AI_NAME = "V14_fix"
 
 
 """ DEPTH """
@@ -16,7 +16,7 @@ CHECK_X_LIMITER = 20  # if I am in check there is no way I can put the opponent 
 QUIESCENCE_DEPTH = 11  # total counting from - 11 but starting from - 7 only knight capture are not calm etc.
 
 """ Do not change these: """
-INIT_DEPTH = REAL_QUIESCENCE_START + 1 + EXTRA_DEPTH_BEFORE_LIMIT
+INIT_DEPTH = 5 # REAL_QUIESCENCE_START + 1 + EXTRA_DEPTH_BEFORE_LIMIT
 MAXIMUM_REAL_DEPTH = CHECK_X_LIMITER + 5
 RELATIVE_QUIESCENCE_START = INIT_DEPTH - REAL_QUIESCENCE_START
 

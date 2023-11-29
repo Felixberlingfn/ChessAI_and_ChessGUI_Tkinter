@@ -1,11 +1,9 @@
 # import chess
-from . import stats
-from . import tables_maximizer
-from . import tables_minimizer
+from . import stats, tables_maximizer, tables_minimizer, quiescence
 from .evaluate_board import evaluate_board
 from .order_moves import order_moves
 from .depth import adjust_depth
-from .CONSTANTS import CHECK_X_LIMITER
+from .CONSTANTS import CHECK_X_LIMITER, CALM, CAPTURE, PROMOTION, CHECK
 
 
 """
@@ -18,18 +16,20 @@ https://www.chessprogramming.org/Main_Page
 
 
 def sum_of_pieces(board):
-    """ simplified (using 1,3,5,9 and no king)"""
-    piece_values = {0: 0, 1: 1, 2: 3, 3: 3, 4: 5, 5: 9, 6: 0}
+    """not counting the king - side effect on stats.sum_of_all_pieces"""
+    piece_values = {1: 1, 2: 3, 3: 3, 4: 5, 5: 9, 6: 0}
     sum_of_all_pieces = 0
     for square_64, piece in board.piece_map().items():
         sum_of_all_pieces += piece_values.get(piece.piece_type, 0)
 
     stats.sum_of_all_pieces = sum_of_all_pieces
+    print(sum_of_all_pieces)
     return sum_of_all_pieces
 
 
 def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), horizon_risk=0.0,
-            op=0, material=0, real_depth=0, make_up_difference=1, lost_castling=False) -> list:
+            op=0, material=0, real_depth=0, make_up_difference=1, lost_castling=False,
+            last_move_type=0, last_victim_value=0) -> list:
     """ Minimax returns optimal value for current player """
 
     material = round(material, 2)
@@ -41,22 +41,26 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
     """ CHECK AND END THE RECURSION: """
     if depth == 0 or board.is_game_over() or real_depth == CHECK_X_LIMITER:  # or time.time() > end_time:
-        final_val_list = evaluate_board(board, horizon_risk, op, material, real_depth, lost_castling)
-        stats.n_evaluated_leaf_nodes += 1
-        return final_val_list
+        if last_move_type == CALM:  # not perfect yet
+            stats.n_evaluated_leaf_nodes += 1
+            return evaluate_board(board, horizon_risk, op, material, real_depth, lost_castling)
+        else:
+            stats.n_evaluated_leaf_nodes += 1
+            return quiescence.search(board, 2, max_player, last_move_type, last_victim_value, horizon_risk, op, material, real_depth, lost_castling)
 
-    ordered_moves, op = order_moves(board, real_depth, material)
+    ordered_moves, op, max_gain = order_moves(board, real_depth, material)
     # op_total = op_total + op if board.turn == chess.WHITE else op_total - op
 
     if real_depth == 0:
-        if op < 10:
+        sum_of_pieces(board)
+        """if op < 10:
             print("very few available moves, extend search")
             depth += 1
         if sum_of_pieces(board) < 20:  # less than two queens
             print("very few pieces on the board, extend search")
-            depth += 1
-    if depth > 0 and op < 3 and real_depth < CHECK_X_LIMITER:
-        depth += 1
+            depth += 1"""
+    """if depth > 0 and op < 3 and real_depth < CHECK_X_LIMITER:
+        depth += 1"""
 
     """ MAXIMIZING """
     if max_player:
@@ -64,12 +68,13 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
         best_list: list = [best]
         """ Loop through moves """
         for move_tuple in ordered_moves:
-            """move_tuple: move, move_type, material, mvva, aggr_type, aggr_value, aggr_color, lost_castling"""
-            move, material, move_lost_castling = move_tuple[0], move_tuple[2], move_tuple[7]
+            """move_tuple: move, move_type, material, mvva, aggr_type, aggr_value, aggr_color, lost_castling, vv"""
+            move, move_type, material, move_lost_castling, victim_value = (move_tuple[0], move_tuple[1], move_tuple[2],
+                                                                           move_tuple[7], move_tuple[8])
             move_lost_castling += lost_castling
             stats.distribution[real_depth] += 1
 
-            n_depth, risk, diff = adjust_depth(move_tuple, depth, real_depth, op, board.turn)
+            # n_depth, risk, diff = adjust_depth(move_tuple, depth, real_depth, op, board.turn)
 
             """ somewhere I should skip moves
             with delta pruning after lazy evaluation or similar? we have the needed information
@@ -85,14 +90,15 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
                 continue
 
             """ Recursive Call and Value Updating """
-            val_list: list = minimax(board, n_depth, False, alpha, beta,
-                                     risk, op, material, real_depth + 1, diff, move_lost_castling)
+            val_list: list = minimax(board, depth - 1, False, alpha, beta,0, op, material,
+                                     real_depth + 1, 0, move_lost_castling, move_type, victim_value)
 
             # if real_depth == 0: val_list[0] = val_list[0] + ((len(val_list) - 4) * PREFERENCE_DEEP)
 
             if val_list[0] > best_list[0] or (val_list[0] == best_list[0] and len(val_list) >= len(best_list)):
                 # if real_depth == 0: print(f"{val_list[0]} >= {best_list[0]}")
                 best_list = val_list
+                best_list.append(material)
                 best_list.append(board.uci(move))
                 if real_depth == 0: stats.top_moves.append(val_list)
             alpha = max(alpha, best_list[0])
@@ -114,12 +120,13 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
         # loop through moves
         for move_tuple in ordered_moves:
             """move_tuple: move, move_type, material, _, aggr_type, aggr_value, aggr_color, lost_castling"""
-            move, material, move_lost_castling = move_tuple[0], move_tuple[2], move_tuple[7]
+            move, move_type, material, move_lost_castling, victim_value = (move_tuple[0], move_tuple[1], move_tuple[2],
+                                                                           move_tuple[7], move_tuple[8])
             move_lost_castling += lost_castling
 
             stats.distribution[real_depth] += 1
 
-            n_depth, risk, diff = adjust_depth(move_tuple, depth, real_depth, op, board.turn)
+            # n_depth, risk, diff = adjust_depth(move_tuple, depth, real_depth, op, board.turn)
 
             # Chess  move
             board.push(move)
@@ -128,14 +135,15 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
                 continue
 
             # Recursive Call and Value Updating
-            val_list: list = minimax(board, n_depth, True, alpha, beta,
-                                     risk, op, material, real_depth + 1, diff, move_lost_castling)
+            val_list: list = minimax(board, depth - 1, True, alpha, beta,0, op, material,
+                                     real_depth + 1, 0, move_lost_castling, move_type, victim_value)
 
             # if real_depth == 0: val_list[0] = val_list[0] - ((len(val_list) - 4) * PREFERENCE_DEEP)
 
             if val_list[0] < best_list[0] or (val_list[0] == best_list[0] and len(val_list) >= len(best_list)):
                 # if real_depth == 0: print(f"{val_list[0]} <= {best_list[0]}")
                 best_list = val_list
+                best_list.append(material)
                 best_list.append(board.uci(move))  # append the move history
                 if real_depth == 0: stats.top_moves.append(val_list)
             beta = min(beta, best_list[0])

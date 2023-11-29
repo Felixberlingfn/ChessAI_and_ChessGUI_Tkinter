@@ -151,7 +151,7 @@ class ChessBoard(tk.Tk):
         self.version_vs_version_button = ttk.Button(self, text="My ai vs. my ai (Next Version)", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "version_vs_version"))
         self.version_vs_version_button.place(x=10, y=180)
 
-        self.restart_button = ttk.Button(self, text="🤖 Play My AI", command=lambda: self.start_game("white", "custom_ai"))
+        self.restart_button = ttk.Button(self, text="🤖 Continue against my AI", command=lambda: self.trigger_moved_event("start_pos", "end_pos", self.chess_board_object, "custom_ai"))
         self.restart_button.place(x=10, y=100)
 
         self.restart_button2 = ttk.Button(self, text="♛ Play Human", command=lambda: self.start_game("white", False))

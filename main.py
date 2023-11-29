@@ -11,6 +11,7 @@ from stable_ai_v12_0 import ai_0 as v12_0
 from stable_ai_v12_1 import ai_0 as v12_1
 from stable_ai_v13 import ai_0 as v13
 from stable_ai_v14_lazy import ai_0 as v14
+from stable_ai_v14_startover import ai_0 as v14fix
 
 from stockfish import stockfish, stockfish_6, stockfish_5, stockfish_2, stockfish_3, stockfish_4
 from comments import comments
@@ -18,16 +19,16 @@ from tournament import run_round_robin_tournament, print_tournament_results
 from helpers import determine_winner
 
 
-ai_player_1 = v12_0  # White
-ai_player_2 = v12_0  # Black
-ai_playing_against_human = v12_0
-ai_playing_against_stockfish = v12_0
+ai_player_1 = v13  # White
+ai_player_2 = v13  # Black
+ai_playing_against_human = v13
+ai_playing_against_stockfish = v13
 
 stockfish_level = stockfish_4
 
 """ ai tournament (round robin / everyone against everyone) """
 # tuple like [("V11.1", v11_1), ("V11.2", v11_2)] ("V11.2", v11_2),
-ai_tournament_vs = [("st.fish lv4", stockfish_4), ("V14", v14)]  # ("st.fish lv4", stockfish_4) ("V11.2", v11_2)
+ai_tournament_vs = [("V13", v13), ("V14fix", v14fix)]  # ("st.fish lv4", stockfish_4) ("V11.2", v11_2)
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 
