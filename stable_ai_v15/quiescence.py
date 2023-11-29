@@ -1,40 +1,34 @@
 from .evaluate_board import evaluate_board
 from .order_moves import order_moves
-from . import stats
+from . import stats, tables_maximizer, tables_minimizer
 from .CONSTANTS import CHECK_X_LIMITER, CALM, CAPTURE, PROMOTION, CHECK
 
 """ placeholder for now """
 
 
-def search(board, depth, is_maximizing, last_move_type, last_victim_value, horizon_risk=0, last_op=0, last_material=0,
-           real_depth=0, lost_castling=0):
+def search(board, alpha, beta, depth, is_maximizing, last_move_type, last_victim_value, last_op, last_material,
+           real_depth, lost_castling):
     """placeholder"""
     ordered_moves, op, max_gain = order_moves(board, real_depth, last_material)
 
     """I can also use current op in evaluation, skipping it in evaluate board """
 
     """ I should also look at who the capture is done with. if it is a high value piece or not"""
-    if max_gain <= last_victim_value:
-        """ this might be flawed or it might work"""
-        # if max_gain > 0: print(f"{max_gain} <= {last_victim_value}")
-        stats.n_evaluated_leaf_nodes += 1
-        return evaluate_board(board, max_gain, last_op, last_material, real_depth, lost_castling, op)
-    elif last_move_type == CALM:
-        # not go in quiescence if last move was no capture?
-        # I mean every gain would be higher.
-        # though maybe that is ok, we will still see if anything is higher after that
-        stats.n_evaluated_leaf_nodes += 1
-        return evaluate_board(board, 0, last_op, last_material, real_depth, lost_castling, op)
+    higher_value_capture_possible = False
+    board_is_in_check = False
+    move_giving_check_is_possible = False
 
-        pass
-        # print(f"{max_gain} > {last_victim_value}")
-        """# for now, if there is a more valuable response return as if capture did not happen
-        search_1(ordered_moves, is_maximizing)
-        stats.n_evaluated_leaf_nodes += 1
-        return evaluate_board(board, last_victim_value, last_op, last_material, real_depth, lost_castling)"""
+    if max_gain <= last_victim_value:
+        if not (board.is_check() and real_depth < CHECK_X_LIMITER):
+            stats.n_evaluated_leaf_nodes += 1
+            return evaluate_board(board, max_gain, last_op, last_material, real_depth, lost_castling, op)
+    elif last_move_type == CALM:
+        if not (board.is_check() and real_depth < CHECK_X_LIMITER):
+            stats.n_evaluated_leaf_nodes += 1
+            return evaluate_board(board, 0, last_op, last_material, real_depth, lost_castling, op)
 
     """ only now the real quiescence search starts """
-    stats.quiescence_search_started += 1
+    stats.quiescence_search_started += 1  # number of quiescence nodes
 
     """ let's implement the recursion """
     if is_maximizing:
@@ -56,7 +50,7 @@ def search(board, depth, is_maximizing, last_move_type, last_victim_value, horiz
 
             board.push(move)
 
-            val_list = search(board, depth, False, move_type, victim_value, horizon_risk, op, material,
+            val_list = search(board, alpha, beta, depth, False, move_type, victim_value, op, material,
                               real_depth + 1, move_lost_castling)
 
             if val_list[0] >= best_list[0]:
@@ -66,8 +60,14 @@ def search(board, depth, is_maximizing, last_move_type, last_victim_value, horiz
                 best_list.append(last_victim_value)
                 best_list.append(max_gain)
                 best_list.append(board.uci(move))
+            alpha = max(alpha, best_list[0])
 
             board.pop()
+
+            """ Pruning """
+            if beta <= alpha:
+                tables_maximizer.add_to_killers_and_history(move, real_depth)
+                break
 
         return best_list
 
@@ -90,7 +90,7 @@ def search(board, depth, is_maximizing, last_move_type, last_victim_value, horiz
 
             board.push(move)
 
-            val_list = search(board, depth, True, move_type, victim_value, horizon_risk, op, material,
+            val_list = search(board, alpha, beta, depth, True, move_type, victim_value, op, material,
                               real_depth + 1, move_lost_castling)
 
             if val_list[0] <= best_list[0]:
@@ -100,8 +100,14 @@ def search(board, depth, is_maximizing, last_move_type, last_victim_value, horiz
                 best_list.append(last_victim_value)
                 best_list.append(max_gain)
                 best_list.append(board.uci(move))
+            beta = min(beta, best_list[0])
 
             board.pop()
+
+            # Pruning
+            if beta <= alpha:
+                tables_minimizer.add_to_killers_and_history(move, real_depth)
+                break
 
         return best_list
 

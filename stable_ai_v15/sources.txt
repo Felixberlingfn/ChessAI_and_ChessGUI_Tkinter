@@ -1,0 +1,5 @@
+
+
+https://www.chessprogramming.org/Futility_Pruning
+https://www.chessprogramming.org/Delta_Pruning
+https://www.chessprogramming.org/Razoring
