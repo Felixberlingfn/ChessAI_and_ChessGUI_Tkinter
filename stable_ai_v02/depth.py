@@ -3,7 +3,7 @@ from typing import Tuple
 
 from .CONSTANTS import (HORIZON_RISK_MULTIPLIER, CAPTURE, PROMOTION, REAL_QUIESCENCE_START,
                                  REAL_DEPTH_AND_THRESHOLDS)
-from stable_ai_v2 import stats
+from stable_ai_v02 import stats
 
 
 def adjust_depth(board, move, depth: int, real_depth: int = 0, move_type: int = 0,) -> Tuple[int, float, int]:
