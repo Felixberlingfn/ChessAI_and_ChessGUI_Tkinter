@@ -1,7 +1,15 @@
 the new V14 ai is winning, then from move 22 onwards it does complete nonsense
-Ich glaube das Problem ist meine Quiescence search ist komplett falsch:
-auch schon in der V13 wie hier zu sehen:
+Ich glaube das Problem ist meine Quiescence search ist komplett falsch. es werden nur noch captures 
+berücksichtigt aber das bekannte Problem ist so so werden wenn nur sinnlose captures verfügbar sind auch nur 
+diese Berücksichtigt. also es wird davon ausgegangen, dass der Gegner diese unsinnigen Züge macht wenn es die einzigen
+möglichen captures sind. So kommt es dass, dass erwartet wird, dass zum Beispiel die Königin geschlagen wird in 
+ferner Zukunft bei völlig schwachsinnigen Zügen. Ich brauche also eine bessere Quiescence search. Noch dazu kommt ja,
+dass in meiner quiescence search irgenwann sogar nur noch moves der Konigin und dann nur noch des Königs berücksichtigt
+werden.
+
+
 [-78.0, -11.0, 26.0, 40, 'b8c6', 'f1b5', 'h8h7', 'h5h7', 'f8e7', 'd5e7', 'e8d7', 'c3d5', 'd8d5']]
+
 
 ####################### --- NEXT MATCH  --- #############################
 No move made yet
