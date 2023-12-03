@@ -14,7 +14,7 @@ from stable_ai_v14_lazy import ai_0 as v14
 from stable_ai_v14_startover import ai_0 as v14fix
 from stable_ai_v15 import ai_0 as v15
 from stable_ai_v15_ONLY_CHANGE_CONFIG import ai_0 as v15_config # is most up to date and works
-from stable_ai_v16 import ai_0 as v16 # is v14fix with alpha beta
+from stable_ai_v15_light import ai_0 as v16 # is v14fix with alpha beta
 
 from stockfish import stockfish, stockfish_6, stockfish_5, stockfish_2, stockfish_3, stockfish_4
 from comments import comments
