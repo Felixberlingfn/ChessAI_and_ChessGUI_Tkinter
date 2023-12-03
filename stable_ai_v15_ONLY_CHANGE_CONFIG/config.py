@@ -10,6 +10,8 @@ def activate_presets():
 
     activate_castling()
 
+    """ win against stockfish + promising settings + activate castling win more reliably at least once against lv 4"""
+
     # activate_experimental_settings()
 
 
@@ -94,8 +96,11 @@ def activate_experimental_settings():
 
 
 def activate_castling():
-    global lost_castling_activated
+    global lost_castling_activated, AI_NAME, castling_reward, lost_castling_punish
     lost_castling_activated = True
+    AI_NAME = AI_NAME + " + " + " castling_activated"
+    castling_reward = 10
+    lost_castling_punish = 24  # was 40 just testing
 
 
 activate_presets()
