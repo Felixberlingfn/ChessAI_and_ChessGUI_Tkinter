@@ -3,7 +3,7 @@ import inspect
 import timeit
 
 from .helpers import to_centi, to_pawns
-from . import config
+from . import config, stats
 
 
 def run(board, testing=False) -> list:
@@ -15,7 +15,7 @@ def run(board, testing=False) -> list:
 
 
 def evaluate_board(board, horizon_risk=0.0, last_op=0, material=None, real_depth=1,
-                   lost_castling=False, now_op=0) -> list:
+                   lost_castling=False, now_op=0, stand_pat=False) -> list:
     """
     :param board: chess.Board object
     :param horizon_risk
@@ -24,8 +24,11 @@ def evaluate_board(board, horizon_risk=0.0, last_op=0, material=None, real_depth
     :param real_depth
     :param lost_castling
     :param now_op - opportunities of the current turn player
+    :param stand_pat
     :return: score representing material balance
     """
+    if not stand_pat:
+        stats.n_evaluated_leaf_nodes += 1
 
     turn = board.turn
 
@@ -35,7 +38,13 @@ def evaluate_board(board, horizon_risk=0.0, last_op=0, material=None, real_depth
     final_val: list = [material_balance * 100]  # Using centi-pawns instead of pawns because it is convention
     """ endgame check """
     try_to_win_soon = real_depth if real_depth > 0 else 1
+    """ I should only check this if the game is over. which I have already checked in minimax and search"""
+    # if is_game_over:
+        # if board.is_checkmate():
+        #else:
+            # something negative or 0 for stalemates
     if board.is_checkmate():
+        stats.n_checkmates_found += 1
         if turn == chess.WHITE:  # is turn dependent
             """really bad for white - great for black - we are evaluating for black - current turn is white"""
             final_val[0] = - 1.7976931348623150e308 / try_to_win_soon
@@ -52,17 +61,25 @@ def evaluate_board(board, horizon_risk=0.0, last_op=0, material=None, real_depth
         weighted_op_score = op_score * config.opportunity_score_weight  # the only one we keep in pawns by design
         final_val[0] += weighted_op_score
         final_val.append(weighted_op_score)
+    else:
+        final_val.append(999)
 
     if config.lost_castling_activated:
-        weighted_lost_castling = lost_castling + config.lost_castling_weight  # is already in centi-pawns
+        weighted_lost_castling = lost_castling * config.lost_castling_weight  # is already in centi-pawns
         final_val[0] += weighted_lost_castling
         final_val.append(weighted_lost_castling)
+    else:
+        final_val.append(888)
 
     if config.horizon_risk_activated:
         risk = - horizon_risk if turn == chess.BLACK else horizon_risk
         weighted_risk = to_centi(risk) * config.horizon_risk_weight
         final_val[0] += weighted_risk
         final_val.append(weighted_risk)
+    else:
+        final_val.append(777)
+
+    final_val.append(666)
 
     """ convert to int """
     final_val[0] = round(final_val[0])

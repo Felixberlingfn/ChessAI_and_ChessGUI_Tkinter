@@ -17,20 +17,17 @@ def search(board, depth, is_maximizing, last_move_type, last_victim_value, horiz
     if max_gain <= last_victim_value:
         """ this might be flawed or it might work"""
         # if max_gain > 0: print(f"{max_gain} <= {last_victim_value}")
-        stats.n_evaluated_leaf_nodes += 1
         return evaluate_board(board, max_gain, last_op, last_material, real_depth, lost_castling, op)
     elif last_move_type == CALM:
         # not go in quiescence if last move was no capture?
         # I mean every gain would be higher.
         # though maybe that is ok, we will still see if anything is higher after that
-        stats.n_evaluated_leaf_nodes += 1
         return evaluate_board(board, 0, last_op, last_material, real_depth, lost_castling, op)
 
         pass
         # print(f"{max_gain} > {last_victim_value}")
         """# for now, if there is a more valuable response return as if capture did not happen
         search_1(ordered_moves, is_maximizing)
-        stats.n_evaluated_leaf_nodes += 1
         return evaluate_board(board, last_victim_value, last_op, last_material, real_depth, lost_castling)"""
 
     """ only now the real quiescence search starts """

@@ -18,14 +18,7 @@ muster = (  # A  B   C   D   E   F   G   H
             0,  0,  0,  0,  0,  0,  0,  0,  # 2
             0,  0,  0,  0,  0,  0,  0,  0,  # 1
         )
-"""maybe I will add an opening piece table. because I think at least for the opening my own values
-were much better even though it was very simplistic and at the same time not very readable
-the opening piece table will be used 100% as long as no piece was captured"""
 
-"""[chess.D4, chess.E4,  # chess.C4, chess.F4,
-                                 chess.A7, chess.B7, chess.C7, chess.D7,  # Promotion Preparation
-                                 chess.E7, chess.F7, chess.G7, chess.H7  # Promotion Preparation
-                                 ]"""
 """ pawn """
 pawn_op = \
     (  # A     B     C     D     E     F     G     H
@@ -233,7 +226,7 @@ king_eg = \
        -18,   -4,   21,   24,   27,   23,    9,  -11,
        -19,   -3,   11,   21,   23,   16,    7,   -9,
        -27,  -11,    4,   13,   14,    4,   -5,  -17,
-       -53,  -34,  -21,  -11,  -28,  -14,  -24,  -43,
+       -53,  -34,  -21,  -11,  -28,  -14,  -24,  -43,  # I think the -24 is too extreme
     )
 
 op_good_positions = (

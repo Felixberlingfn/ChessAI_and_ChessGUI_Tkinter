@@ -5,9 +5,9 @@ import csv
 from datetime import datetime
 
 """ Counters for stats """
-sum_of_all_pieces = 78
-n_extensions: int = 0
-n_early_end: int = 0
+sum_of_all_pieces: int = 78
+n_check_extensions: int = 0
+n_checkmates_found: int = 0
 """ This one is actually used to determine depth"""
 n_evaluated_leaf_nodes: int = 0
 quiescence_search_started: int = 0
@@ -21,8 +21,8 @@ material_balance_over_time = []
 
 
 top_moves: List[list] = []
-distribution: list = [0 for _ in range(MAXIMUM_REAL_DEPTH)]
-another_debugging_dict: dict = {i: 0 for i in range(MAXIMUM_REAL_DEPTH)}
+distribution: list = [0 for _ in range(MAXIMUM_REAL_DEPTH + 1)]
+another_debugging_dict: dict = {i: 0 for i in range(MAXIMUM_REAL_DEPTH + 1)}
 
 
 def sort_top_moves(player_color) -> None:
@@ -50,12 +50,12 @@ def get_sorted_top_moves(player_color) -> list:
 
 
 def reset():
-    global n_extensions, n_early_end, n_evaluated_leaf_nodes, quiescence_search_started
+    global n_check_extensions, n_checkmates_found, n_evaluated_leaf_nodes, quiescence_search_started
     global top_moves, distribution, another_debugging_dict
 
     quiescence_search_started = 0
-    n_extensions = 0
-    n_early_end = 0
+    n_check_extensions = 0
+    n_checkmates_found = 0
     n_evaluated_leaf_nodes = 0
     top_moves = []
     distribution = [0 for _ in range(MAXIMUM_REAL_DEPTH)]
@@ -74,11 +74,13 @@ def printf(player_color, move_id, execution_time):
     sort_top_moves(player_color)
     rounded_top_moves: List[list] = get_rounded_top_moves()
 
-    print(f"nodes/depth: {distribution}")
+    print(f"nodes/depth: {distribution} sum: {sum(distribution)}")
     max_real_depth = sum(1 for item in distribution if item != 0)
     print(f"leaf nodes: {n_evaluated_leaf_nodes} quiescence started: {quiescence_search_started}"
-          f" maximum depth:{max_real_depth} remaining pieces: {round((sum_of_all_pieces/78)*100)}%")
+          f" maximum depth:{max_real_depth} remaining pieces: {round((sum_of_all_pieces/78)*100)}%"
+          f" check extensions: {n_check_extensions} checkmates found: {n_checkmates_found}")
     print(f"{move_id} moves:{rounded_top_moves[:2]}")
+
     reset()
 
 
@@ -98,15 +100,18 @@ def print_end_of_game_stats():
     file_path = f'{directory}/{file_name}'
 
     # Write data to a csv file
-    headers = ["ply", "balance", "execution time", "leaf nodes"]
-    with open(file_path, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(headers)
-        for i, balance in enumerate(material_balance_over_time):
-            writer.writerow([i, balance, final_execution_times[i], final_evaluated_leaf_nodes[i]])
+    try:
+        headers = ["ply", "balance", "execution time", "leaf nodes"]
+        with open(file_path, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(headers)
+            for i, balance in enumerate(material_balance_over_time):
+                writer.writerow([i, balance, final_execution_times[i], final_evaluated_leaf_nodes[i]])
 
-    print(f"sum execution time: {sum(final_execution_times)}, nodes: {sum(final_evaluated_leaf_nodes)}")
-    material_balance_over_time = []
-    final_execution_times = []
-    final_evaluated_leaf_nodes = []
+        print(f"sum execution time: {sum(final_execution_times)}, nodes: {sum(final_evaluated_leaf_nodes)}")
+        material_balance_over_time = []
+        final_execution_times = []
+        final_evaluated_leaf_nodes = []
+    except Exception as error:
+        print(f"{error} writing csv")
 

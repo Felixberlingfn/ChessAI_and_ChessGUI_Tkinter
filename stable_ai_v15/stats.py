@@ -97,16 +97,19 @@ def print_end_of_game_stats():
     file_name = f"{formatted_time}.csv"
     file_path = f'{directory}/{file_name}'
 
-    # Write data to a csv file
-    headers = ["ply", "balance", "execution time", "leaf nodes"]
-    with open(file_path, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(headers)
-        for i, balance in enumerate(material_balance_over_time):
-            writer.writerow([i, balance, final_execution_times[i], final_evaluated_leaf_nodes[i]])
+    try:
+        # Write data to a csv file
+        headers = ["ply", "balance", "execution time", "leaf nodes"]
+        with open(file_path, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(headers)
+            for i, balance in enumerate(material_balance_over_time):
+                writer.writerow([i, balance, final_execution_times[i], final_evaluated_leaf_nodes[i]])
 
-    print(f"sum execution time: {sum(final_execution_times)}, nodes: {sum(final_evaluated_leaf_nodes)}")
-    material_balance_over_time = []
-    final_execution_times = []
-    final_evaluated_leaf_nodes = []
+        print(f"sum execution time: {sum(final_execution_times)}, nodes: {sum(final_evaluated_leaf_nodes)}")
+        material_balance_over_time = []
+        final_execution_times = []
+        final_evaluated_leaf_nodes = []
+    except Exception as error:
+        print(f"{error} writing csv")
 

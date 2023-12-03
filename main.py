@@ -12,6 +12,9 @@ from stable_ai_v12_1 import ai_0 as v12_1
 from stable_ai_v13 import ai_0 as v13
 from stable_ai_v14_lazy import ai_0 as v14
 from stable_ai_v14_startover import ai_0 as v14fix
+from stable_ai_v15 import ai_0 as v15
+from stable_ai_v15_ONLY_CHANGE_CONFIG import ai_0 as v15_config # is most up to date and works
+from stable_ai_v16 import ai_0 as v16 # is v14fix with alpha beta
 
 from stockfish import stockfish, stockfish_6, stockfish_5, stockfish_2, stockfish_3, stockfish_4
 from comments import comments
@@ -28,7 +31,7 @@ stockfish_level = stockfish_4
 
 """ ai tournament (round robin / everyone against everyone) """
 # tuple like [("V11.1", v11_1), ("V11.2", v11_2)] ("V11.2", v11_2),
-ai_tournament_vs = [("st.fish lv4", stockfish_4), ("V14fix", v14fix)]  # ("st.fish lv4", stockfish_4) ("V11.2", v11_2)
+ai_tournament_vs = [("st.fish lv4", stockfish_4), ("v15 config", v15_config)]  # ("st.fish lv4", stockfish_4) ("V11.2", v11_2)
 
 STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 
@@ -39,7 +42,7 @@ STOCKFISH_TIME_LIMIT = 0.002  # 2 Milliseconds
 def main():
     """  ---------------------------   chess_tk gui --------------------------------------------------------"""
     def version_vs_version(chess_board, version_a, version_b, time_limit_1=0.001, time_limit_2=0.001):
-        for i in range(999999999):
+        for i in range(1000):
             db.save_game_state(chess_board)
 
             if chess_board.is_game_over():
@@ -48,6 +51,8 @@ def main():
                 print("############################################")
                 print(result)
                 print("############################################")
+                for move in chess_board.move_stack:
+                    print(f'"{move.uci()}", ', end="")
                 return determine_winner(result, version_a, version_b)
 
             if i % 2 == 0:

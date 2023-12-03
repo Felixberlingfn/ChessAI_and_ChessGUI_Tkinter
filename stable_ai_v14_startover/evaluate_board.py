@@ -3,7 +3,8 @@ import inspect
 import timeit
 
 from .CONSTANTS import OPPORTUNITY_MULTIPLIER, GOOD_POS_BONUS, BAD_POS_PUNISH
-from . import config
+from . import config, stats
+
 
 def run(board, testing=False) -> list:
     """ wrapper for evaluate_board() - runs when not imported as module """
@@ -22,8 +23,11 @@ def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real
     :param material
     :param real_depth
     :param lost_castling
+    :param now_op
     :return: score representing material balance
     """
+
+    stats.n_evaluated_leaf_nodes += 1
 
     turn = board.turn
 

@@ -146,8 +146,6 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int, int]:
             op += 1
             return False
         lost_castling = False
-        if board._reduces_castling_rights(quiet_move):
-            pass
         if board.is_castling(quiet_move):
             op += 2
             """ this is not really loosing castling, we give a tiny reward"""
@@ -224,13 +222,3 @@ if __name__ == "__main__":
     test_board = Board()
 
     print(order_moves(test_board, 0, 0))
-
-
-    """
-    Why is this protected? Can only be accessed from a derived class.
-    def _reduces_castling_rights(self, move: Move) -> bool:
-        cr = self.clean_castling_rights()
-        touched = BB_SQUARES[move.from_square] ^ BB_SQUARES[move.to_square]
-        return bool(touched & cr or
-                    cr & BB_RANK_1 and touched & self.kings & self.occupied_co[WHITE] & ~self.promoted or
-                    cr & BB_RANK_8 and touched & self.kings & self.occupied_co[BLACK] & ~self.promoted)"""

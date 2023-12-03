@@ -2,7 +2,6 @@ import chess
 import inspect
 import timeit
 
-from .helpers import to_centi, to_pawns
 from . import config
 
 
@@ -14,16 +13,15 @@ def run(board, testing=False) -> list:
     return evaluate_board(board)
 
 
-def evaluate_board(board, horizon_risk=0.0, last_op=0, material=None, real_depth=1,
+def evaluate_board(board, horizon_risk=0.0, opportunities=0, material=None, real_depth=1,
                    lost_castling=False, now_op=0) -> list:
     """
     :param board: chess.Board object
     :param horizon_risk
-    :param last_op
+    :param opportunities
     :param material
     :param real_depth
     :param lost_castling
-    :param now_op - opportunities of the current turn player
     :return: score representing material balance
     """
 
@@ -47,25 +45,27 @@ def evaluate_board(board, horizon_risk=0.0, last_op=0, material=None, real_depth
     # pos = get_position_score(board) * 100  # centi-pawns is convention
     # mob = get_opportunity_score(board, opportunities) * 100  # centi-pawns is convention
 
+    # for the player we evaluate for it is a risk, for the current turn player it is a potential gain
+    risk = - horizon_risk if turn == chess.BLACK else horizon_risk
+
+    op_score = (now_op - opportunities) if turn == chess.WHITE else (-now_op + opportunities)
+
+    risk_in_centipawns = round(risk * 100, 2)
+    # final_val[0] += pos
     if config.opportunity_score_activated:
-        op_score = (now_op - last_op) if turn == chess.WHITE else (-now_op + last_op)
-        weighted_op_score = op_score * config.opportunity_score_weight  # the only one we keep in pawns by design
-        final_val[0] += weighted_op_score
-        final_val.append(weighted_op_score)
-
+        final_val[0] += (op_score * config.opportunity_score_weight)
     if config.lost_castling_activated:
-        weighted_lost_castling = lost_castling + config.lost_castling_weight  # is already in centi-pawns
-        final_val[0] += weighted_lost_castling
-        final_val.append(weighted_lost_castling)
-
+        final_val[0] += lost_castling
     if config.horizon_risk_activated:
-        risk = - horizon_risk if turn == chess.BLACK else horizon_risk
-        weighted_risk = to_centi(risk) * config.horizon_risk_weight
-        final_val[0] += weighted_risk
-        final_val.append(weighted_risk)
+        final_val[0] += (risk_in_centipawns * config.horizon_risk_weight)  # centi-pawns is convention
 
-    """ convert to int """
-    final_val[0] = round(final_val[0])
+    """ append details to list for stats """
+    final_val.append(risk_in_centipawns)
+    final_val.append(0)
+    final_val.append(0)
+    final_val.append(- horizon_risk * 100)
+
+    final_val[0] = round(final_val[0], 2)
 
     return final_val
 
@@ -132,11 +132,11 @@ def get_opportunity_score(board, opportunity_score) -> float:
     opportunity_score_black = 0
 
     if board.turn == chess.WHITE:
-        opportunity_score_white = get_opportunities()  # * OPPORTUNITY_MULTIPLIER
-        opportunity_score_black = opportunity_score  # * OPPORTUNITY_MULTIPLIER
+        opportunity_score_white = get_opportunities() * OPPORTUNITY_MULTIPLIER
+        opportunity_score_black = opportunity_score * OPPORTUNITY_MULTIPLIER
     if board.turn == chess.BLACK:
-        opportunity_score_black = get_opportunities()  # * OPPORTUNITY_MULTIPLIER
-        opportunity_score_white = opportunity_score  # * OPPORTUNITY_MULTIPLIER
+        opportunity_score_black = get_opportunities() * OPPORTUNITY_MULTIPLIER
+        opportunity_score_white = opportunity_score * OPPORTUNITY_MULTIPLIER
 
     # approximating this from previous move saves time
     # null move would also just be an approximation

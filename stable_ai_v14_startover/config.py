@@ -9,3 +9,6 @@ lost_castling_activated = False
 opportunity_score_activated = False
 degradation_activated = False
 degradation_weight = 1
+
+""" trying to find the settings that led to winning against stockfish lv 4"""
+# degradation is actually activated in code

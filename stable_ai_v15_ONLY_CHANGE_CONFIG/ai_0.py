@@ -46,7 +46,6 @@ def ai_0(board=None, time_limit=30) -> object:
         reset_history_max()
         stats.sum_of_all_pieces = 78
 
-
     show_potential_last_capture(deepcopy(board))
 
     """ Find the Best Move with minimax """
@@ -169,8 +168,12 @@ def generate_random_move(board):
 if __name__ == "__main__":
     def test_board_moves():
         board = chess.Board()
-        moves = ["e2e4", "c7c6", "f1c4", "d7d5", "e4d5", "c6d5", "c4b5", "c8d7", "d1e2", "e7e6",
-                 "g1f3", "d7b5", "e2b5", "d8d7", "b5d3", "b8c6", "f3g5", "c6b4"]
+        moves = ["g1f3", "f7f5", "b1c3", "g8f6", "d2d4", "e7e6", "c1g5", "f8b4", "a2a3", "b4f8", "e2e4", "f8e7", "e4e5", "f6g4", "g5e7", "d8e7", "h2h3", "g4h6", "f1c4", "d7d5", "c4b3", "e8g8", "h1f1", "h6f7", "d1d2",]
+
+        #["c2c4", "g8f6", "g1f3", "a7a5", "d2d4", "b7b6", "a2a3", "c8a6", "f3d2", "f6e4", "a3a4", "d8c8", "a1a3", "e4c3", "g2g3", "c3d1", "e2e4", "h7h6", "d2b3", "g7g6", "h2h3", "a6b7", "b3a5", "b7a6", "b1d2", "a6b5", "g3g4",]
+
+        """["e2e4", "c7c6", "f1c4", "d7d5", "e4d5", "c6d5", "c4b5", "c8d7", "d1e2", "e7e6",
+                 "g1f3", "d7b5", "e2b5", "d8d7", "b5d3", "b8c6", "f3g5", "c6b4"]"""
 
         for uci in moves:
             move = chess.Move.from_uci(uci)

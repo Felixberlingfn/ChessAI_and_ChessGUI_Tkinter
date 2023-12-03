@@ -1,15 +1,11 @@
 from chess import square_name
 from .CONSTANTS import MAXIMUM_REAL_DEPTH
 
-""" Fuck, I just realized this is the same for both ai players """
-# Initialize the history table or previously successful moves (64x64 from to)
-history_table_min = [[0 for _ in range(64)] for _ in range(64)]
-
 
 """ Lists for improved move ordering"""
-# Initialize the killer moves table with None. Each depth has two slots for killer moves.
-# The length is depth + max depth extension + estimate for check extension
 killer_moves_min = [[None, None] for _ in range(MAXIMUM_REAL_DEPTH)]
+history_table_min = [[0 for _ in range(64)] for _ in range(64)]
+transposition_table_min = {}
 
 
 def update_history_table(from_square, to_square, depth):

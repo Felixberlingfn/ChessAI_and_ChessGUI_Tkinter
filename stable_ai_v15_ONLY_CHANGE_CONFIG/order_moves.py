@@ -3,8 +3,9 @@ from typing import Tuple, List
 
 from .tables_maximizer import history_table_max, killer_moves_max
 from .tables_minimizer import history_table_min, killer_moves_min
-from .CONSTANTS import CALM, CAPTURE, PROMOTION, DEGRADATION_IMPACT_RATIO
+from .CONSTANTS import CALM, CAPTURE, PROMOTION
 from .piece_sq_pesto import score_piece_positive
+from . import config
 
 
 def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int, int]:
@@ -33,7 +34,9 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int, int]:
     #  op_mutable = [0]  # this would allow me to put the functions outside the scope
 
     """calculate material gain/loss degradation (lower probability of future moves)"""
-    degradation = (1 - (real_depth / DEGRADATION_IMPACT_RATIO)) if real_depth > 2 else 1
+    degradation = (1 - (real_depth * config.degradation_weight)) if real_depth > 2 else 1
+
+    degradation = degradation if config.degradation_activated else 1
 
     """ Generate move tuples and update opportunity score """
     def op_victim_value(victim_piece, victim_color, piece_square_64) -> float:
@@ -146,17 +149,15 @@ def order_moves(board, real_depth, material=0) -> Tuple[List[tuple], int, int]:
             op += 1
             return False
         lost_castling = False
-        if board._reduces_castling_rights(quiet_move):
-            pass
         if board.is_castling(quiet_move):
             op += 2
             """ this is not really loosing castling, we give a tiny reward"""
-            lost_castling = 10 if turn == WHITE else - 10  # still needed?
+            lost_castling = config.castling_reward if turn == WHITE else - config.castling_reward
             return lost_castling
         elif board.has_castling_rights(turn):
             op += 1
             """lost castling right, some punishment"""
-            lost_castling = 40 if turn == BLACK else - 40  # still needed?
+            lost_castling = config.lost_castling_punish if turn == BLACK else - config.lost_castling_punish
             return lost_castling
         op += 1
         return lost_castling

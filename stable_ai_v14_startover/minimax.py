@@ -41,8 +41,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), ho
 
     """ CHECK AND END THE RECURSION: """
     if depth == 0 or board.is_game_over() or real_depth == CHECK_X_LIMITER:  # or time.time() > end_time:
-        if last_move_type == CALM:  # not perfect yet
-            stats.n_evaluated_leaf_nodes += 1
+        if last_move_type == CALM:
             return evaluate_board(board, horizon_risk, op, material, real_depth, lost_castling)
         else:
             return quiescence.search(board, 2, max_player, last_move_type, last_victim_value, horizon_risk, op, material, real_depth, lost_castling)

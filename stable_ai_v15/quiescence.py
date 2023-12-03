@@ -1,25 +1,28 @@
 from .evaluate_board import evaluate_board
 from .order_moves import order_moves
-from . import stats, tables_maximizer, tables_minimizer, config
+from . import stats, tables_maximizer, tables_minimizer
 from .CONSTANTS import CHECK_X_LIMITER, CALM, CAPTURE, PROMOTION, CHECK
+
+""" placeholder for now """
 
 
 def search(board, alpha, beta, depth, is_maximizing, last_move_type, last_victim_value, last_op, last_material,
            real_depth, lost_castling):
-
+    """placeholder"""
     ordered_moves, op, max_gain = order_moves(board, real_depth, last_material)
 
-    # continue_quiescence, gain_high, last_capt_promo, is_check, gives_check = False, False, False, False, False
+    """I can also use current op in evaluation, skipping it in evaluate board """
+
+    """ I should also look at who the capture is done with. if it is a high value piece or not"""
+    continue_quiescence, gain_high, last_capt_promo, is_check, gives_check = False, False, False, False, False
 
     # 1) no higher capture available + also not currently in check
-    if max_gain + 1 < last_victim_value and \
-            (config.q_check_ext_deactivated or not (board.is_check() and real_depth < CHECK_X_LIMITER)):
+    if max_gain <= last_victim_value and not (board.is_check() and real_depth < CHECK_X_LIMITER):
         stats.n_evaluated_leaf_nodes += 1
         return evaluate_board(board, max_gain, last_op, last_material, real_depth, lost_castling, op)
 
     # 2) higher capture available but there was no capture + also not currently in check
-    elif last_move_type == CALM and \
-            (config.q_check_ext_deactivated or not (board.is_check() and real_depth < CHECK_X_LIMITER)):
+    elif last_move_type == CALM and not (board.is_check() and real_depth < CHECK_X_LIMITER):
         stats.n_evaluated_leaf_nodes += 1
         return evaluate_board(board, 0, last_op, last_material, real_depth, lost_castling, op)
 
@@ -36,9 +39,7 @@ def search(board, alpha, beta, depth, is_maximizing, last_move_type, last_victim
             move_type = move_tuple[1]
             victim_value = move_tuple[8]
 
-            """ only promising captures with delta pruning """
-            if victim_value + config.delta_safety_margin >= last_victim_value and \
-                    (last_material + victim_value + config.delta_safety_margin) * 100 >= beta:
+            if victim_value > last_victim_value:
                 stats.distribution[real_depth] += 1
                 move, material, move_lost_castling = move_tuple[0], move_tuple[2], move_tuple[7]
             else:
@@ -53,7 +54,10 @@ def search(board, alpha, beta, depth, is_maximizing, last_move_type, last_victim
 
             if val_list[0] >= best_list[0]:
                 best_list = val_list
-                best_list.append(last_material)
+                best_list.append("max")
+                best_list.append(material)
+                best_list.append(last_victim_value)
+                best_list.append(max_gain)
                 best_list.append(board.uci(move))
             alpha = max(alpha, best_list[0])
 
@@ -75,9 +79,7 @@ def search(board, alpha, beta, depth, is_maximizing, last_move_type, last_victim
             move_type = move_tuple[1]
             victim_value = move_tuple[8]
 
-            # only promising captures with delta pruning
-            if victim_value + config.delta_safety_margin >= last_victim_value and \
-                    (last_material - victim_value - config.delta_safety_margin) * 100 <= alpha:
+            if victim_value > last_victim_value:
                 stats.distribution[real_depth] += 1
                 move, material, move_lost_castling = move_tuple[0], move_tuple[2], move_tuple[7]
             else:
@@ -92,7 +94,10 @@ def search(board, alpha, beta, depth, is_maximizing, last_move_type, last_victim
 
             if val_list[0] <= best_list[0]:
                 best_list = val_list
-                best_list.append(last_material)
+                best_list.append("min")
+                best_list.append(material)
+                best_list.append(last_victim_value)
+                best_list.append(max_gain)
                 best_list.append(board.uci(move))
             beta = min(beta, best_list[0])
 

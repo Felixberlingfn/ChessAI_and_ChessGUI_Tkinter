@@ -1,9 +1,6 @@
-# import chess
 from . import stats, config, tables_maximizer, tables_minimizer, quiescence
-from .evaluate_board import evaluate_board
 from .order_moves import order_moves
-from .depth import adjust_depth
-from .CONSTANTS import CHECK_X_LIMITER, CALM, CAPTURE, PROMOTION, CHECK
+from .CONSTANTS import CHECK_X_LIMITER
 
 
 """
@@ -35,18 +32,17 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), op
     """ DEPTH EXTENSIONS """
     if depth == 0 and config.check_extension_minimax_active:
         if real_depth < CHECK_X_LIMITER and board.is_check():
-            depth = 1  # make_up_difference  # increase depth by (at least) 1
+            stats.n_check_extensions += 1
+            depth += 1
 
     """ CHECK AND END THE RECURSION: """
     if depth == 0 or board.is_game_over() or real_depth == CHECK_X_LIMITER:  # or time.time() > end_time:
-        """if last_move_type == CALM:  # not perfect yet
-            stats.n_evaluated_leaf_nodes += 1
+        """if last_move_type == CALM:
             return evaluate_board(board, horizon_risk, op, material, real_depth, lost_castling)"""
-        return quiescence.search(board, alpha, beta, 2, max_player, last_move_type, last_victim_value, op,
+        return quiescence.search(board, alpha, beta, 0, max_player, last_move_type, last_victim_value, op,
                                  material, real_depth, lost_castling)
 
     ordered_moves, op, max_gain = order_moves(board, real_depth, material)
-    # op_total = op_total + op if board.turn == chess.WHITE else op_total - op
 
     if real_depth == 0:
         sum_of_pieces(board)
@@ -73,7 +69,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), op
 
             """ Chess  move """
             board.push(move)
-            if real_depth == 0 and op > 1 and board.is_repetition(2):
+            if real_depth == 0 and op > 1 and board.is_repetition(config.max_repetitions):
                 board.pop()
                 continue
 
@@ -116,7 +112,7 @@ def minimax(board, depth, max_player, alpha=float('-inf'), beta=float('inf'), op
 
             # Chess  move
             board.push(move)
-            if real_depth == 0 and op > 1 and board.is_repetition(2):
+            if real_depth == 0 and op > 1 and board.is_repetition(config.max_repetitions):
                 board.pop()
                 continue
 
